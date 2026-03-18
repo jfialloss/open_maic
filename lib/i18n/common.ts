@@ -79,3 +79,44 @@ export const commonEnUS = {
     exportFailed: 'Export failed',
   },
 } as const;
+
+export const commonEsES = {
+  common: {
+    you: 'Tú',
+    confirm: 'Confirmar',
+    cancel: 'Cancelar',
+    loading: 'Cargando...',
+  },
+  home: {
+    slogan: 'Generative Learning in Multi-Agent Interactive Classroom',
+    greeting: 'Hola, ',
+  },
+  toolbar: {
+    languageHint: 'El curso se generará en este idioma',
+    pdfParser: 'Analizador',
+    pdfUpload: 'Subir PDF',
+    removePdf: 'Quitar archivo',
+    webSearchOn: 'Habilitado',
+    webSearchOff: 'Haz clic para habilitar',
+    webSearchDesc: 'Buscar en la web información actualizada antes de generar',
+    webSearchProvider: 'Motor de búsqueda',
+    webSearchNoProvider: 'Configura la API de búsqueda en Ajustes',
+    selectProvider: 'Seleccionar proveedor',
+    configureProvider: 'Configurar modelo',
+    configureProviderHint: 'Configura al menos un proveedor de modelo',
+    enterClassroom: 'Entrar al Aula',
+    advancedSettings: 'Ajustes',
+    ttsTitle: 'Texto a Voz',
+    ttsHint: 'Elige una voz para el profesor IA',
+    ttsPreview: 'Probar',
+    ttsPreviewing: 'Reproduciendo...',
+  },
+  export: {
+    pptx: 'Exportar PPTX',
+    resourcePack: 'Exportar Paquete',
+    resourcePackDesc: 'PPTX + páginas interactivas',
+    exporting: 'Exportando...',
+    exportSuccess: 'Exportación exitosa',
+    exportFailed: 'Error al exportar',
+  },
+} as const;

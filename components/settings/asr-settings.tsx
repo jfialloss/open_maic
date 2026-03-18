@@ -209,6 +209,9 @@ export function ASRSettings({ selectedProviderId }: ASRSettingsProps) {
               case 'qwen-asr':
                 endpointPath = '/services/aigc/multimodal-generation/generation';
                 break;
+              case 'google-asr':
+                endpointPath = '/speech:recognize';
+                break;
             }
             if (!endpointPath) return null;
             return (

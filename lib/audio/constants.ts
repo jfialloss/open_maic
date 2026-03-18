@@ -606,6 +606,26 @@ export const TTS_PROVIDERS: Record<TTSProviderId, TTSProviderConfig> = {
     supportedFormats: ['mp3', 'wav', 'pcm'],
   },
 
+  'google-tts': {
+    id: 'google-tts',
+    name: 'Google Cloud TTS',
+    requiresApiKey: true, // Will use Google API Key
+    defaultBaseUrl: 'https://texttospeech.googleapis.com/v1',
+    icon: '/logos/google.svg',
+    voices: [
+      { id: 'en-US-Journey-O', name: 'Journey O', language: 'en-US', gender: 'female' },
+      { id: 'en-US-Journey-D', name: 'Journey D', language: 'en-US', gender: 'male' },
+      { id: 'es-ES-Journey-O', name: 'Journey O (ES)', language: 'es-ES', gender: 'female' },
+      { id: 'es-ES-Journey-D', name: 'Journey D (ES)', language: 'es-ES', gender: 'male' },
+      { id: 'es-US-Journey-F', name: 'Journey F (LatAm)', language: 'es-US', gender: 'female' },
+      { id: 'es-US-Journey-D', name: 'Journey D (LatAm)', language: 'es-US', gender: 'male' },
+      { id: 'zh-CN-Standard-A', name: 'Standard A (ZH)', language: 'zh-CN', gender: 'female' },
+      { id: 'zh-CN-Standard-B', name: 'Standard B (ZH)', language: 'zh-CN', gender: 'male' },
+    ],
+    supportedFormats: ['mp3', 'ogg_opust', 'mulaw'],
+    speedRange: { min: 0.25, max: 4.0, default: 1.0 },
+  },
+
   'browser-native-tts': {
     id: 'browser-native-tts',
     name: '浏览器原生 (Web Speech API)',
@@ -744,6 +764,16 @@ export const ASR_PROVIDERS: Record<ASRProviderId, ASRProviderConfig> = {
     supportedFormats: ['mp3', 'wav', 'webm', 'm4a', 'flac'],
   },
 
+  'google-asr': {
+    id: 'google-asr',
+    name: 'Google Cloud Speech-to-Text',
+    requiresApiKey: true, // Will use Google API Key
+    defaultBaseUrl: 'https://speech.googleapis.com/v1',
+    icon: '/logos/google.svg',
+    supportedLanguages: ['auto', 'en-US', 'es-ES', 'zh-CN'],
+    supportedFormats: ['webm', 'wav', 'mp3'],
+  },
+
   'browser-native': {
     id: 'browser-native',
     name: '浏览器原生 ASR (Web Speech API)',
@@ -834,6 +864,7 @@ export const DEFAULT_TTS_VOICES: Record<TTSProviderId, string> = {
   'glm-tts': 'tongtong',
   'qwen-tts': 'Cherry',
   'browser-native-tts': 'default',
+  'google-tts': 'en-US-Standard-C',
 };
 
 /**

@@ -55,11 +55,13 @@ const TTS_ENV_MAP: Record<string, string> = {
   TTS_AZURE: 'azure-tts',
   TTS_GLM: 'glm-tts',
   TTS_QWEN: 'qwen-tts',
+  TTS_GOOGLE: 'google-tts',
 };
 
 const ASR_ENV_MAP: Record<string, string> = {
   ASR_OPENAI: 'openai-whisper',
   ASR_QWEN: 'qwen-asr',
+  ASR_GOOGLE: 'google-asr',
 };
 
 const PDF_ENV_MAP: Record<string, string> = {

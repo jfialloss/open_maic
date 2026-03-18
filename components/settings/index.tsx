@@ -122,6 +122,7 @@ function getTTSProviderName(providerId: TTSProviderId, t: (key: string) => strin
     'glm-tts': t('settings.providerGLMTTS'),
     'qwen-tts': t('settings.providerQwenTTS'),
     'browser-native-tts': t('settings.providerBrowserNativeTTS'),
+    'google-tts': t('settings.providerGoogleTTS'),
   };
   return names[providerId];
 }
@@ -131,6 +132,7 @@ function getASRProviderName(providerId: ASRProviderId, t: (key: string) => strin
     'openai-whisper': t('settings.providerOpenAIWhisper'),
     'browser-native': t('settings.providerBrowserNative'),
     'qwen-asr': t('settings.providerQwenASR'),
+    'google-asr': t('settings.providerGoogleASR'),
   };
   return names[providerId];
 }

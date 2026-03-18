@@ -149,6 +149,7 @@ import { createOpenAI } from '@ai-sdk/openai';
 import { experimental_transcribe as transcribe } from 'ai';
 import type { ASRModelConfig } from './types';
 import { ASR_PROVIDERS } from './constants';
+import { Buffer } from 'buffer';
 
 /**
  * Result of ASR transcription
@@ -183,6 +184,9 @@ export async function transcribeAudio(
 
     case 'qwen-asr':
       return await transcribeQwenASR(config, audioBuffer);
+
+    case 'google-asr':
+      return await transcribeGoogleASR(config, audioBuffer);
 
     default:
       throw new Error(`Unsupported ASR provider: ${config.providerId}`);
@@ -324,6 +328,79 @@ async function transcribeQwenASR(
   // Extract text from first content item
   const transcribedText = messageContent[0]?.text || '';
   return { text: transcribedText };
+}
+
+/**
+ * Google Cloud Speech-to-Text (ASR) implementation
+ */
+async function transcribeGoogleASR(
+  config: ASRModelConfig,
+  audioBuffer: Buffer | Blob,
+): Promise<ASRTranscriptionResult> {
+  const baseUrl = config.baseUrl || ASR_PROVIDERS['google-asr'].defaultBaseUrl;
+
+  // Convert audio to base64
+  let base64Audio: string;
+  if (audioBuffer instanceof Buffer) {
+    base64Audio = audioBuffer.toString('base64');
+  } else if (audioBuffer instanceof Blob) {
+    const arrayBuffer = await audioBuffer.arrayBuffer();
+    base64Audio = Buffer.from(arrayBuffer).toString('base64');
+  } else {
+    throw new Error('Invalid audio buffer type');
+  }
+
+  // Map "auto" or undefined to standard language codes if possible, Google prefers specific languages
+  // We'll default to 'en-US' if not provided or 'auto'
+  const languageCode = (config.language && config.language !== 'auto') ? config.language : 'en-US';
+
+  const url = new URL(`${baseUrl}/speech:recognize`);
+  url.searchParams.append('key', config.apiKey!);
+
+  const response = await fetch(url.toString(), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      config: {
+        encoding: 'WEBM_OPUS', // Often the default recording format in browsers for this app
+        sampleRateHertz: 48000,
+        languageCode: languageCode,
+        // model: 'latest_long', // Optional: Use latest model
+      },
+      audio: {
+        content: base64Audio,
+      },
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => response.statusText);
+    let errorMessage = `Google ASR API error: ${errorText}`;
+    try {
+      const errorJson = JSON.parse(errorText);
+      if (errorJson.error?.message) {
+        errorMessage = `Google ASR API error: ${errorJson.error.message}`;
+      }
+    } catch {
+      // Ignored
+    }
+    throw new Error(errorMessage);
+  }
+
+  const data = await response.json();
+
+  if (!data.results || data.results.length === 0) {
+    return { text: '' }; // No speech detected
+  }
+
+  // Concatenate all transcripts
+  const transcribedText = data.results
+    .map((result: any) => result.alternatives[0]?.transcript || '')
+    .join(' ');
+
+  return { text: transcribedText.trim() };
 }
 
 /**

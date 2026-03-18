@@ -91,6 +91,7 @@
 
 import type { TTSModelConfig } from './types';
 import { TTS_PROVIDERS } from './constants';
+import { Buffer } from 'buffer';
 
 /**
  * Result of TTS generation
@@ -129,6 +130,9 @@ export async function generateTTS(
 
     case 'qwen-tts':
       return await generateQwenTTS(config, text);
+
+    case 'google-tts':
+      return await generateGoogleTTS(config, text);
 
     case 'browser-native-tts':
       throw new Error(
@@ -313,6 +317,69 @@ async function generateQwenTTS(config: TTSModelConfig, text: string): Promise<TT
   return {
     audio: new Uint8Array(arrayBuffer),
     format: 'wav', // Qwen3 TTS returns WAV format
+  };
+}
+
+/**
+ * Google Cloud TTS implementation (REST API)
+ */
+async function generateGoogleTTS(config: TTSModelConfig, text: string): Promise<TTSGenerationResult> {
+  const baseUrl = config.baseUrl || TTS_PROVIDERS['google-tts'].defaultBaseUrl;
+
+  // Build the request body for Google Cloud TTS
+  // Example JSON: { "input": {"text": "Hello"}, "voice": {"languageCode": "en-US", "name": "en-US-Journey-F"}, "audioConfig": {"audioEncoding": "MP3"} }
+  const languageCode = config.voice.split('-').slice(0, 2).join('-'); // Extract 'en-US' from 'en-US-Journey-O'
+  
+  // Create query parameters with the API Key
+  const url = new URL(`${baseUrl}/text:synthesize`);
+  url.searchParams.append('key', config.apiKey!);
+
+  const response = await fetch(url.toString(), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      input: {
+        text: text
+      },
+      voice: {
+        languageCode: languageCode,
+        name: config.voice
+      },
+      audioConfig: {
+        audioEncoding: 'MP3',
+        speakingRate: config.speed || 1.0,
+      }
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => response.statusText);
+    let errorMessage = `Google TTS API error: ${errorText}`;
+    try {
+      const errorJson = JSON.parse(errorText);
+      if (errorJson.error?.message) {
+        errorMessage = `Google TTS API error: ${errorJson.error.message}`;
+      }
+    } catch {
+      // Ignored
+    }
+    throw new Error(errorMessage);
+  }
+
+  const data = await response.json();
+  
+  if (!data.audioContent) {
+    throw new Error('Google TTS error: No audioContent in response');
+  }
+
+  // Google TTS returns base64 encoded audio
+  const audioBuffer = Buffer.from(data.audioContent, 'base64');
+
+  return {
+    audio: new Uint8Array(audioBuffer),
+    format: 'mp3',
   };
 }
 

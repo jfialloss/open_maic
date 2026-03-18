@@ -139,3 +139,75 @@ export const chatEnUS = {
     stopListening: 'Stop recording',
   },
 } as const;
+
+
+export const chatEsES = {
+  chat: {
+    lecture: 'Clase',
+    noConversations: 'Sin conversaciones',
+    startConversation: 'Escribe un mensaje abajo para comenzar a chatear',
+    noMessages: 'Aún no hay mensajes',
+    ended: 'finalizado',
+    unknown: 'Desconocido',
+    stopDiscussion: 'Detener Discusión',
+    endQA: 'Finalizar Q&A',
+    tabs: {
+      lecture: 'Notas',
+      chat: 'Chat',
+    },
+    lectureNotes: {
+      empty: 'Las notas aparecerán aquí después de la reproducción de la clase',
+      emptyHint: 'Presiona el botón de reproducir para comenzar la clase',
+      pageLabel: 'Página {n}',
+      currentPage: 'Actual',
+    },
+    badge: {
+      qa: 'Q&A',
+      discussion: 'DISC',
+      lecture: 'LEC',
+    },
+  },
+  actions: {
+    names: {
+      spotlight: 'Foco',
+      laser: 'Láser',
+      wb_open: 'Abrir Pizarra',
+      wb_draw_text: 'Texto en Pizarra',
+      wb_draw_shape: 'Forma en Pizarra',
+      wb_draw_chart: 'Gráfico en Pizarra',
+      wb_draw_latex: 'Fórmula en Pizarra',
+      wb_draw_table: 'Tabla en Pizarra',
+      wb_draw_line: 'Línea en Pizarra',
+      wb_clear: 'Limpiar Pizarra',
+      wb_delete: 'Eliminar Elemento',
+      wb_close: 'Cerrar Pizarra',
+      discussion: 'Discusión',
+    },
+    status: {
+      inputStreaming: 'Esperando',
+      inputAvailable: 'Ejecutando',
+      outputAvailable: 'Completado',
+      outputError: 'Error',
+      outputDenied: 'Denegado',
+      running: 'Ejecutando',
+      result: 'Completado',
+      error: 'Error',
+    },
+  },
+  agentBar: {
+    readyToLearn: '¿Listos para aprender juntos?',
+    expandedTitle: 'Configuración de Roles de Clase',
+    configTooltip: 'Haz clic para configurar los roles de la clase',
+  },
+  proactiveCard: {
+    discussion: 'Discusión',
+    join: 'Unirse',
+    skip: 'Saltar',
+    pause: 'Pausar',
+    resume: 'Continuar',
+  },
+  voice: {
+    startListening: 'Entrada de voz',
+    stopListening: 'Detener grabación',
+  },
+} as const;
