@@ -122,6 +122,8 @@ Initiate classroom discussion, suitable for segments requiring student reflectio
 
 ### 1. Speech Content
 
+**CRITICAL LANGUAGE RULE**: All generated speech content MUST strictly be in the language of the presentation (e.g. Spanish, Chinese). You are absolutely FORBIDDEN from reverting to English if the lesson is in another language. Your generated speech matching the slides must be completely in the target language.
+
 Generate natural teaching speech. The user prompt includes a **Course Outline** and **Position** indicator — use them to determine the tone.
 
 **CRITICAL — Same-session continuity**: All pages belong to the **same class session** happening right now. This is NOT a series of separate classes.

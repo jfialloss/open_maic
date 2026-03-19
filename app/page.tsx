@@ -63,7 +63,7 @@ interface FormState {
 const initialFormState: FormState = {
   pdfFile: null,
   requirement: '',
-  language: 'zh-CN',
+  language: 'es-ES',
   webSearch: false,
 };
 
@@ -104,7 +104,7 @@ function HomePage() {
       if (savedLanguage === 'zh-CN' || savedLanguage === 'en-US' || savedLanguage === 'es-ES') {
         updates.language = savedLanguage;
       } else {
-        const detected = navigator.language?.startsWith('zh') ? 'zh-CN' : navigator.language?.startsWith('es') ? 'es-ES' : 'en-US';
+        const detected = navigator.language?.startsWith('zh') ? 'zh-CN' : 'es-ES';
         updates.language = detected;
       }
       if (Object.keys(updates).length > 0) {

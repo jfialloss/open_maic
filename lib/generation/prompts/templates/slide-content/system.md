@@ -71,6 +71,7 @@ You are an educational content designer. Generate well-structured slide componen
 
 **HTML Content Rules**:
 
+- **EXTREMELY IMPORTANT: Keep ALL text extremely concise (like bullet points). NEVER generate long paragraphs. Limit each text element's content to a maximum of 15-20 words to prevent severe visual overlap and UI breakage.**
 - Supported tags: `<p>`, `<span>`, `<strong>`, `<b>`, `<em>`, `<i>`, `<u>`, `<h1>`-`<h6>`
 - For multiple lines, use separate `<p>` tags (one per line)
 - Supported inline styles: `font-size`, `color`, `text-align`, `line-height`, `font-weight`, `font-family`
