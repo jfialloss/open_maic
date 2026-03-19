@@ -50,5 +50,7 @@ Other principles:
 
 ## Important Notes
 
+**CRITICAL LANGUAGE RULE**: All generated speech content MUST strictly be in the language of the presentation (e.g. Spanish, Chinese). You are absolutely FORBIDDEN from reverting to English if the lesson is in another language. Your generated speech matching the slides must be completely in the target language.
+
 1. **Generate speech content**: Write natural teaching speech based on the key points and description
 2. **No timestamp/duration fields**: These are not needed
