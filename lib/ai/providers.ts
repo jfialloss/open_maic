@@ -300,6 +300,24 @@ export const PROVIDERS: Record<ProviderId, ProviderConfig> = {
     ],
   },
 
+  gemma: {
+    id: 'gemma',
+    name: 'Gemma',
+    type: 'openai',
+    requiresApiKey: false,
+    defaultBaseUrl: 'http://localhost:8000/v1',
+    icon: '/logos/gemma.svg',
+    models: [
+      {
+        id: 'gemma-4',
+        name: 'Gemma 4',
+        contextWindow: 128000,
+        outputWindow: 8192,
+        capabilities: { streaming: true, tools: true, vision: false },
+      },
+    ],
+  },
+
   google: {
     id: 'google',
     name: 'Gemini',

@@ -41,6 +41,7 @@ const LLM_ENV_MAP: Record<string, string> = {
   OPENAI: 'openai',
   ANTHROPIC: 'anthropic',
   GOOGLE: 'google',
+  GEMMA: 'gemma',
   DEEPSEEK: 'deepseek',
   QWEN: 'qwen',
   KIMI: 'kimi',
