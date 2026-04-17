@@ -123,7 +123,7 @@ export async function processCloudDownload(stageId: string, cloudData: CloudClas
     stage: cloudData.stage,
     scenes: cloudData.scenes || [],
     currentSceneId: cloudData.currentSceneId || '',
-    chats: cloudData.chats || {},
+    chats: cloudData.chats || [],
   });
 }
 
