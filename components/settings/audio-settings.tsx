@@ -50,6 +50,7 @@ function getASRProviderName(providerId: ASRProviderId, t: (key: string) => strin
     'browser-native': t('settings.providerBrowserNative'),
     'qwen-asr': t('settings.providerQwenASR'),
     'google-asr': t('settings.providerGoogleASR'),
+    'gemini-asr': t('settings.providerGeminiASR'),
   };
   return names[providerId];
 }

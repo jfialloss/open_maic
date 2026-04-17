@@ -21,6 +21,7 @@ export interface Stage {
   // Stage metadata
   language?: string;
   style?: string;
+  subject?: string; // e.g. "matematicas", "ciencias"
   // Whiteboard data
   whiteboard?: Whiteboard[];
 }

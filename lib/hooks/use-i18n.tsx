@@ -40,6 +40,18 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(LOCALE_STORAGE_KEY, newLocale);
   };
 
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      if (locale === 'es-ES') {
+        document.title = 'Aula Interactiva de NEWMAN';
+      } else if (locale === 'en-US') {
+        document.title = 'NEWMAN Interactive Classroom';
+      } else if (locale === 'zh-CN') {
+        document.title = 'NEWMAN 互动课堂';
+      }
+    }
+  }, [locale]);
+
   const t = (key: string): string => {
     const keys = key.split('.');
     let value: unknown = translations[locale];

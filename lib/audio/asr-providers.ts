@@ -188,6 +188,9 @@ export async function transcribeAudio(
     case 'google-asr':
       return await transcribeGoogleASR(config, audioBuffer);
 
+    case 'gemini-asr':
+      return await transcribeGeminiASR(config, audioBuffer);
+
     default:
       throw new Error(`Unsupported ASR provider: ${config.providerId}`);
   }
@@ -428,3 +431,72 @@ export async function getCurrentASRConfig(): Promise<ASRModelConfig> {
 
 // Re-export from constants for convenience
 export { getAllASRProviders, getASRProvider, getASRSupportedLanguages } from './constants';
+
+/**
+ * Gemini ASR implementation (Google AI Studio / v1beta)
+ */
+async function transcribeGeminiASR(
+  config: ASRModelConfig,
+  audioBuffer: Buffer | Blob,
+): Promise<ASRTranscriptionResult> {
+  const baseUrl = config.baseUrl || ASR_PROVIDERS['gemini-asr'].defaultBaseUrl;
+
+  let base64Audio: string;
+  let mimeType = 'audio/webm';
+  if (audioBuffer instanceof Blob) {
+    mimeType = audioBuffer.type || 'audio/webm';
+    const arrayBuffer = await audioBuffer.arrayBuffer();
+    base64Audio = Buffer.from(arrayBuffer).toString('base64');
+  } else if (audioBuffer instanceof Buffer) {
+    base64Audio = audioBuffer.toString('base64');
+  } else {
+    throw new Error('Invalid audio buffer type');
+  }
+
+  // Use recommended model for audio: gemini-2.5-flash
+  const url = new URL(`${baseUrl}/models/gemini-2.5-flash:generateContent`);
+  url.searchParams.append('key', config.apiKey!);
+
+  const prompt = config.language && config.language !== 'auto'
+    ? `Please transcribe this audio literally and precisely in language code: ${config.language}. Produce only the final exact transcript text with no extra commentary.`
+    : `Please transcribe this audio literally and precisely. Detect the language automatically. Produce only the final exact transcript text with no extra commentary.`;
+
+  const response = await fetch(url.toString(), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      contents: [
+        {
+          role: 'user',
+          parts: [
+            { text: prompt },
+            {
+              inlineData: {
+                mimeType,
+                data: base64Audio,
+              },
+            },
+          ],
+        },
+      ],
+    }),
+  });
+
+  if (!response.ok) {
+    let errorMessage = response.statusText;
+    try {
+      const errorData = await response.json();
+      errorMessage = errorData.error?.message || errorMessage;
+    } catch {
+      const textError = await response.text().catch(() => '');
+      if (textError) errorMessage = textError;
+    }
+    throw new Error(`Gemini ASR API error: ${errorMessage}`);
+  }
+
+  const data = await response.json();
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  return { text: text.trim() };
+}

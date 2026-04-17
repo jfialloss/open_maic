@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import { useI18n } from '@/lib/hooks/use-i18n';
 import { toast } from 'sonner';
 import { useUserProfileStore, AVATAR_OPTIONS } from '@/lib/store/user-profile';
+import { useAuth } from '@/lib/hooks/use-auth';
 
 /** Check whether avatar is a custom upload (data-URL) */
 function isCustomAvatar(avatar: string) {
@@ -22,6 +23,7 @@ const FILE_INPUT_ID = 'user-avatar-upload';
 
 export function UserProfileCard() {
   const { t } = useI18n();
+  const { user } = useAuth();
   const avatar = useUserProfileStore((s) => s.avatar);
   const nickname = useUserProfileStore((s) => s.nickname);
   const bio = useUserProfileStore((s) => s.bio);
@@ -43,7 +45,8 @@ export function UserProfileCard() {
     if (editingName) nameInputRef.current?.focus();
   }, [editingName]);
 
-  const displayName = nickname || t('profile.defaultNickname');
+  const displayName = nickname || user?.displayName?.split(' ')[0] || user?.email?.split('@')[0] || t('profile.defaultNickname');
+  const displayAvatar = (avatar === AVATAR_OPTIONS[0] && user?.photoURL) ? user.photoURL : avatar;
 
   const startEditName = () => {
     setNameDraft(nickname);
@@ -119,8 +122,8 @@ export function UserProfileCard() {
           onClick={() => setAvatarPickerOpen(!avatarPickerOpen)}
           className="shrink-0 group/avatar relative cursor-pointer"
         >
-          <div className="size-11 rounded-full bg-gray-50 dark:bg-gray-800 overflow-hidden ring-2 ring-violet-300/50 dark:ring-violet-600/40 group-hover/avatar:ring-violet-400 dark:group-hover/avatar:ring-violet-500 transition-all">
-            <img src={avatar} alt="" className="size-full object-cover" />
+          <div className="size-11 rounded-full bg-gray-50 dark:bg-gray-800 overflow-hidden ring-2 ring-sky-300/50 dark:ring-sky-600/40 group-hover/avatar:ring-sky-400 dark:group-hover/avatar:ring-sky-500 transition-all">
+            <img src={displayAvatar} alt="" className="size-full object-cover" />
           </div>
           <div className="absolute -bottom-0.5 -right-0.5 size-4 rounded-full bg-white dark:bg-slate-800 border border-muted/60 flex items-center justify-center">
             <ChevronDown
@@ -147,11 +150,11 @@ export function UserProfileCard() {
                 onBlur={commitName}
                 maxLength={20}
                 placeholder={t('profile.defaultNickname')}
-                className="flex-1 min-w-0 h-7 bg-transparent border-b-2 border-violet-400 dark:border-violet-500 text-sm font-semibold text-foreground outline-none placeholder:text-muted-foreground/40"
+                className="flex-1 min-w-0 h-7 bg-transparent border-b-2 border-sky-400 dark:border-sky-500 text-sm font-semibold text-foreground outline-none placeholder:text-muted-foreground/40"
               />
               <button
                 onClick={commitName}
-                className="shrink-0 size-6 rounded-md flex items-center justify-center text-violet-500 hover:bg-violet-100 dark:hover:bg-violet-900/30 transition-colors"
+                className="shrink-0 size-6 rounded-md flex items-center justify-center text-sky-500 hover:bg-sky-100 dark:hover:bg-sky-900/30 transition-colors"
               >
                 <Check className="size-3.5" />
               </button>
@@ -189,7 +192,7 @@ export function UserProfileCard() {
                     'size-8 rounded-full overflow-hidden bg-gray-50 dark:bg-gray-800 cursor-pointer transition-all duration-150',
                     'hover:scale-110 active:scale-95',
                     avatar === url
-                      ? 'ring-2 ring-violet-400 dark:ring-violet-500 ring-offset-1 ring-offset-white dark:ring-offset-slate-900'
+                      ? 'ring-2 ring-sky-400 dark:ring-sky-500 ring-offset-1 ring-offset-white dark:ring-offset-slate-900'
                       : 'hover:ring-1 hover:ring-muted-foreground/30',
                   )}
                 >
@@ -204,7 +207,7 @@ export function UserProfileCard() {
                   'size-8 rounded-full flex items-center justify-center cursor-pointer transition-all duration-150 border border-dashed',
                   'hover:scale-110 active:scale-95',
                   isCustomAvatar(avatar)
-                    ? 'ring-2 ring-violet-400 dark:ring-violet-500 ring-offset-1 ring-offset-white dark:ring-offset-slate-900 border-violet-300 dark:border-violet-600 bg-violet-50 dark:bg-violet-900/30'
+                    ? 'ring-2 ring-sky-400 dark:ring-sky-500 ring-offset-1 ring-offset-white dark:ring-offset-slate-900 border-sky-300 dark:border-sky-600 bg-sky-50 dark:bg-sky-900/30'
                     : 'border-muted-foreground/30 text-muted-foreground/50 hover:border-muted-foreground/50',
                 )}
                 title={t('profile.uploadAvatar')}

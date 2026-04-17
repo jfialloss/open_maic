@@ -7,8 +7,10 @@ import 'animate.css';
 import 'katex/dist/katex.min.css';
 import { ThemeProvider } from '@/lib/hooks/use-theme';
 import { I18nProvider } from '@/lib/hooks/use-i18n';
+import { AuthProvider } from '@/lib/hooks/use-auth';
 import { Toaster } from '@/components/ui/sonner';
 import { ServerProvidersInit } from '@/components/server-providers-init';
+import { GlobalSettingsSync } from '@/components/global-settings-sync';
 
 const inter = localFont({
   src: '../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2',
@@ -17,7 +19,7 @@ const inter = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'OpenMAIC',
+  title: 'Aula Interactiva de NEWMAN',
   description:
     'The open-source AI interactive classroom. Upload a PDF to instantly generate an immersive, multi-agent learning experience.',
 };
@@ -35,9 +37,12 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <I18nProvider>
-            <ServerProvidersInit />
-            {children}
-            <Toaster position="top-center" />
+            <AuthProvider>
+              <ServerProvidersInit />
+              <GlobalSettingsSync />
+              {children}
+              <Toaster position="top-center" />
+            </AuthProvider>
           </I18nProvider>
         </ThemeProvider>
       </body>

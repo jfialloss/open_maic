@@ -21,6 +21,7 @@ import { useSettingsStore } from '@/lib/store/settings';
 import { useStageStore } from '@/lib/store/stage';
 import { useMediaGenerationStore } from '@/lib/store/media-generation';
 import { useExportPPTX } from '@/lib/export/use-export-pptx';
+import { useAuth } from '@/lib/hooks/use-auth';
 
 interface HeaderProps {
   readonly currentSceneTitle: string;
@@ -33,6 +34,7 @@ export function Header({ currentSceneTitle }: HeaderProps) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [themeOpen, setThemeOpen] = useState(false);
+  const { role } = useAuth();
 
   // Model setup state
   const currentModelId = useSettingsStore((s) => s.modelId);
@@ -113,23 +115,11 @@ export function Header({ currentSceneTitle }: HeaderProps) {
               }}
               className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold text-gray-500 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200 hover:shadow-sm transition-all"
             >
-              {locale === 'zh-CN' ? 'CN' : locale === 'en-US' ? 'EN' : 'ES'}
+              {locale === 'en-US' ? 'EN' : 'ES'}
             </button>
             {languageOpen && (
               <div className="absolute top-full mt-2 right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden z-50 min-w-[120px]">
-                <button
-                  onClick={() => {
-                    setLocale('zh-CN');
-                    setLanguageOpen(false);
-                  }}
-                  className={cn(
-                    'w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors',
-                    locale === 'zh-CN' &&
-                      'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400',
-                  )}
-                >
-                  简体中文
-                </button>
+
                 <button
                   onClick={() => {
                     setLocale('en-US');
@@ -138,7 +128,7 @@ export function Header({ currentSceneTitle }: HeaderProps) {
                   className={cn(
                     'w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors',
                     locale === 'en-US' &&
-                      'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400',
+                      'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400',
                   )}
                 >
                   English
@@ -151,7 +141,7 @@ export function Header({ currentSceneTitle }: HeaderProps) {
                   className={cn(
                     'w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors',
                     locale === 'es-ES' &&
-                      'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400',
+                      'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400',
                   )}
                 >
                   Español
@@ -185,7 +175,7 @@ export function Header({ currentSceneTitle }: HeaderProps) {
                   className={cn(
                     'w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2',
                     theme === 'light' &&
-                      'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400',
+                      'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400',
                   )}
                 >
                   <Sun className="w-4 h-4" />
@@ -199,7 +189,7 @@ export function Header({ currentSceneTitle }: HeaderProps) {
                   className={cn(
                     'w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2',
                     theme === 'dark' &&
-                      'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400',
+                      'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400',
                   )}
                 >
                   <Moon className="w-4 h-4" />
@@ -213,7 +203,7 @@ export function Header({ currentSceneTitle }: HeaderProps) {
                   className={cn(
                     'w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2',
                     theme === 'system' &&
-                      'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400',
+                      'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400',
                   )}
                 >
                   <Monitor className="w-4 h-4" />
@@ -223,31 +213,33 @@ export function Header({ currentSceneTitle }: HeaderProps) {
             )}
           </div>
 
-          <div className="w-[1px] h-4 bg-gray-200 dark:bg-gray-700" />
+          {role === 'admin' && <div className="w-[1px] h-4 bg-gray-200 dark:bg-gray-700" />}
 
           {/* Settings Button */}
-          <div className="relative">
-            <button
-              onClick={() => setSettingsOpen(true)}
-              className={cn(
-                'p-2 rounded-full text-gray-400 dark:text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200 hover:shadow-sm transition-all group',
-                needsSetup && 'animate-setup-glow',
+          {role === 'admin' && (
+            <div className="relative">
+              <button
+                onClick={() => setSettingsOpen(true)}
+                className={cn(
+                  'p-2 rounded-full text-gray-400 dark:text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200 hover:shadow-sm transition-all group',
+                  needsSetup && 'animate-setup-glow',
+                )}
+              >
+                <Settings className="w-4 h-4 group-hover:rotate-90 transition-transform duration-500" />
+              </button>
+              {needsSetup && (
+                <>
+                  <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3">
+                    <span className="animate-setup-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500" />
+                  </span>
+                  <span className="animate-setup-float absolute top-full mt-2 right-0 whitespace-nowrap text-[11px] font-medium text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800/50 px-2 py-0.5 rounded-full shadow-sm pointer-events-none">
+                    {t('settings.setupNeeded')}
+                  </span>
+                </>
               )}
-            >
-              <Settings className="w-4 h-4 group-hover:rotate-90 transition-transform duration-500" />
-            </button>
-            {needsSetup && (
-              <>
-                <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3">
-                  <span className="animate-setup-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-violet-500" />
-                </span>
-                <span className="animate-setup-float absolute top-full mt-2 right-0 whitespace-nowrap text-[11px] font-medium text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/40 border border-violet-200 dark:border-violet-800/50 px-2 py-0.5 rounded-full shadow-sm pointer-events-none">
-                  {t('settings.setupNeeded')}
-                </span>
-              </>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Export Dropdown */}
@@ -308,7 +300,7 @@ export function Header({ currentSceneTitle }: HeaderProps) {
           )}
         </div>
       </header>
-      <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
+      {role === 'admin' && <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />}
     </>
   );
 }

@@ -47,6 +47,7 @@ export interface StageRecord {
   language?: string;
   style?: string;
   currentSceneId?: string;
+  subject?: string;
 }
 
 /**
@@ -327,6 +328,25 @@ export async function initDatabase(): Promise<void> {
     // under storage pressure (large media blobs can trigger LRU cleanup)
     void navigator.storage?.persist?.();
     log.info('Database initialized successfully');
+
+    // MIGRATION: Cleanup corrupt course names matching System Notes from previous bug
+    try {
+      await db.transaction('rw', db.stages, async () => {
+        const stages = await db.stages.toArray();
+        for (const stage of stages) {
+          if (stage.name.includes('[System Note:') || stage.name.includes('[CONTEXTO NORMATIVO')) {
+            let cleanName = stage.name.split('\n\n[System Note:')[0];
+            cleanName = cleanName.split('\n\n[CONTEXTO NORMATIVO')[0].trim();
+            cleanName = cleanName.substring(0, 150).trim();
+            await db.stages.update(stage.id, { name: cleanName });
+            log.info(`Cleaned up corrupt name for stage ${stage.id}`);
+          }
+        }
+      });
+    } catch (e) {
+      log.error('Migration cleanup failed', e);
+    }
+
   } catch (error) {
     log.error('Failed to initialize database:', error);
     throw error;

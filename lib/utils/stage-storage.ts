@@ -28,6 +28,7 @@ export interface StageListItem {
   sceneCount: number;
   createdAt: number;
   updatedAt: number;
+  subject?: string;
 }
 
 /**
@@ -46,6 +47,7 @@ export async function saveStageData(stageId: string, data: StageStoreData): Prom
       updatedAt: now,
       language: data.stage.language,
       style: data.stage.style,
+      subject: data.stage.subject,
       currentSceneId: data.currentSceneId || undefined,
     });
 
@@ -147,6 +149,7 @@ export async function listStages(): Promise<StageListItem[]> {
           name: stage.name,
           description: stage.description,
           sceneCount,
+          subject: stage.subject,
           createdAt: stage.createdAt,
           updatedAt: stage.updatedAt,
         };

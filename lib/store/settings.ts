@@ -254,24 +254,25 @@ const getDefaultProvidersConfig = (): ProvidersConfig => {
 
 // Initialize default audio config
 const getDefaultAudioConfig = () => ({
-  ttsProviderId: 'browser-native-tts' as TTSProviderId,
-  ttsVoice: 'default',
+  ttsProviderId: 'google-tts' as TTSProviderId,
+  ttsVoice: 'es-US-Journey-F',
   ttsSpeed: 1.0,
-  asrProviderId: 'browser-native' as ASRProviderId,
+  asrProviderId: 'gemini-asr' as ASRProviderId,
   asrLanguage: 'es',
   ttsProvidersConfig: {
     'openai-tts': { apiKey: '', baseUrl: '', enabled: true },
     'azure-tts': { apiKey: '', baseUrl: '', enabled: false },
     'glm-tts': { apiKey: '', baseUrl: '', enabled: false },
     'qwen-tts': { apiKey: '', baseUrl: '', enabled: false },
-    'google-tts': { apiKey: '', baseUrl: '', enabled: false },
+    'google-tts': { apiKey: 'AIzaSyBNQhoKgquccQmyxO18igsi6_ebtP6RCZc', baseUrl: '', enabled: true },
     'browser-native-tts': { apiKey: '', baseUrl: '', enabled: true },
   } as Record<TTSProviderId, { apiKey: string; baseUrl: string; enabled: boolean }>,
   asrProvidersConfig: {
     'openai-whisper': { apiKey: '', baseUrl: '', enabled: true },
     'browser-native': { apiKey: '', baseUrl: '', enabled: true },
     'qwen-asr': { apiKey: '', baseUrl: '', enabled: false },
-    'google-asr': { apiKey: '', baseUrl: '', enabled: false },
+    'google-asr': { apiKey: 'AIzaSyBNQhoKgquccQmyxO18igsi6_ebtP6RCZc', baseUrl: '', enabled: false },
+    'gemini-asr': { apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || 'AIzaSyBR53hmJF7pM-itVKQgv9Xw6vJuOpR-x9w', baseUrl: '', enabled: true },
   } as Record<ASRProviderId, { apiKey: string; baseUrl: string; enabled: boolean }>,
 });
 
@@ -322,6 +323,18 @@ const getDefaultWebSearchConfig = () => ({
  */
 function ensureBuiltInProviders(state: Partial<SettingsState>): void {
   if (!state.providersConfig) return;
+  
+  // Clean up zombie providers from localStorage that no longer exist in code (like 'gemma')
+  Object.keys(state.providersConfig).forEach((pid) => {
+    if (!PROVIDERS[pid as ProviderId]) {
+      delete state.providersConfig![pid as ProviderId];
+      if (state.providerId === pid) {
+        state.providerId = 'google';
+        state.modelId = 'gemini-2.5-flash';
+      }
+    }
+  });
+
   const defaultConfig = getDefaultProvidersConfig();
   Object.keys(PROVIDERS).forEach((pid) => {
     const providerId = pid as ProviderId;
@@ -329,18 +342,14 @@ function ensureBuiltInProviders(state: Partial<SettingsState>): void {
       // New provider: add with defaults
       state.providersConfig![providerId] = defaultConfig[providerId];
     } else {
-      // Existing provider: merge new models & metadata
+      // Existing provider: strictly sync models to reflect only the ones in source code
+      // Esto elimina modelos obsoletos como pre-views de Gemini
       const provider = PROVIDERS[providerId];
       const existing = state.providersConfig![providerId];
 
-      const existingModelIds = new Set(existing.models?.map((m) => m.id) || []);
-      const newModels = provider.models.filter((m) => !existingModelIds.has(m.id));
-      const mergedModels =
-        newModels.length > 0 ? [...newModels, ...(existing.models || [])] : existing.models;
-
       state.providersConfig![providerId] = {
         ...existing,
-        models: mergedModels,
+        models: provider.models,
         name: existing.name || provider.name,
         type: existing.type || provider.type,
         defaultBaseUrl: existing.defaultBaseUrl || provider.defaultBaseUrl,
@@ -370,8 +379,8 @@ const migrateFromOldStorage = () => {
   if (!oldLlmModel && !oldProvidersConfig) return null; // No old data
 
   // Parse model selection
-  let providerId: ProviderId = 'openai';
-  let modelId = 'gpt-4o-mini';
+  let providerId: ProviderId = 'google';
+  let modelId = 'gemini-2.5-flash';
   if (oldLlmModel) {
     const [pid, mid] = oldLlmModel.split(':');
     if (pid && mid) {
@@ -433,8 +442,8 @@ export const useSettingsStore = create<SettingsState>()(
 
       return {
         // Initial state (use migrated data if available)
-        providerId: migratedData?.providerId || 'openai',
-        modelId: migratedData?.modelId || '',
+        providerId: migratedData?.providerId || 'google',
+        modelId: migratedData?.modelId || 'gemini-2.5-flash',
         providersConfig: migratedData?.providersConfig || getDefaultProvidersConfig(),
         ttsModel: migratedData?.ttsModel || 'openai-tts',
         selectedAgentIds: migratedData?.selectedAgentIds || ['default-1', 'default-2', 'default-3'],

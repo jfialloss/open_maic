@@ -300,23 +300,7 @@ export const PROVIDERS: Record<ProviderId, ProviderConfig> = {
     ],
   },
 
-  gemma: {
-    id: 'gemma',
-    name: 'Gemma',
-    type: 'openai',
-    requiresApiKey: false,
-    defaultBaseUrl: 'http://localhost:8000/v1',
-    icon: '/logos/gemma.svg',
-    models: [
-      {
-        id: 'gemma-4',
-        name: 'Gemma 4',
-        contextWindow: 128000,
-        outputWindow: 8192,
-        capabilities: { streaming: true, tools: true, vision: false },
-      },
-    ],
-  },
+
 
   google: {
     id: 'google',
@@ -326,54 +310,6 @@ export const PROVIDERS: Record<ProviderId, ProviderConfig> = {
     defaultBaseUrl: 'https://generativelanguage.googleapis.com/v1beta',
     icon: '/logos/gemini.svg',
     models: [
-      {
-        id: 'gemini-3.1-pro-preview',
-        name: 'Gemini 3.1 Pro Preview',
-        contextWindow: 1048576,
-        outputWindow: 65536,
-        capabilities: {
-          streaming: true,
-          tools: true,
-          vision: true,
-          thinking: {
-            toggleable: false,
-            budgetAdjustable: true,
-            defaultEnabled: true,
-          },
-        },
-      },
-      {
-        id: 'gemini-3-pro-preview',
-        name: 'Gemini 3 Pro Preview',
-        contextWindow: 1048576,
-        outputWindow: 65536,
-        capabilities: {
-          streaming: true,
-          tools: true,
-          vision: true,
-          thinking: {
-            toggleable: false,
-            budgetAdjustable: true,
-            defaultEnabled: true,
-          },
-        },
-      },
-      {
-        id: 'gemini-3-flash-preview',
-        name: 'Gemini 3 Flash Preview',
-        contextWindow: 1048576,
-        outputWindow: 65536,
-        capabilities: {
-          streaming: true,
-          tools: true,
-          vision: true,
-          thinking: {
-            toggleable: false,
-            budgetAdjustable: true,
-            defaultEnabled: true,
-          },
-        },
-      },
       {
         id: 'gemini-2.5-flash',
         name: 'Gemini 2.5 Flash',
@@ -403,22 +339,6 @@ export const PROVIDERS: Record<ProviderId, ProviderConfig> = {
             toggleable: true,
             budgetAdjustable: true,
             defaultEnabled: false,
-          },
-        },
-      },
-      {
-        id: 'gemini-2.5-pro',
-        name: 'Gemini 2.5 Pro',
-        contextWindow: 1048576,
-        outputWindow: 65536,
-        capabilities: {
-          streaming: true,
-          tools: true,
-          vision: true,
-          thinking: {
-            toggleable: false,
-            budgetAdjustable: true,
-            defaultEnabled: true,
           },
         },
       },

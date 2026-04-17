@@ -21,6 +21,7 @@ import type { WebSearchProviderId } from '@/lib/web-search/types';
 import type { ProviderId } from '@/lib/ai/providers';
 import type { SettingsSection } from '@/lib/types/settings';
 import { MediaPopover } from '@/components/generation/media-popover';
+import { useAuth } from '@/lib/hooks/use-auth';
 
 // ─── Constants ───────────────────────────────────────────────
 const MAX_PDF_SIZE_MB = 50;
@@ -28,8 +29,8 @@ const MAX_PDF_SIZE_BYTES = MAX_PDF_SIZE_MB * 1024 * 1024;
 
 // ─── Types ───────────────────────────────────────────────────
 export interface GenerationToolbarProps {
-  language: 'zh-CN' | 'en-US' | 'es-ES';
-  onLanguageChange: (lang: 'zh-CN' | 'en-US' | 'es-ES') => void;
+  language: 'en-US' | 'es-ES';
+  onLanguageChange: (lang: 'en-US' | 'es-ES') => void;
   webSearch: boolean;
   onWebSearchChange: (v: boolean) => void;
   onSettingsOpen: (section?: SettingsSection) => void;
@@ -37,6 +38,9 @@ export interface GenerationToolbarProps {
   pdfFile: File | null;
   onPdfFileChange: (file: File | null) => void;
   onPdfError: (error: string | null) => void;
+  // Subject
+  subject: string;
+  onSubjectChange: (v: string) => void;
 }
 
 // ─── Component ───────────────────────────────────────────────
@@ -49,8 +53,11 @@ export function GenerationToolbar({
   pdfFile,
   onPdfFileChange,
   onPdfError,
+  subject,
+  onSubjectChange,
 }: GenerationToolbarProps) {
   const { t } = useI18n();
+  const { role } = useAuth();
   const currentProviderId = useSettingsStore((s) => s.providerId);
   const currentModelId = useSettingsStore((s) => s.modelId);
   const providersConfig = useSettingsStore((s) => s.providersConfig);
@@ -111,7 +118,7 @@ export function GenerationToolbar({
   const pillCls =
     'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-all cursor-pointer select-none whitespace-nowrap border';
   const pillMuted = `${pillCls} border-border/50 text-muted-foreground/70 hover:text-foreground hover:bg-muted/60`;
-  const pillActive = `${pillCls} border-violet-200/60 dark:border-violet-700/50 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300`;
+  const pillActive = `${pillCls} border-sky-200/60 dark:border-sky-700/50 bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300`;
 
   return (
     <div className="flex items-center gap-1 flex-wrap">
@@ -156,7 +163,7 @@ export function GenerationToolbar({
               <span className="max-w-[100px] truncate">{pdfFile.name}</span>
               <span
                 role="button"
-                className="size-4 rounded-full inline-flex items-center justify-center hover:bg-violet-200 dark:hover:bg-violet-800 transition-colors"
+                className="size-4 rounded-full inline-flex items-center justify-center hover:bg-sky-200 dark:hover:bg-sky-800 transition-colors"
                 onClick={(e) => {
                   e.stopPropagation();
                   onPdfFileChange(null);
@@ -222,8 +229,8 @@ export function GenerationToolbar({
             {pdfFile ? (
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <div className="size-8 rounded-lg bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center shrink-0">
-                    <FileText className="size-4 text-violet-600 dark:text-violet-400" />
+                  <div className="size-8 rounded-lg bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center shrink-0">
+                    <FileText className="size-4 text-sky-600 dark:text-sky-400" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium truncate">{pdfFile.name}</p>
@@ -244,8 +251,8 @@ export function GenerationToolbar({
                 className={cn(
                   'flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-4 transition-colors cursor-pointer',
                   isDragging
-                    ? 'border-violet-400 bg-violet-50 dark:bg-violet-950/20'
-                    : 'border-muted-foreground/20 hover:border-violet-300',
+                    ? 'border-sky-400 bg-sky-50 dark:bg-sky-950/20'
+                    : 'border-muted-foreground/20 hover:border-sky-300',
                 )}
                 onClick={() => fileInputRef.current?.click()}
                 onDragOver={(e) => {
@@ -272,7 +279,7 @@ export function GenerationToolbar({
       </Popover>
 
       {/* ── Web Search ── */}
-      {webSearchAvailable ? (
+      {role === 'admin' && (webSearchAvailable ? (
         <Popover>
           <PopoverTrigger asChild>
             <button className={webSearch ? pillActive : pillMuted}>
@@ -289,14 +296,14 @@ export function GenerationToolbar({
               className={cn(
                 'w-full flex items-center gap-2.5 rounded-lg border px-3 py-2.5 text-left transition-all',
                 webSearch
-                  ? 'bg-violet-50 dark:bg-violet-950/20 border-violet-200 dark:border-violet-800'
+                  ? 'bg-sky-50 dark:bg-sky-950/20 border-sky-200 dark:border-sky-800'
                   : 'border-border hover:bg-muted/50',
               )}
             >
               <Globe2
                 className={cn(
                   'size-4 shrink-0',
-                  webSearch ? 'text-violet-600 dark:text-violet-400' : 'text-muted-foreground',
+                  webSearch ? 'text-sky-600 dark:text-sky-400' : 'text-muted-foreground',
                 )}
               />
               <div className="flex-1 min-w-0">
@@ -355,31 +362,75 @@ export function GenerationToolbar({
           </TooltipTrigger>
           <TooltipContent>{t('toolbar.webSearchNoProvider')}</TooltipContent>
         </Tooltip>
-      )}
+      ))}
 
       {/* ── Language pill ── */}
       <Tooltip>
         <TooltipTrigger asChild>
           <button
             onClick={() =>
-              onLanguageChange(
-                language === 'zh-CN' ? 'en-US' : language === 'en-US' ? 'es-ES' : 'zh-CN',
-              )
+              onLanguageChange(language === 'en-US' ? 'es-ES' : 'en-US')
             }
             className={pillMuted}
           >
             <Globe className="size-3.5" />
-            <span>{language === 'zh-CN' ? '中文' : language === 'en-US' ? 'EN' : 'ES'}</span>
+            <span>{language === 'en-US' ? 'EN' : 'ES'}</span>
           </button>
         </TooltipTrigger>
         <TooltipContent>{t('toolbar.languageHint')}</TooltipContent>
       </Tooltip>
 
+      {/* ── Subject (Ministry Curriculum) ── */}
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                className={subject !== 'none' ? pillActive : pillMuted}
+              >
+                <FileText className="size-3.5" />
+                <span className="max-w-[70px] truncate uppercase">
+                  {subject === 'none' ? 'Libre' : subject}
+                </span>
+              </button>
+            </PopoverTrigger>
+            <PopoverContent align="start" className="w-[180px] p-1">
+              <div className="px-2 py-1.5 border-b mb-1">
+                <p className="text-xs font-semibold text-foreground">Asignatura</p>
+                <p className="text-[10px] text-muted-foreground">Regulación del Ministerio</p>
+              </div>
+              <div className="flex flex-col">
+                {[
+                  { id: 'none', label: 'Ninguna (Libre)' },
+                  { id: 'matematicas', label: 'Matemáticas' },
+                  { id: 'ciencias', label: 'Ciencias Naturales' },
+                  { id: 'lengua', label: 'Lengua y Literatura' },
+                  { id: 'sociales', label: 'Estudios Sociales' },
+                ].map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => onSubjectChange(item.id)}
+                    className={cn(
+                      'flex items-center gap-2 px-2 py-1.5 rounded-sm text-xs text-left hover:bg-muted transition-colors',
+                      subject === item.id && 'bg-sky-50 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300 font-medium'
+                    )}
+                  >
+                    <div className="flex-1">{item.label}</div>
+                    {subject === item.id && <Check className="size-3.5" />}
+                  </button>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
+        </TooltipTrigger>
+        <TooltipContent>Asignar guía curricular del Ministerio</TooltipContent>
+      </Tooltip>
+
       {/* ── Separator ── */}
-      <div className="w-px h-4 bg-border/60 mx-1" />
+      {role === 'admin' && <div className="w-px h-4 bg-border/60 mx-1" />}
 
       {/* ── Media popover ── */}
-      <MediaPopover onSettingsOpen={onSettingsOpen} />
+      {role === 'admin' && <MediaPopover onSettingsOpen={onSettingsOpen} />}
     </div>
   );
 }
@@ -433,7 +484,7 @@ function ModelSelectorPopover({
                 'inline-flex items-center justify-center size-7 rounded-full transition-all cursor-pointer select-none',
                 'ring-1 ring-border/60 hover:ring-border hover:bg-muted/60',
                 currentModelId &&
-                  'ring-violet-300 dark:ring-violet-700 bg-violet-50 dark:bg-violet-950/20',
+                  'ring-sky-300 dark:ring-sky-700 bg-sky-50 dark:bg-sky-950/20',
               )}
             >
               {currentProviderConfig?.icon ? (
@@ -472,7 +523,7 @@ function ModelSelectorPopover({
                   onClick={() => setDrillProvider(provider.id)}
                   className={cn(
                     'w-full flex items-center gap-2.5 px-3 py-2.5 text-left transition-colors border-b border-border/30',
-                    isActive ? 'bg-violet-50/50 dark:bg-violet-950/10' : 'hover:bg-muted/50',
+                    isActive ? 'bg-sky-50/50 dark:bg-sky-950/10' : 'hover:bg-muted/50',
                   )}
                 >
                   {provider.icon ? (
@@ -539,13 +590,13 @@ function ModelSelectorPopover({
                   className={cn(
                     'w-full flex items-center gap-2 px-3 py-2 text-left transition-colors border-b border-border/30',
                     isSelected
-                      ? 'bg-violet-50 dark:bg-violet-950/20 text-violet-700 dark:text-violet-300'
+                      ? 'bg-sky-50 dark:bg-sky-950/20 text-sky-700 dark:text-sky-300'
                       : 'hover:bg-muted/50',
                   )}
                 >
                   <span className="flex-1 truncate font-mono text-xs">{model.name}</span>
                   {isSelected && (
-                    <Check className="size-3.5 shrink-0 text-violet-600 dark:text-violet-400" />
+                    <Check className="size-3.5 shrink-0 text-sky-600 dark:text-sky-400" />
                   )}
                 </button>
               );

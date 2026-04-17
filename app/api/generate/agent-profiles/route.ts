@@ -36,6 +36,7 @@ interface RequestBody {
   sceneOutlines?: { title: string; description?: string }[];
   language: string;
   availableAvatars: string[];
+  requirement?: string;
 }
 
 function stripCodeFences(text: string): string {
@@ -50,7 +51,7 @@ function stripCodeFences(text: string): string {
 export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as RequestBody;
-    const { stageInfo, sceneOutlines, language, availableAvatars } = body;
+    const { stageInfo, sceneOutlines, language, availableAvatars, requirement } = body;
 
     // ── Validate required fields ──
     if (!stageInfo?.name) {
@@ -83,6 +84,7 @@ export async function POST(req: NextRequest) {
 
 Course name: ${stageInfo.name}
 ${stageInfo.description ? `Course description: ${stageInfo.description}` : ''}
+${requirement ? `Additional Context & System Restrictions:\n${requirement}` : ''}
 ${sceneSummary ? `\nScene outlines:\n${sceneSummary}\n` : ''}
 Requirements:
 - Decide the appropriate number of agents based on the course content (typically 3-5)

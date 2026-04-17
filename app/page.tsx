@@ -18,7 +18,12 @@ import {
   Monitor,
   BotOff,
   ChevronUp,
+  LogOut,
 } from 'lucide-react';
+import { signOut } from 'firebase/auth';
+import { useAuth } from '@/lib/hooks/use-auth';
+import { auth, db as firestoreDb } from '@/lib/firebase';
+import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import { useI18n } from '@/lib/hooks/use-i18n';
 import { createLogger } from '@/lib/logger';
 import { Button } from '@/components/ui/button';
@@ -56,8 +61,9 @@ const RECENT_OPEN_STORAGE_KEY = 'recentClassroomsOpen';
 interface FormState {
   pdfFile: File | null;
   requirement: string;
-  language: 'zh-CN' | 'en-US' | 'es-ES';
+  language: 'en-US' | 'es-ES';
   webSearch: boolean;
+  subject: string;
 }
 
 const initialFormState: FormState = {
@@ -65,10 +71,12 @@ const initialFormState: FormState = {
   requirement: '',
   language: 'es-ES',
   webSearch: false,
+  subject: 'none',
 };
 
 function HomePage() {
   const { t, locale, setLocale } = useI18n();
+  const { role } = useAuth();
   const { theme, setTheme } = useTheme();
   const router = useRouter();
   const [form, setForm] = useState<FormState>(initialFormState);
@@ -101,10 +109,10 @@ function HomePage() {
       const savedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY);
       const updates: Partial<FormState> = {};
       if (savedWebSearch === 'true') updates.webSearch = true;
-      if (savedLanguage === 'zh-CN' || savedLanguage === 'en-US' || savedLanguage === 'es-ES') {
+      if (savedLanguage === 'en-US' || savedLanguage === 'es-ES') {
         updates.language = savedLanguage;
       } else {
-        const detected = navigator.language?.startsWith('zh') ? 'zh-CN' : 'es-ES';
+        const detected = navigator.language?.startsWith('en') ? 'en-US' : 'es-ES';
         updates.language = detected;
       }
       if (Object.keys(updates).length > 0) {
@@ -130,6 +138,9 @@ function HomePage() {
   const [themeOpen, setThemeOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [classrooms, setClassrooms] = useState<StageListItem[]>([]);
+  const [globalClassrooms, setGlobalClassrooms] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState<'local' | 'global'>('local');
+  const [loadingGlobal, setLoadingGlobal] = useState(false);
   const [thumbnails, setThumbnails] = useState<Record<string, Slide>>({});
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const toolbarRef = useRef<HTMLDivElement>(null);
@@ -147,6 +158,21 @@ function HomePage() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [languageOpen, themeOpen]);
+
+  useEffect(() => {
+    if (activeTab === 'global' && globalClassrooms.length === 0) {
+      setLoadingGlobal(true);
+      const q = query(collection(firestoreDb, 'global_classrooms'), orderBy('createdAtTime', 'desc'), limit(50));
+      getDocs(q).then((snap) => {
+        const items = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
+        setGlobalClassrooms(items);
+        setLoadingGlobal(false);
+      }).catch(e => {
+        log.error('Failed to load global classrooms:', e);
+        setLoadingGlobal(false);
+      });
+    }
+  }, [activeTab]);
 
   const loadClassrooms = async () => {
     try {
@@ -247,16 +273,65 @@ function HomePage() {
       return;
     }
 
+    // --- ESCUDO ANTI-DUPLICADO ---
+    if (form.subject && form.subject !== 'none') {
+      try {
+        const { findSimilarGlobalClassroom } = await import('@/lib/utils/cloud-sync');
+        const similarClassroom = await findSimilarGlobalClassroom(form.subject, form.requirement);
+        if (similarClassroom) {
+          if (similarClassroom.status === 'building') {
+            window.alert(
+              `¡Espera! Un tutor está construyendo un curso sobre este tema en este momento ("${similarClassroom.stage?.name}").\n\nPor favor, revisa la Biblioteca Global en unos minutos para clonarlo sin gastar créditos.`
+            );
+            return;
+          }
+
+          // Alert user of similarity
+          const proceed = window.confirm(
+            `¡Alto! Hemos detectado un curso creado previamente por un tutor en la Biblioteca Global que encaja con este tema:\n\n"${similarClassroom.stage?.name}"\n\n¿Cancelas esta generación para buscarlo gratis en la Biblioteca Global (Cancelar), o fuerzas crear uno nuevo gastando créditos (Aceptar)?`
+          );
+          if (!proceed) {
+            return; // Cancel execution
+          }
+        }
+      } catch (e: any) {
+        log.error('Anti-dup mechanism failed:', e?.message || e?.code || e);
+        console.error('FIREBASE RAW ERROR:', e);
+      }
+    }
+    // -----------------------------
+
     setError(null);
 
     try {
       const userProfile = useUserProfileStore.getState();
+      const settings = useSettingsStore.getState();
+      
+      let personaHint = '';
+      if (settings.ttsVoice) {
+        personaHint = `\n\n[System Note: The TTS voice selected for the AI teacher is "${settings.ttsVoice}". Analyze this voice ID to determine the appropriate gender/persona, and ensure all generated scripts, introductions, and pronouns align with it (e.g., do not present as female if using a male voice).]`;
+      }
+
+      let curriculumContext = '';
+      if (form.subject && form.subject !== 'none') {
+        try {
+          const res = await fetch(`/curriculums/${form.subject}.txt`);
+          if (res.ok) {
+            const rawBody = await res.text();
+            curriculumContext = `\n\n[CONTEXTO NORMATIVO - CURRICULO DEL MINISTERIO DE EDUCACION]:\nLa asignatura de esta clase es "${form.subject.toUpperCase()}". A continuacion se anexa el documento del currículo oficial:\n\n${rawBody}\n\n[INSTRUCCION ESTRATEGICA]: Tienes la VENTAJA arquitectonica de poseer todo el curriculo insertado en el contexto. Debes asegurar obligatoriamente que la estructura de la clase y el contenido academico esten estrechamente alineados con las Destrezas con Criterio de Desempeno y objetivos mencionados en el curriculo adjunto.`;
+          }
+        } catch (e) {
+          log.error('Failed to fetch curriculum context:', e);
+        }
+      }
+
       const requirements: UserRequirements = {
-        requirement: form.requirement,
+        requirement: form.requirement + personaHint + curriculumContext,
         language: form.language,
         userNickname: userProfile.nickname || undefined,
         userBio: userProfile.bio || undefined,
         webSearch: form.webSearch || undefined,
+        subject: form.subject !== 'none' ? form.subject : undefined,
       };
 
       let pdfStorageKey: string | undefined;
@@ -268,7 +343,6 @@ function HomePage() {
         pdfStorageKey = await storePdfBlob(form.pdfFile);
         pdfFileName = form.pdfFile.name;
 
-        const settings = useSettingsStore.getState();
         pdfProviderId = settings.pdfProviderId;
         const providerCfg = settings.pdfProvidersConfig?.[settings.pdfProviderId];
         if (providerCfg) {
@@ -338,23 +412,10 @@ function HomePage() {
             }}
             className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold text-gray-500 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200 hover:shadow-sm transition-all"
           >
-            {locale === 'zh-CN' ? 'CN' : locale === 'en-US' ? 'EN' : 'ES'}
+            {locale === 'en-US' ? 'EN' : 'ES'}
           </button>
           {languageOpen && (
             <div className="absolute top-full mt-2 right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden z-50 min-w-[120px]">
-              <button
-                onClick={() => {
-                  setLocale('zh-CN');
-                  setLanguageOpen(false);
-                }}
-                className={cn(
-                  'w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors',
-                  locale === 'zh-CN' &&
-                    'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400',
-                )}
-              >
-                简体中文
-              </button>
               <button
                 onClick={() => {
                   setLocale('en-US');
@@ -363,7 +424,7 @@ function HomePage() {
                 className={cn(
                   'w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors',
                   locale === 'en-US' &&
-                    'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400',
+                    'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400',
                 )}
               >
                 English
@@ -376,7 +437,7 @@ function HomePage() {
                 className={cn(
                   'w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors',
                   locale === 'es-ES' &&
-                    'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400',
+                    'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400',
                 )}
               >
                 Español
@@ -410,7 +471,7 @@ function HomePage() {
                 className={cn(
                   'w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2',
                   theme === 'light' &&
-                    'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400',
+                    'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400',
                 )}
               >
                 <Sun className="w-4 h-4" />
@@ -424,7 +485,7 @@ function HomePage() {
                 className={cn(
                   'w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2',
                   theme === 'dark' &&
-                    'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400',
+                    'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400',
                 )}
               >
                 <Moon className="w-4 h-4" />
@@ -438,7 +499,7 @@ function HomePage() {
                 className={cn(
                   'w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2',
                   theme === 'system' &&
-                    'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400',
+                    'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400',
                 )}
               >
                 <Monitor className="w-4 h-4" />
@@ -448,40 +509,66 @@ function HomePage() {
           )}
         </div>
 
-        <div className="w-[1px] h-4 bg-gray-200 dark:bg-gray-700" />
+        {role === 'admin' && <div className="w-[1px] h-4 bg-gray-200 dark:bg-gray-700" />}
 
         {/* Settings Button */}
+        {role === 'admin' && (
+          <div className="relative">
+            <button
+              onClick={() => setSettingsOpen(true)}
+              className={cn(
+                'p-2 rounded-full text-gray-400 dark:text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200 hover:shadow-sm transition-all group',
+                needsSetup && 'animate-setup-glow',
+              )}
+            >
+              <Settings className="w-4 h-4 group-hover:rotate-90 transition-transform duration-500" />
+            </button>
+            {needsSetup && (
+              <>
+                <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3">
+                  <span className="animate-setup-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500" />
+                </span>
+                <span className="animate-setup-float absolute top-full mt-2 right-0 whitespace-nowrap text-[11px] font-medium text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800/50 px-2 py-0.5 rounded-full shadow-sm pointer-events-none">
+                  {t('settings.setupNeeded')}
+                </span>
+              </>
+            )}
+          </div>
+        )}
+
+        <div className="w-[1px] h-4 bg-gray-200 dark:bg-gray-700" />
+
+        {/* Logout Button */}
         <div className="relative">
           <button
-            onClick={() => setSettingsOpen(true)}
-            className={cn(
-              'p-2 rounded-full text-gray-400 dark:text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200 hover:shadow-sm transition-all group',
-              needsSetup && 'animate-setup-glow',
-            )}
+            onClick={async () => {
+              try {
+                await signOut(auth);
+                toast.success('Sesión cerrada exitosamente');
+                router.push('/login');
+              } catch (error) {
+                log.error('Logout error', error);
+                toast.error('Ocurrió un error al cerrar sesión.');
+              }
+            }}
+            className="p-2 rounded-full text-gray-400 dark:text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-red-500 dark:hover:text-red-400 hover:shadow-sm transition-all"
+            title="Cerrar sesión"
           >
-            <Settings className="w-4 h-4 group-hover:rotate-90 transition-transform duration-500" />
+            <LogOut className="w-4 h-4" />
           </button>
-          {needsSetup && (
-            <>
-              <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3">
-                <span className="animate-setup-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-violet-500" />
-              </span>
-              <span className="animate-setup-float absolute top-full mt-2 right-0 whitespace-nowrap text-[11px] font-medium text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/40 border border-violet-200 dark:border-violet-800/50 px-2 py-0.5 rounded-full shadow-sm pointer-events-none">
-                {t('settings.setupNeeded')}
-              </span>
-            </>
-          )}
         </div>
       </div>
-      <SettingsDialog
-        open={settingsOpen}
-        onOpenChange={(open) => {
-          setSettingsOpen(open);
-          if (!open) setSettingsSection(undefined);
-        }}
-        initialSection={settingsSection}
-      />
+      {role === 'admin' && (
+        <SettingsDialog
+          open={settingsOpen}
+          onOpenChange={(open) => {
+            setSettingsOpen(open);
+            if (!open) setSettingsSection(undefined);
+          }}
+          initialSection={settingsSection}
+        />
+      )}
 
       {/* ═══ Background Decor ═══ */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -490,7 +577,7 @@ function HomePage() {
           style={{ animationDuration: '4s' }}
         />
         <div
-          className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"
+          className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"
           style={{ animationDuration: '6s' }}
         />
       </div>
@@ -507,8 +594,8 @@ function HomePage() {
       >
         {/* ── Logo ── */}
         <motion.img
-          src="/logo-horizontal.png"
-          alt="OpenMAIC"
+          src="/logo_newman_maic.svg"
+          alt="Newman MAIC"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{
@@ -517,7 +604,7 @@ function HomePage() {
             stiffness: 200,
             damping: 20,
           }}
-          className="h-12 md:h-16 mb-2 -ml-2 md:-ml-3"
+          className="h-16 md:h-24 mb-2 -ml-2 md:-ml-3"
         />
 
         {/* ── Slogan ── */}
@@ -537,7 +624,7 @@ function HomePage() {
           transition={{ delay: 0.35 }}
           className="w-full"
         >
-          <div className="w-full rounded-2xl border border-border/60 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-xl shadow-black/[0.03] dark:shadow-black/20 transition-shadow focus-within:shadow-2xl focus-within:shadow-violet-500/[0.06]">
+          <div className="w-full rounded-2xl border border-border/60 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-xl shadow-black/[0.03] dark:shadow-black/20 transition-shadow focus-within:shadow-2xl focus-within:shadow-sky-500/[0.06]">
             {/* ── Greeting + Profile + Agents ── */}
             <div className="relative z-20 flex items-start justify-between">
               <GreetingBar />
@@ -572,6 +659,8 @@ function HomePage() {
                   pdfFile={form.pdfFile}
                   onPdfFileChange={(f) => updateForm('pdfFile', f)}
                   onPdfError={setError}
+                  subject={form.subject}
+                  onSubjectChange={(v) => updateForm('subject', v)}
                 />
               </div>
 
@@ -621,7 +710,7 @@ function HomePage() {
       </motion.div>
 
       {/* ═══ Recent classrooms — collapsible ═══ */}
-      {classrooms.length > 0 && (
+      {true && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -629,7 +718,7 @@ function HomePage() {
           className="relative z-10 mt-10 w-full max-w-6xl flex flex-col items-center"
         >
           {/* Trigger — divider-line with centered text */}
-          <button
+          <div
             onClick={() => {
               const next = !recentOpen;
               setRecentOpen(next);
@@ -644,17 +733,30 @@ function HomePage() {
             <div className="flex-1 h-px bg-border/40 group-hover:bg-border/70 transition-colors" />
             <span className="shrink-0 flex items-center gap-2 text-[13px] text-muted-foreground/60 group-hover:text-foreground/70 transition-colors select-none">
               <Clock className="size-3.5" />
-              {t('classroom.recentClassrooms')}
-              <span className="text-[11px] tabular-nums opacity-60">{classrooms.length}</span>
+              <div className="flex bg-muted/60 p-0.5 rounded-md border border-border/40 gap-1 ml-1 cursor-default" onClick={e => e.stopPropagation()}>
+                <button
+                  className={cn("px-2 py-0.5 rounded-sm transition-colors cursor-pointer", activeTab === 'local' ? "bg-white dark:bg-slate-800 shadow-sm text-foreground" : "text-muted-foreground")}
+                  onClick={() => setActiveTab('local')}
+                >
+                  Mis Cursos Locales
+                </button>
+                <button
+                  className={cn("px-2 py-0.5 rounded-sm transition-colors cursor-pointer flex items-center gap-1", activeTab === 'global' ? "bg-white dark:bg-slate-800 shadow-sm text-sky-600 dark:text-sky-400" : "text-muted-foreground")}
+                  onClick={() => setActiveTab('global')}
+                >
+                  Biblioteca Global
+                </button>
+              </div>
               <motion.div
                 animate={{ rotate: recentOpen ? 180 : 0 }}
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
+                className="ml-2"
               >
-                <ChevronDown className="size-3.5" />
+                <ChevronDown className="size-3.5 cursor-pointer" />
               </motion.div>
             </span>
             <div className="flex-1 h-px bg-border/40 group-hover:bg-border/70 transition-colors" />
-          </button>
+          </div>
 
           {/* Expandable content */}
           <AnimatePresence>
@@ -667,29 +769,74 @@ function HomePage() {
                 className="w-full overflow-hidden"
               >
                 <div className="pt-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-8">
-                  {classrooms.map((classroom, i) => (
-                    <motion.div
-                      key={classroom.id}
-                      initial={{ opacity: 0, y: 16 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        delay: i * 0.04,
-                        duration: 0.35,
-                        ease: 'easeOut',
-                      }}
-                    >
-                      <ClassroomCard
-                        classroom={classroom}
-                        slide={thumbnails[classroom.id]}
-                        formatDate={formatDate}
-                        onDelete={handleDelete}
-                        confirmingDelete={pendingDeleteId === classroom.id}
-                        onConfirmDelete={() => confirmDelete(classroom.id)}
-                        onCancelDelete={() => setPendingDeleteId(null)}
-                        onClick={() => router.push(`/classroom/${classroom.id}`)}
-                      />
-                    </motion.div>
-                  ))}
+                  {activeTab === 'local' ? (
+                    classrooms.length > 0 ? (
+                      classrooms.map((classroom, i) => (
+                        <motion.div
+                          key={classroom.id}
+                          initial={{ opacity: 0, y: 16 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: i * 0.04, duration: 0.35, ease: 'easeOut' }}
+                        >
+                          <ClassroomCard
+                            classroom={classroom}
+                            slide={thumbnails[classroom.id]}
+                            formatDate={formatDate}
+                            onDelete={handleDelete}
+                            confirmingDelete={pendingDeleteId === classroom.id}
+                            onConfirmDelete={() => confirmDelete(classroom.id)}
+                            onCancelDelete={() => setPendingDeleteId(null)}
+                            onClick={() => router.push(`/classroom/${classroom.id}`)}
+                          />
+                        </motion.div>
+                      ))
+                    ) : (
+                      <div className="col-span-full py-8 text-center text-muted-foreground text-sm">No tienes cursos locales aún.</div>
+                    )
+                  ) : loadingGlobal ? (
+                    <div className="col-span-full py-8 text-center text-muted-foreground text-sm">Cargando biblioteca global...</div>
+                  ) : globalClassrooms.length === 0 ? (
+                    <div className="col-span-full py-8 text-center text-muted-foreground text-sm">No hay cursos en la biblioteca global aún.</div>
+                  ) : (
+                    globalClassrooms.map((gc, i) => (
+                      <motion.div
+                        key={gc._id}
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.04, duration: 0.35, ease: 'easeOut' }}
+                      >
+                        <ClassroomCard
+                          classroom={{
+                            id: gc._id,
+                            name: gc.stage?.name || 'Untitled',
+                            sceneCount: gc.scenes?.length || 0,
+                            createdAt: gc.createdAtTime || 0,
+                            updatedAt: gc.createdAtTime || 0,
+                          }}
+                          isGlobal
+                          globalAuthor={gc.authorNickname}
+                          globalSubject={gc.subject}
+                          formatDate={formatDate}
+                          onDelete={() => {}}
+                          confirmingDelete={false}
+                          onConfirmDelete={() => {}}
+                          onCancelDelete={() => {}}
+                          onClick={async () => {
+                            toast.loading('Clonando curso desde la nube...', { id: gc._id });
+                            try {
+                              const { processCloudDownload } = await import('@/lib/utils/cloud-sync');
+                              await processCloudDownload(gc._id, gc);
+                              toast.success('Clonación completa', { id: gc._id });
+                              router.push(`/classroom/${gc._id}`);
+                            } catch (e) {
+                              log.error('Fallo al clonar curso', e);
+                              toast.error('Fallo al clonar curso', { id: gc._id });
+                            }
+                          }}
+                        />
+                      </motion.div>
+                    ))
+                  )}
                 </div>
               </motion.div>
             )}
@@ -699,7 +846,7 @@ function HomePage() {
 
       {/* Footer — flows with content, at the very end */}
       <div className="mt-auto pt-12 pb-4 text-center text-xs text-muted-foreground/40">
-        OpenMAIC Open Source Project
+        {t('home.footerRights')}
       </div>
     </div>
   );
@@ -714,6 +861,7 @@ function isCustomAvatar(src: string) {
 
 function GreetingBar() {
   const { t } = useI18n();
+  const { user } = useAuth();
   const avatar = useUserProfileStore((s) => s.avatar);
   const nickname = useUserProfileStore((s) => s.nickname);
   const bio = useUserProfileStore((s) => s.bio);
@@ -729,7 +877,8 @@ function GreetingBar() {
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const displayName = nickname || t('profile.defaultNickname');
+  const displayName = nickname || user?.displayName?.split(' ')[0] || user?.email?.split('@')[0] || t('profile.defaultNickname');
+  const displayAvatar = (avatar === AVATAR_OPTIONS[0] && user?.photoURL) ? user.photoURL : avatar;
 
   // Click-outside to collapse
   useEffect(() => {
@@ -804,8 +953,8 @@ function GreetingBar() {
           onClick={() => setOpen(true)}
         >
           <div className="shrink-0 relative">
-            <div className="size-8 rounded-full overflow-hidden ring-[1.5px] ring-border/30 group-hover:ring-violet-400/60 dark:group-hover:ring-violet-400/40 transition-all duration-300">
-              <img src={avatar} alt="" className="size-full object-cover" />
+            <div className="size-8 rounded-full overflow-hidden ring-[1.5px] ring-border/30 group-hover:ring-sky-400/60 dark:group-hover:ring-sky-400/40 transition-all duration-300">
+              <img src={displayAvatar} alt="" className="size-full object-cover" />
             </div>
             <div className="absolute -bottom-0.5 -right-0.5 size-3.5 rounded-full bg-white dark:bg-slate-800 border border-border/40 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity">
               <Pencil className="size-[7px] text-muted-foreground/70" />
@@ -862,8 +1011,8 @@ function GreetingBar() {
                     setAvatarPickerOpen(!avatarPickerOpen);
                   }}
                 >
-                  <div className="size-8 rounded-full overflow-hidden ring-[1.5px] ring-violet-300/70 dark:ring-violet-500/40 transition-all duration-300">
-                    <img src={avatar} alt="" className="size-full object-cover" />
+                  <div className="size-8 rounded-full overflow-hidden ring-[1.5px] ring-sky-300/70 dark:ring-sky-500/40 transition-all duration-300">
+                    <img src={displayAvatar} alt="" className="size-full object-cover" />
                   </div>
                   <motion.div
                     initial={{ scale: 0 }}
@@ -900,7 +1049,7 @@ function GreetingBar() {
                       />
                       <button
                         onClick={commitName}
-                        className="shrink-0 size-5 rounded flex items-center justify-center text-violet-500 hover:bg-violet-100 dark:hover:bg-violet-900/30"
+                        className="shrink-0 size-5 rounded flex items-center justify-center text-sky-500 hover:bg-sky-100 dark:hover:bg-sky-900/30"
                       >
                         <Check className="size-3" />
                       </button>
@@ -952,7 +1101,7 @@ function GreetingBar() {
                               'size-7 rounded-full overflow-hidden bg-gray-50 dark:bg-gray-800 cursor-pointer transition-all duration-150',
                               'hover:scale-110 active:scale-95',
                               avatar === url
-                                ? 'ring-2 ring-violet-400 dark:ring-violet-500 ring-offset-0'
+                                ? 'ring-2 ring-sky-400 dark:ring-sky-500 ring-offset-0'
                                 : 'hover:ring-1 hover:ring-muted-foreground/30',
                             )}
                           >
@@ -964,7 +1113,7 @@ function GreetingBar() {
                             'size-7 rounded-full flex items-center justify-center cursor-pointer transition-all duration-150 border border-dashed',
                             'hover:scale-110 active:scale-95',
                             isCustomAvatar(avatar)
-                              ? 'ring-2 ring-violet-400 dark:ring-violet-500 ring-offset-0 border-violet-300 dark:border-violet-600 bg-violet-50 dark:bg-violet-900/30'
+                              ? 'ring-2 ring-sky-400 dark:ring-sky-500 ring-offset-0 border-sky-300 dark:border-sky-600 bg-sky-50 dark:bg-sky-900/30'
                               : 'border-muted-foreground/30 text-muted-foreground/50 hover:border-muted-foreground/50',
                           )}
                           onClick={() => avatarInputRef.current?.click()}
@@ -1005,6 +1154,9 @@ function ClassroomCard({
   onConfirmDelete,
   onCancelDelete,
   onClick,
+  isGlobal,
+  globalAuthor,
+  globalSubject,
 }: {
   classroom: StageListItem;
   slide?: Slide;
@@ -1014,6 +1166,9 @@ function ClassroomCard({
   onConfirmDelete: () => void;
   onCancelDelete: () => void;
   onClick: () => void;
+  isGlobal?: boolean;
+  globalAuthor?: string;
+  globalSubject?: string;
 }) {
   const { t } = useI18n();
   const thumbRef = useRef<HTMLDivElement>(null);
@@ -1045,7 +1200,7 @@ function ClassroomCard({
           />
         ) : !slide ? (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="size-12 rounded-2xl bg-gradient-to-br from-violet-100 to-blue-100 dark:from-violet-900/30 dark:to-blue-900/30 flex items-center justify-center">
+            <div className="size-12 rounded-2xl bg-gradient-to-br from-sky-100 to-blue-100 dark:from-sky-900/30 dark:to-blue-900/30 flex items-center justify-center">
               <span className="text-xl opacity-50">📄</span>
             </div>
           </div>
@@ -1053,7 +1208,7 @@ function ClassroomCard({
 
         {/* Delete — top-right, only on hover */}
         <AnimatePresence>
-          {!confirmingDelete && (
+          {!confirmingDelete && !isGlobal && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -1109,10 +1264,18 @@ function ClassroomCard({
       </div>
 
       {/* Info — outside the thumbnail */}
-      <div className="mt-2.5 px-1 flex items-center gap-2">
-        <span className="shrink-0 inline-flex items-center rounded-full bg-violet-100 dark:bg-violet-900/30 px-2 py-0.5 text-[11px] font-medium text-violet-600 dark:text-violet-400">
-          {classroom.sceneCount} {t('classroom.slides')} · {formatDate(classroom.updatedAt)}
-        </span>
+      <div className="mt-2.5 px-1 flex flex-col gap-1">
+        <div className="flex items-center gap-2">
+          {isGlobal ? (
+            <span className="shrink-0 inline-flex items-center rounded-full bg-indigo-100 dark:bg-indigo-900/30 px-2 py-0.5 text-[11px] font-medium text-indigo-600 dark:text-indigo-400 truncate max-w-[150px]">
+              {globalSubject} · {globalAuthor}
+            </span>
+          ) : (
+            <span className="shrink-0 inline-flex items-center rounded-full bg-sky-100 dark:bg-sky-900/30 px-2 py-0.5 text-[11px] font-medium text-sky-600 dark:text-sky-400">
+              {(!classroom.subject || classroom.subject === 'none') ? 'Libre' : classroom.subject.charAt(0).toUpperCase() + classroom.subject.slice(1)} · {classroom.sceneCount} {t('classroom.slides')} · {formatDate(classroom.updatedAt)}
+            </span>
+          )}
+        </div>
         <Tooltip>
           <TooltipTrigger asChild>
             <p className="font-medium text-[15px] truncate text-foreground/90 min-w-0">

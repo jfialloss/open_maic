@@ -195,7 +195,7 @@ export function MediaPopover({ onSettingsOpen }: MediaPopoverProps) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          text: '你好，欢迎来到AI课堂！让我们一起学习吧。',
+          text: t('settings.ttsTestTextDefault') || 'Hello, this is a test voice.',
           audioId: 'preview',
           ttsProviderId,
           ttsVoice,
@@ -257,7 +257,7 @@ export function MediaPopover({ onSettingsOpen }: MediaPopoverProps) {
           className={cn(
             'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-all cursor-pointer select-none whitespace-nowrap border',
             enabledCount > 0
-              ? 'bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 border-violet-200/60 dark:border-violet-700/50'
+              ? 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300 border-sky-200/60 dark:border-sky-700/50'
               : 'text-muted-foreground/70 hover:text-foreground hover:bg-muted/60 border-border/50',
           )}
         >
@@ -291,7 +291,7 @@ export function MediaPopover({ onSettingsOpen }: MediaPopoverProps) {
                   <Icon className="size-3.5" />
                   <span className="hidden sm:inline">{tab.label}</span>
                   {isEnabled && !isActive && (
-                    <span className="absolute top-1 right-1 size-1.5 rounded-full bg-violet-500" />
+                    <span className="absolute top-1 right-1 size-1.5 rounded-full bg-sky-500" />
                   )}
                 </button>
               );
@@ -376,7 +376,7 @@ export function MediaPopover({ onSettingsOpen }: MediaPopoverProps) {
                   className={cn(
                     'inline-flex items-center gap-1 rounded-md px-2 py-1.5 text-[11px] font-medium transition-all shrink-0',
                     previewing
-                      ? 'bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300'
+                      ? 'bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300'
                       : 'bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground',
                   )}
                 >
@@ -467,7 +467,7 @@ function TabPanel({
         <Icon
           className={cn(
             'size-4 shrink-0 transition-colors',
-            enabled ? 'text-violet-600 dark:text-violet-400' : 'text-muted-foreground/50',
+            enabled ? 'text-sky-600 dark:text-sky-400' : 'text-muted-foreground/50',
           )}
         />
         <span

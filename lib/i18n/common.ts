@@ -6,8 +6,9 @@ export const commonZhCN = {
     loading: '加载中...',
   },
   home: {
-    slogan: 'Generative Learning in Multi-Agent Interactive Classroom',
+    slogan: 'Multi-Agent Generative Classroom for Interactive Learning',
     greeting: '嗨，',
+    footerRights: 'All rights reserved to Centros de Estudios NEWMAN',
   },
   toolbar: {
     languageHint: '课程将以此语言生成',
@@ -47,8 +48,9 @@ export const commonEnUS = {
     loading: 'Loading...',
   },
   home: {
-    slogan: 'Generative Learning in Multi-Agent Interactive Classroom',
+    slogan: 'Multi-Agent Generative Classroom for Interactive Learning',
     greeting: 'Hi, ',
+    footerRights: 'All rights reserved to Centros de Estudios NEWMAN',
   },
   toolbar: {
     languageHint: 'Course will be generated in this language',
@@ -88,8 +90,9 @@ export const commonEsES = {
     loading: 'Cargando...',
   },
   home: {
-    slogan: 'Generative Learning in Multi-Agent Interactive Classroom',
+    slogan: 'Aula Generativa Multi-Agente para Aprendizaje Interactivo',
     greeting: 'Hola, ',
+    footerRights: 'Todos los derechos reservados a Centros de Estudios NEWMAN',
   },
   toolbar: {
     languageHint: 'El curso se generará en este idioma',

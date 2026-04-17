@@ -68,6 +68,7 @@ export interface UserRequirements {
   userNickname?: string; // Student nickname for personalization
   userBio?: string; // Student background for personalization
   webSearch?: boolean; // Enable web search for richer context
+  subject?: string; // Optional curriculum subject matching the ministry PDFs
 }
 
 /**

@@ -369,9 +369,19 @@ function GenerationPreviewContent() {
         description: '',
         language: currentSession.requirements.language || 'es-ES',
         style: 'professional',
+        subject: currentSession.requirements.subject || 'none',
         createdAt: Date.now(),
         updatedAt: Date.now(),
       };
+
+      // PUBLISH "BUILDING" STUB TO CLOUD
+      if (stage.subject && stage.subject !== 'none') {
+        import('@/lib/utils/cloud-sync')
+          .then(({ publishBuildingStageToCloud }) => {
+            publishBuildingStageToCloud(stage.id, stage.name, 'system', 'Docente NEWMAN', stage.subject!);
+          })
+          .catch((err) => log.error('Failed to publish building stub', err));
+      }
 
       if (settings.agentMode === 'auto') {
         const agentStepIdx = activeSteps.findIndex((s) => s.id === 'agent-generation');
@@ -401,6 +411,7 @@ function GenerationPreviewContent() {
               stageInfo: { name: stage.name, description: stage.description },
               language: currentSession.requirements.language || 'es-ES',
               availableAvatars: allAvatars,
+              requirement: currentSession.requirements.requirement,
             }),
             signal,
           });
@@ -735,11 +746,16 @@ function GenerationPreviewContent() {
   };
 
   const extractTopicFromRequirement = (requirement: string): string => {
-    const trimmed = requirement.trim();
-    if (trimmed.length <= 500) {
+    // Remove injected system/context notes
+    let baseText = requirement.split('\n\n[System Note:')[0];
+    baseText = baseText.split('\n\n[CONTEXTO NORMATIVO')[0];
+    
+    const trimmed = baseText.trim();
+    // Use a shorter max length for the title (e.g. 150)
+    if (trimmed.length <= 150) {
       return trimmed;
     }
-    return trimmed.substring(0, 500).trim() + '...';
+    return trimmed.substring(0, 150).trim() + '...';
   };
 
   const goBackToHome = () => {
@@ -792,7 +808,7 @@ function GenerationPreviewContent() {
           style={{ animationDuration: '4s' }}
         />
         <div
-          className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"
+          className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"
           style={{ animationDuration: '6s' }}
         />
       </div>
@@ -988,7 +1004,7 @@ function GenerationPreviewContent() {
                 {generatedAgents.length > 0 && !showAgentReveal && (
                   <button
                     onClick={() => setShowAgentReveal(true)}
-                    className="ml-2 flex items-center gap-1.5 rounded-full border border-purple-300/30 bg-purple-500/10 px-3 py-1 text-xs font-medium normal-case tracking-normal text-purple-400 transition-colors hover:bg-purple-500/20 hover:text-purple-300"
+                    className="ml-2 flex items-center gap-1.5 rounded-full border border-blue-300/30 bg-blue-500/10 px-3 py-1 text-xs font-medium normal-case tracking-normal text-blue-400 transition-colors hover:bg-blue-500/20 hover:text-blue-300"
                   >
                     <Bot className="size-3" />
                     {t('generation.viewAgents')}

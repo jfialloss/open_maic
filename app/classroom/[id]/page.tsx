@@ -144,6 +144,48 @@ export default function ClassroomDetailPage() {
     }
   }, [loading, error, generateRemaining]);
 
+  // Hook auto-publicador hacia Firestore
+  const [hasPublishedToCloud, setHasPublishedToCloud] = useState(false);
+  
+  useEffect(() => {
+    if (hasPublishedToCloud) return;
+
+    const checkAndPublish = () => {
+      const state = useStageStore.getState();
+      const mediaTasks = useMediaGenerationStore.getState().tasks;
+      const { stage, scenes, generatingOutlines, failedOutlines } = state;
+      
+      // Si la máquina terminó todo
+      const isExportable =
+        scenes.length > 0 &&
+        generatingOutlines.length === 0 &&
+        failedOutlines.length === 0 &&
+        (Object.keys(mediaTasks).length === 0 ||
+         Object.values(mediaTasks).every((task) => task.status === 'done' || task.status === 'failed'));
+
+      if (isExportable && stage && stage.subject && stage.subject !== 'none') {
+        log.info('Course fully generated and exportable, publishing to Global Cloud Library...');
+        setHasPublishedToCloud(true);
+        
+        import('@/lib/utils/cloud-sync')
+          .then(async ({ publishStageToCloud }) => {
+            // You can also feed actual user info if auth is built-in
+            await publishStageToCloud(classroomId, 'system', 'Docente NEWMAN', stage.subject!);
+          })
+          .catch(err => log.error('Fallo al publicar auto a Cloud:', err));
+      }
+    };
+
+    const unsubStage = useStageStore.subscribe(checkAndPublish);
+    const unsubMedia = useMediaGenerationStore.subscribe(checkAndPublish);
+    checkAndPublish();
+
+    return () => {
+      unsubStage();
+      unsubMedia();
+    };
+  }, [classroomId, hasPublishedToCloud]);
+
   return (
     <ThemeProvider>
       <MediaStageProvider value={classroomId}>

@@ -142,7 +142,7 @@ export interface TTSModelConfig {
  * Add new ASR providers here as union members.
  * Keep in sync with ASR_PROVIDERS registry in constants.ts
  */
-export type ASRProviderId = 'openai-whisper' | 'browser-native' | 'qwen-asr' | 'google-asr';
+export type ASRProviderId = 'openai-whisper' | 'browser-native' | 'qwen-asr' | 'google-asr' | 'gemini-asr';
 // Add new ASR providers below (uncomment and modify):
 // | 'elevenlabs-asr'
 // | 'assemblyai-asr'
