@@ -115,11 +115,15 @@ export async function processCloudDownload(stageId: string, cloudData: CloudClas
   
   // We simply put the stage data straight into Dexie via stage-storage.
   const { saveStageData } = await import('./stage-storage');
+  if (!cloudData.stage) {
+    throw new Error('No se pudo clonar: El curso en la nube no posee metadatos de configuración (stage).');
+  }
+
   await saveStageData(stageId, {
     stage: cloudData.stage,
-    scenes: cloudData.scenes,
-    currentSceneId: cloudData.currentSceneId,
-    chats: cloudData.chats,
+    scenes: cloudData.scenes || [],
+    currentSceneId: cloudData.currentSceneId || '',
+    chats: cloudData.chats || {},
   });
 }
 
