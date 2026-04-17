@@ -19,6 +19,7 @@ dist
 # env & secrets
 .env*
 !.env.example
+!.env.production
 server-providers*.yml
 
 # misc
