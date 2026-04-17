@@ -264,15 +264,15 @@ const getDefaultAudioConfig = () => ({
     'azure-tts': { apiKey: '', baseUrl: '', enabled: false },
     'glm-tts': { apiKey: '', baseUrl: '', enabled: false },
     'qwen-tts': { apiKey: '', baseUrl: '', enabled: false },
-    'google-tts': { apiKey: 'AIzaSyBNQhoKgquccQmyxO18igsi6_ebtP6RCZc', baseUrl: '', enabled: true },
+    'google-tts': { apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || '', baseUrl: '', enabled: true },
     'browser-native-tts': { apiKey: '', baseUrl: '', enabled: true },
   } as Record<TTSProviderId, { apiKey: string; baseUrl: string; enabled: boolean }>,
   asrProvidersConfig: {
     'openai-whisper': { apiKey: '', baseUrl: '', enabled: true },
     'browser-native': { apiKey: '', baseUrl: '', enabled: true },
     'qwen-asr': { apiKey: '', baseUrl: '', enabled: false },
-    'google-asr': { apiKey: 'AIzaSyBNQhoKgquccQmyxO18igsi6_ebtP6RCZc', baseUrl: '', enabled: false },
-    'gemini-asr': { apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || 'AIzaSyBR53hmJF7pM-itVKQgv9Xw6vJuOpR-x9w', baseUrl: '', enabled: true },
+    'google-asr': { apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || '', baseUrl: '', enabled: false },
+    'gemini-asr': { apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || '', baseUrl: '', enabled: true },
   } as Record<ASRProviderId, { apiKey: string; baseUrl: string; enabled: boolean }>,
 });
 
