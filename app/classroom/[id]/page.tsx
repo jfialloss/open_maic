@@ -2,6 +2,7 @@
 
 import { Stage } from '@/components/stage';
 import { ThemeProvider } from '@/lib/hooks/use-theme';
+import { toast } from 'sonner';
 import { useStageStore } from '@/lib/store';
 import { loadImageMapping } from '@/lib/utils/image-storage';
 import { useEffect, useRef, useState, useCallback } from 'react';
@@ -171,8 +172,12 @@ export default function ClassroomDetailPage() {
           .then(async ({ publishStageToCloud }) => {
             // You can also feed actual user info if auth is built-in
             await publishStageToCloud(classroomId, 'system', 'Docente NEWMAN', stage.subject!);
+            toast.success('¡Curso 100% Completado y sincronizado con la Nube!');
           })
-          .catch(err => log.error('Fallo al publicar auto a Cloud:', err));
+          .catch(err => {
+            log.error('Fallo al publicar auto a Cloud:', err);
+            toast.error('Error subiendo contenido a Firebase: ' + (err.message || 'Desconocido'));
+          });
       }
     };
 
