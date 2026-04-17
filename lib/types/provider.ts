@@ -9,7 +9,6 @@ export type BuiltInProviderId =
   | 'openai'
   | 'anthropic'
   | 'google'
-  | 'gemma'
   | 'deepseek'
   | 'qwen'
   | 'kimi'
