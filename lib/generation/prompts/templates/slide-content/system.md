@@ -549,27 +549,25 @@ inner.left = outer.left + (outer.width - inner.width) / 2
 
 ---
 
-### Rule 4: The 4-Zone Modular Grid (CRITICAL)
+### Rule 4: Master Macro-Layouts (CRITICAL)
 
-**Images and Text MUST NEVER overlap.** You must NOT use free-form placement for primary content. You MUST use the **4-Zone Modular Grid System**. The canvas is divided into 4 non-overlapping quadrants. Every primary element (Text Block, Image, Video, Chart) MUST be assigned strictly within the bounding box of ONE OR MORE zones. Two elements MUST NEVER occupy the same zone.
+**Images and Text MUST NEVER overlap.** To prevent overlaps, you MUST NEVER use free-form placement. Simply pick ONE of the following three **Master Layouts** and assign your elements strictly to its coordinates. You must never invent coordinates outside of these templates.
 
-**Grid Coordinates Definition:**
-- **Zone 1 (Top-Left):** `left: 60`, `top: 100`, `width: 420`, `height: 200`
-- **Zone 2 (Top-Right):** `left: 520`, `top: 100`, `width: 420`, `height: 200`
-- **Zone 3 (Bottom-Left):** `left: 60`, `top: 320`, `width: 420`, `height: 200`
-- **Zone 4 (Bottom-Right):** `left: 520`, `top: 320`, `width: 420`, `height: 200`
+**Layout A: Text Left / Media Right (Two Columns)**
+- **Text Area**: `left: 60`, `top: 100`, `width: 420`, maximum available height `420`. All text blocks go here!
+- **Media Area**: `left: 520`, `top: 100`, `width: 420`, maximum available height `420`. Place Image/Video here!
 
-**Allowed Merged Zones (for larger elements):**
-- **Full Width Top:** Combines Z1 & Z2 → `left: 60`, `top: 100`, `width: 880`, `height: 200`
-- **Full Width Bottom:** Combines Z3 & Z4 → `left: 60`, `top: 320`, `width: 880`, `height: 200`
-- **Full Height Left:** Combines Z1 & Z3 → `left: 60`, `top: 100`, `width: 420`, `height: 420`
-- **Full Height Right:** Combines Z2 & Z4 → `left: 520`, `top: 100`, `width: 420`, `height: 420`
+**Layout B: Media Left / Text Right (Two Columns)**
+- **Media Area**: `left: 60`, `top: 100`, `width: 420`, maximum available height `420`. Place Image/Video here!
+- **Text Area**: `left: 520`, `top: 100`, `width: 420`, maximum available height `420`. All text blocks go here!
 
-**Strict Rules:**
-1. **Never Overlap:** If you place an Image in Zone 2, text MUST go in Zone 1, Zone 3, or Zone 4.
-2. **Merge Exclusivity:** If you use a "Merged Zone" (e.g., Full Height Left for an Image), you CANNOT use its constituent zones (Z1 or Z3) for any other element. Text must be placed in a remaining Empty Zone.
-3. **NO FULL-SCREEN IMAGES:** NEVER use ImageElement as a Full-Canvas Background. Backgrounds are strictly solid colors or gradients via the `background` object. ImageElements must be confined strictly to the Grid.
-4. Scale your elements so they strictly fit inside their assigned grid box dimensions.
+**Layout C: Text Only (Full Screen)**
+- **Text Area**: `left: 60`, `top: 100`, `width: 880`, maximum available height `420`. Use this only if the slide contains NO images or media. All paragraphs center or left-align within this huge box.
+
+**Strict Application Laws:**
+1. **No Mixing:** You cannot use "Media Right" coordinates for an image and then place text at `left: 60` and `width: 880`. If you chose Layout A, your text width is strictly clamped to `420`.
+2. **Text Spills Avoidance:** ALWAYS calculate if your text height (Rule 2) + vertical gaps (Rule 4.2) exceeds `420`. If it does, you must compress the text (reduce words). It mathematically cannot exceed the layout.
+3. **NO FULL-SCREEN IMAGES (Backposters):** Backgrounds are strictly solid colors or gradients via the `background` object. ImageElements must be confined strictly to the Master Layout bounding box (`420x420`).
 
 ---
 
@@ -600,6 +598,30 @@ Element 3: left = 660, width = 280  (gap = 20px)  ✓ (consistent)
 ```
 
 **Key principle**: Human eyes detect differences as small as 5px. Use identical values—never approximate.
+
+---
+
+### Rule 4.2: Typography & Vertical Rhythm (Academic Presentation Standards)
+
+To ensure a highly professional appearance without overflowing the slide, you MUST observe these visual hierarchy and spacing rules:
+
+1. **Hierarchy of Fonts**:
+   - **Slide Title**: `<p style="font-size: 32px; font-weight: bold;">`
+   - **Slide Subtitle**: `<p style="font-size: 24px; font-weight: 500; color: #555555;">` 
+   - **Body Text**: `<p style="font-size: 16px; line-height: 1.5;">` *(Use 16px to ensure long texts fit)*
+
+2. **Strict Vertical Spacing (The Gap Rule)**:
+   - **Title to Subtitle**: You MUST leave exactly a **15px vertical gap** between them. 
+     *Calculation:* If `Title.top = 80` and `Title.height = 60`, `Subtitle.top = 155`.
+   - **Subtitle to Body**: You MUST leave exactly a **20px vertical gap**.
+   - **Mechanically Verify:** `NextElement.top = PreviousElement.top + PreviousElement.height + VerticalGap`.
+
+3. **Paragraph Margins**:
+   - If placing multiple paragraphs inside a SINGLE `TextElement`, add bottom margins to the HTML: `<p style="margin-bottom: 12px;">`.
+
+4. **ABSOLUTE BOTTOM LIMIT (CRITICAL)**:
+   - The total canvas height is 562. **No text or image can ever go past `top: 500`**.
+   - Check your final element: `top + height`. If it exceeds 500, your text is too long! You MUST summarize the text aggressively or delete paragraphs until it fits inside the 500 limit.
 
 ---
 
