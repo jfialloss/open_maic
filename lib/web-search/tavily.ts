@@ -20,6 +20,10 @@ export async function searchWithTavily(params: {
 }): Promise<WebSearchResult> {
   const { query, apiKey, maxResults = 5 } = params;
 
+  // Tavily API enforces a strict 400 character limit on the search query.
+  // We slice it to prevent HTTP 400 errors when generating search context for long passages.
+  const safeQuery = query.slice(0, 400);
+
   const res = await proxyFetch(TAVILY_API_URL, {
     method: 'POST',
     headers: {
@@ -27,7 +31,7 @@ export async function searchWithTavily(params: {
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      query,
+      query: safeQuery,
       search_depth: 'basic',
       max_results: maxResults,
       include_answer: 'basic',

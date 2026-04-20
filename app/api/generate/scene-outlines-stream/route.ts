@@ -278,6 +278,15 @@ export async function POST(req: NextRequest) {
               // Validate: got outlines?
               if (parsedOutlines.length > 0) break;
 
+              // If the textStream completed without yielding anything, it often means the AI SDK
+              // encountered a backend HTTP error (like 403 API Key Leaked). Awaiting the full text
+              // promise here forces any deferred API errors to throw, bubbling up to the user.
+              try {
+                await result.text;
+              } catch (apiError) {
+                throw apiError;
+              }
+
               // Empty result — retry if we have attempts left
               lastError = fullText.trim()
                 ? 'LLM response could not be parsed into outlines'
