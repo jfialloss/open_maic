@@ -79,7 +79,9 @@ export function formatImageDescription(img: PdfImage, language: string): string 
   let dimInfo = '';
   if (img.width && img.height) {
     const ratio = (img.width / img.height).toFixed(2);
-    dimInfo = ` | 尺寸: ${img.width}×${img.height} (宽高比${ratio})`;
+    dimInfo = language === 'zh-CN' 
+      ? ` | 尺寸: ${img.width}×${img.height} (宽高比${ratio})`
+      : ` | Dimensions: ${img.width}×${img.height} (aspect ratio ${ratio})`;
   }
   const desc = img.description ? ` | ${img.description}` : '';
   return language === 'zh-CN'
@@ -95,7 +97,9 @@ export function formatImagePlaceholder(img: PdfImage, language: string): string 
   let dimInfo = '';
   if (img.width && img.height) {
     const ratio = (img.width / img.height).toFixed(2);
-    dimInfo = ` | 尺寸: ${img.width}×${img.height} (宽高比${ratio})`;
+    dimInfo = language === 'zh-CN' 
+      ? ` | 尺寸: ${img.width}×${img.height} (宽高比${ratio})`
+      : ` | Dimensions: ${img.width}×${img.height} (aspect ratio ${ratio})`;
   }
   return language === 'zh-CN'
     ? `- **${img.id}**: PDF第${img.pageNumber}页的图片${dimInfo} [参见附图]`
@@ -121,7 +125,9 @@ export function buildVisionUserContent(
       let dimInfo = '';
       if (img.width && img.height) {
         const ratio = (img.width / img.height).toFixed(2);
-        dimInfo = ` (${img.width}×${img.height}, 宽高比${ratio})`;
+        // We do not have direct access to language here, so we will use English as the universal system language 
+        // to prevent Cross-Lingual constraint degradation.
+        dimInfo = ` (${img.width}×${img.height}, aspect ratio ${ratio})`;
       }
       parts.push({ type: 'text', text: `\n**${img.id}**${dimInfo}:` });
       // Strip data URI prefix — AI SDK only accepts http(s) URLs or raw base64

@@ -366,26 +366,39 @@ function fixElementDefaults(
       }
 
       // Correct dimensions using known aspect ratio (src is still img_id at this point)
+      let knownRatio = 1.33; // Default 4:3 fallback
       if (assignedImages && typeof imageEl.src === 'string') {
         const imgMeta = assignedImages.find((img) => img.id === imageEl.src);
         if (imgMeta?.width && imgMeta?.height) {
-          const knownRatio = imgMeta.width / imgMeta.height;
-          const curW = (el.width || 400) as number;
-          const curH = (el.height || 300) as number;
-          if (Math.abs(curW / curH - knownRatio) / knownRatio > 0.1) {
-            // Keep width, correct height
-            const newH = Math.round(curW / knownRatio);
-            if (newH > 462) {
-              // canvas 562.5 - margins 50×2
-              const newW = Math.round(462 * knownRatio);
-              imageEl.width = newW;
-              imageEl.height = 462;
-            } else {
-              imageEl.height = newH;
-            }
-          }
+          knownRatio = imgMeta.width / imgMeta.height;
         }
       }
+      
+      // HARD CLAMP: Force ALL images into Grid Box dimensions (max 420x420)
+      // This strictly prevents the AI from generating background posters spanning the whole screen
+      const maxWidth = 420;
+      const maxHeight = 420;
+      
+      let finalW = Number(el.width) || 400;
+      let finalH = finalW / knownRatio;
+      
+      if (finalW > maxWidth) {
+        finalW = maxWidth;
+        finalH = finalW / knownRatio;
+      }
+      
+      if (finalH > maxHeight) {
+        finalH = maxHeight;
+        finalW = finalH * knownRatio;
+      }
+      
+      imageEl.width = Math.round(finalW);
+      imageEl.height = Math.round(finalH);
+
+      // Force positions to lock inside standard Grid positions to avoid off-screen overlaps 
+      // if AI tried to center a massive background
+      if (Number(el.left) < 60) imageEl.left = 60;
+      if (Number(el.top) < 80) imageEl.top = 80;
 
       return imageEl as typeof el;
     }
