@@ -14,14 +14,9 @@ Las IAs tienden a "ser creativas" y ocasionalmente intentan crear fondos de pant
 - **Solución:** Independientemente de los parámetros de `width`/`height` que escupa la IA, el archivo `lib/generation/scene-generator.ts` intercepta toda ImageElement antes de ser renderizada y le aplica:
   `Math.min(width, 420)` de forma draconiana, asegurando que ninguna imagen devore la pantalla entera.
 
-## 3. Master Macro-Layouts (Sustitución Sistemática de Cuadrantes)
-El antiguo sistema de "4-Quadrant Grid" generaba colisiones verticales porque forzaba la IA a hacer cálculos matemáticos de altura (ej. Zone 1 Height=200px) que casi siempre se desbordaban.
-**La Regla de Oro:** Se usa exclusivamente el esquema de Columnas Macizas de 420x420.
-- **Layout A:** Texto (Izq) | Imagen (Der)
-- **Layout B:** Imagen (Izq) | Texto (Der)
-- **Layout C:** Full Screen Text (Top/Center)
+## 3. Heurística Nativa vs. Cálculo Espacial
+Durante experimentos intensivos, se comprobó que introducir resolutores de colisiones 2D (AABB Bounding Box) u obligar a la IA a usar plantillas inflexibles de "Límite Absoluto 500 Y" y "Gaps de 20px" produce resultados contraproducentes en sistemas de renderizado absoluto como `.pptx`.
+**Conclusión Definitiva:** El sistema más estable es proveer un marco conceptual (`The 4-Zone Modular Grid`) en el prompt del sistema y permitir que la inteligencia artificial distribuya intuitivamente los componentes. Evitar inyectarle deudas técnicas en el backend para auto-alienaciones que terminan empujando el texto fuera de la diapositiva o deformando simetrías. 
 
-## 4. Typography & Vertical Rhythm (The Gap Rule)
-Para que los textos luzcan profesionales tipo estandar APA, sin apelotonarse y sin sobrepasar el lienzo:
-- **Title (32px)** -> *[Gap: 15px]* -> **Subtitle (24px)** -> *[Gap: 20px]* -> **Body Text (16px máximo)**.
-- **Absolute Canvas Limit:** El lienzo mide `562.5px`. Toda generación de texto tiene explícitamente prohibido que la suma de su `top + height` traspase el límite de **`500px`**. Esto fuerza a la IA a resumir en lugar de desbordar la diapositiva hacia abajo.
+## 4. Estado Actual Purificado
+La única restricción "Dura" que preservamos es el **Server-Side Hard Clamping** (sección 2) para el tamaño de las imágenes, previniendo visualizaciones monstruosas. El texto y el espaciado siguen una técnica heurística orgánica.
