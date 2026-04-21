@@ -91,14 +91,25 @@ export function buildElementsFromTemplate(
 
     if (slotConfig.type === 'text') {
       const alignCSS = slotConfig.align ? `text-align: ${slotConfig.align};` : '';
-      const contentStr = typeof rawContent === 'string' ? rawContent : (rawContent.text || '');
-      // La IA devuelve texto plano o semiformateado, nosotros inyectamos el HTML restrictivo
+      let contentStr = typeof rawContent === 'string' ? rawContent : (rawContent.text || '');
+      
+      // Asegurar que haya etiquetas p si la IA dio texto plano
+      if (!contentStr.match(/<p[^>]*>/i)) {
+         contentStr = `<p>${contentStr}</p>`;
+      }
+      
+      // Borrar estilos (font-size) que la IA haya inyectado por error
+      contentStr = contentStr.replace(/style\s*=\s*['"][^'"]*['"]/ig, ''); 
+      
+      // Inyectar el CSS de nuestro Template Master en todos los párrafos
+      contentStr = contentStr.replace(/<p[^>]*>/ig, `<p style="font-size: ${slotConfig.fontSize || 18}px; ${alignCSS}">`);
+
       elements.push({
         ...baseEl,
         type: 'text',
         defaultFontName: slotConfig.defaultFontName || 'Microsoft YaHei',
         defaultColor: slotConfig.defaultColor || '#333333',
-        content: `<p style="font-size: ${slotConfig.fontSize || 18}px; ${alignCSS}">${contentStr}</p>`,
+        content: contentStr,
       } as any);
     } 
     else if (slotConfig.type === 'image' || slotConfig.type === 'video') {

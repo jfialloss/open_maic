@@ -1,22 +1,27 @@
 # Slide Layout Engineering & Anti-Collision Guidelines
 
-Esta guía preserva las lecciones aprendidas y reglas de arquitectura establecidas para el motor generativo de OpenMAIC, evitando regresiones (Technical Debt) en futuras actualizaciones.
+Esta guía preserva las lecciones aprendidas y reglas de arquitectura establecidas para el motor generativo de OpenMAIC, evitando regresiones (Technical Debt) en el diseño de las diapositivas.
 
-## 1. Cross-Lingual Constraint Degradation (Caos de Idiomas)
-**Problema:** Al enviar prompts al LLM mezclando Chino (reglas de código original), Inglés (plantillas bases) y Español (peticiones del usuario), el LLM colapsaba y omitía las reglas geométricas.
+## 1. El Fracaso de las Heurísticas de Layout (La Crisis de 2026)
+Durante los primeros experimentos, se le pidió al LLM que calculara libremente `x`, `y`, `width`, `height` y predijera el espacio usando "Text Height Lookup Tables". 
+**Resultado:** Desastre total. El LLM es matemáticamente incompetente para predecir colisiones de fuentes HTML en pantalla. Arrojaba textos gigantes que sobrepasaban su caja delimitadora, montándose sobre imágenes.
+**Corolario:** JAMÁS devolverle al LLM el control sobre la geometría `left`, `top`, `width` y `height` del contenido principal (Textos descriptivos, Títulos e Imágenes).
+
+## 2. La Arquitectura Salvavidas: Slide Templates (El Motor de Plantillas)
+Para asegurar "Cero Colisiones", OpenMAIC ahora utiliza un motor de Inyección de Plantillas estáticas en el backend (`lib/generation/slide-templates.ts`):
+*   El **LLM solo elige el nombre del layout** (ej. `IMAGE_RIGHT`) y devuelve los contenidos por `slots` (`title`, `leftText`, `rightMedia`).
+*   **El servidor** acopla estos slots a rectángulos duros imperturbables basados en un **4-Zone Modular Grid**. 
+
+### 2.1 CSS Guillotine (`TextElement.tsx`)
+Dado que se ordenó estrictamente **JAMÁS achicar la fuente de los textos** (AutoFit = OFF), cualquier texto largo que sobrepase su slot en el frontend será recortado y ocultado visualmente mediante el uso de altura explícita (`height: XXXpx; overflow: hidden;`). Esto asegura estética perfecta frente a una IA que hable de más.
+
+### 2.2 Purado Inflexible de Estilos Locales
+Los LLM suelen devolver Párrafos con atributos sucios: `<p style="font-size: 10px;">`. El ensamblador del servidor está programado para borrar CUALQUIER atributo `style=` inyectado por la IA, obligando a usar siempre el tamaño y color dictaminado por la Plantilla, asegurando homogeneidad en Títulos y Subtítulos inter-diapositivas.
+
+## 3. Supplementary Floating Elements
+Como única excepción a la regla de las coordenadas matemáticas libres, el LLM todavía tiene permiso para emitir elementos geométricos flotantes **puramente decorativos** (`LineElement` para flechas, `ShapeElement` para marcas) dentro del arreglo nativo `elements`, ya que estos no sufren de expansión tipográfica. Todo tipo de `Text` o `Image` que el LLM intente inyectar manualmente aquí es sistemáticamente borrado por el Agente Limpiador en `scene-generator.ts`.
+
+## 4. Cross-Lingual Constraint Degradation (Caos de Idiomas)
+**Problema:** Al enviar prompts al LLM mezclando Chino (código original), Inglés (plantillas bases) y Español (usuario), el modelo sufre de "amnesia de contexto".
 **Solución Arquitectónica:**
-- El archivo `lib/generation/prompts/templates/slide-content/system.md` **SIEMPRE DEBE MANTENERSE EN INGLÉS PURO**.
-- **No** dejar rastros de chino (`尺寸`, `宽高比`) en el system prompt. 
-- La inyección dinámica de propiedades (ej. dimensiones de PDF) en `lib/generation/prompt-formatters.ts` debe evaluar el idioma y, por defecto, inyectar `Dimensions: XxY (aspect ratio)` en inglés, para asegurar obediencia absoluta del modelo.
-
-## 2. Server-Side Hard Clamping (Protección Biológica de Imágenes)
-Las IAs tienden a "ser creativas" y ocasionalmente intentan crear fondos de pantalla gigantes (Backposters) que arruinan la legibilidad.
-- **Solución:** Independientemente de los parámetros de `width`/`height` que escupa la IA, el archivo `lib/generation/scene-generator.ts` intercepta toda ImageElement antes de ser renderizada y le aplica:
-  `Math.min(width, 420)` de forma draconiana, asegurando que ninguna imagen devore la pantalla entera.
-
-## 3. Heurística Nativa vs. Cálculo Espacial
-Durante experimentos intensivos, se comprobó que introducir resolutores de colisiones 2D (AABB Bounding Box) u obligar a la IA a usar plantillas inflexibles de "Límite Absoluto 500 Y" y "Gaps de 20px" produce resultados contraproducentes en sistemas de renderizado absoluto como `.pptx`.
-**Conclusión Definitiva:** El sistema más estable es proveer un marco conceptual (`The 4-Zone Modular Grid`) en el prompt del sistema y permitir que la inteligencia artificial distribuya intuitivamente los componentes. Evitar inyectarle deudas técnicas en el backend para auto-alienaciones que terminan empujando el texto fuera de la diapositiva o deformando simetrías. 
-
-## 4. Estado Actual Purificado
-La única restricción "Dura" que preservamos es el **Server-Side Hard Clamping** (sección 2) para el tamaño de las imágenes, previniendo visualizaciones monstruosas. El texto y el espaciado siguen una técnica heurística orgánica.
+- El archivo `system.md` **SIEMPRE DEBE MANTENERSE EN INGLÉS PURO**. Ningún rastro de chino o heurísticas rotas.
