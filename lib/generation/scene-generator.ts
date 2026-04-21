@@ -44,6 +44,7 @@ import type {
   GenerationResult,
   GenerationCallbacks,
 } from './pipeline-types';
+import { buildElementsFromTemplate } from './slide-templates';
 import { createLogger } from '@/lib/logger';
 const log = createLogger('Generation');
 
@@ -574,12 +575,26 @@ async function generateSlideContent(
   const response = await aiCall(prompts.system, prompts.user, visionImages);
   const generatedData = parseJsonResponse<GeneratedSlideData>(response);
 
-  if (!generatedData || !generatedData.elements || !Array.isArray(generatedData.elements)) {
+  if (!generatedData) {
     log.error(`Failed to parse AI response for: ${outline.title}`);
     return null;
   }
 
-  log.debug(`Got ${generatedData.elements.length} elements for: ${outline.title}`);
+  // Inject Template Engine elements
+  // Filtramos agresivamente cualquier "text" o "image" que la IA haya intentado colar 
+  // por fuera de la plantilla (evitando títulos y textos duplicados/montados).
+  const rawFreeform = Array.isArray(generatedData.elements) ? generatedData.elements : [];
+  const freeformElements = rawFreeform.filter(el => el.type !== 'text' && el.type !== 'image');
+  let templateElements: any[] = [];
+  
+  if (generatedData.layoutId && generatedData.slots) {
+    templateElements = buildElementsFromTemplate(generatedData.layoutId, generatedData.slots);
+    log.debug(`Template Engine: mapped ${templateElements.length} slotted elements using [${generatedData.layoutId}].`);
+  }
+  
+  generatedData.elements = [...templateElements, ...freeformElements] as any;
+
+  log.debug(`Got ${generatedData.elements.length} total elements after template merging for: ${outline.title}`);
 
   // Debug: Log image elements before resolution
   const imageElements = generatedData.elements.filter((el) => el.type === 'image');

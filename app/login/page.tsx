@@ -107,8 +107,8 @@ export default function LoginPage() {
       </motion.div>
       
       {/* Footer */}
-      <div className="absolute bottom-6 text-xs text-muted-foreground/40">
-        OpenMAIC Authentication
+      <div className="absolute bottom-6 text-xs text-muted-foreground/40 font-medium">
+        Todos los derechos reservados a Centros de Estudios NEWMAN
       </div>
     </div>
   );

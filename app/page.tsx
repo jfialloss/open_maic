@@ -23,7 +23,7 @@ import {
 import { signOut } from 'firebase/auth';
 import { useAuth } from '@/lib/hooks/use-auth';
 import { auth, db as firestoreDb } from '@/lib/firebase';
-import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
+import { collection, query, orderBy, limit, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { useI18n } from '@/lib/hooks/use-i18n';
 import { createLogger } from '@/lib/logger';
 import { Button } from '@/components/ui/button';
@@ -76,7 +76,7 @@ const initialFormState: FormState = {
 
 function HomePage() {
   const { t, locale, setLocale } = useI18n();
-  const { role } = useAuth();
+  const { role, user } = useAuth();
   const { theme, setTheme } = useTheme();
   const router = useRouter();
   const [form, setForm] = useState<FormState>(initialFormState);
@@ -140,9 +140,11 @@ function HomePage() {
   const [classrooms, setClassrooms] = useState<StageListItem[]>([]);
   const [globalClassrooms, setGlobalClassrooms] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<'local' | 'global'>('local');
+  const [globalFilter, setGlobalFilter] = useState<'all' | 'mine' | 'community'>('all');
   const [loadingGlobal, setLoadingGlobal] = useState(false);
   const [thumbnails, setThumbnails] = useState<Record<string, Slide>>({});
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const [pendingDeleteGlobalId, setPendingDeleteGlobalId] = useState<string | null>(null);
   const toolbarRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -212,6 +214,18 @@ function HomePage() {
     } catch (err) {
       log.error('Failed to delete classroom:', err);
       toast.error('Failed to delete classroom');
+    }
+  };
+
+  const confirmDeleteGlobal = async (id: string) => {
+    setPendingDeleteGlobalId(null);
+    try {
+      await deleteDoc(doc(firestoreDb, 'global_classrooms', id));
+      setGlobalClassrooms((prev) => prev.filter((gc) => gc._id !== id));
+      toast.success('Curso global eliminado');
+    } catch (err) {
+      log.error('Failed to delete global classroom:', err);
+      toast.error('Error al eliminar curso de la nube');
     }
   };
 
@@ -768,7 +782,31 @@ function HomePage() {
                 transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
                 className="w-full overflow-hidden"
               >
-                <div className="pt-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-8">
+                {activeTab === 'global' && (
+                  <div className="pt-4 pb-2 flex justify-center">
+                    <div className="flex bg-muted/40 p-1 rounded-lg border border-border/40 gap-1">
+                      <button
+                        className={cn("px-4 py-1.5 rounded-md text-[13px] font-medium transition-colors cursor-pointer", globalFilter === 'all' ? "bg-white dark:bg-slate-800 shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
+                        onClick={() => setGlobalFilter('all')}
+                      >
+                        Todos
+                      </button>
+                      <button
+                        className={cn("px-4 py-1.5 rounded-md text-[13px] font-medium transition-colors cursor-pointer", globalFilter === 'mine' ? "bg-white dark:bg-slate-800 shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
+                        onClick={() => setGlobalFilter('mine')}
+                      >
+                        Míos
+                      </button>
+                      <button
+                        className={cn("px-4 py-1.5 rounded-md text-[13px] font-medium transition-colors cursor-pointer", globalFilter === 'community' ? "bg-white dark:bg-slate-800 shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
+                        onClick={() => setGlobalFilter('community')}
+                      >
+                        De la Comunidad
+                      </button>
+                    </div>
+                  </div>
+                )}
+                <div className={cn("grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-8", activeTab === 'global' ? "pt-4" : "pt-8")}>
                   {activeTab === 'local' ? (
                     classrooms.length > 0 ? (
                       classrooms.map((classroom, i) => (
@@ -797,8 +835,19 @@ function HomePage() {
                     <div className="col-span-full py-8 text-center text-muted-foreground text-sm">Cargando biblioteca global...</div>
                   ) : globalClassrooms.length === 0 ? (
                     <div className="col-span-full py-8 text-center text-muted-foreground text-sm">No hay cursos en la biblioteca global aún.</div>
-                  ) : (
-                    globalClassrooms.map((gc, i) => (
+                  ) : (() => {
+                    const filtered = globalClassrooms.filter((gc) => {
+                      // Ocultar cascarones a los no-administradores
+                      if (gc.status === 'building' && role !== 'admin') return false;
+                      
+                      if (globalFilter === 'mine') return gc.createdBy === user?.uid;
+                      if (globalFilter === 'community') return gc.createdBy !== user?.uid;
+                      return true;
+                    });
+                    if (filtered.length === 0) {
+                      return <div className="col-span-full py-8 text-center text-muted-foreground text-sm">No se encontraron cursos con este filtro.</div>;
+                    }
+                    return filtered.map((gc, i) => (
                       <motion.div
                         key={gc._id}
                         initial={{ opacity: 0, y: 16 }}
@@ -813,14 +862,20 @@ function HomePage() {
                             createdAt: gc.createdAtTime || 0,
                             updatedAt: gc.createdAtTime || 0,
                           }}
+                          slide={gc.scenes?.find((s: any) => s.content?.type === 'slide')?.content?.canvas}
                           isGlobal
                           globalAuthor={gc.authorNickname}
                           globalSubject={gc.subject}
+                          globalStatus={gc.status}
+                          isAdmin={role === 'admin'}
                           formatDate={formatDate}
-                          onDelete={() => {}}
-                          confirmingDelete={false}
-                          onConfirmDelete={() => {}}
-                          onCancelDelete={() => {}}
+                          onDelete={(id, e) => {
+                            e.stopPropagation();
+                            setPendingDeleteGlobalId(id);
+                          }}
+                          confirmingDelete={pendingDeleteGlobalId === gc._id}
+                          onConfirmDelete={() => confirmDeleteGlobal(gc._id)}
+                          onCancelDelete={() => setPendingDeleteGlobalId(null)}
                           onClick={async () => {
                             toast.loading('Clonando curso desde la nube...', { id: gc._id });
                             try {
@@ -835,8 +890,8 @@ function HomePage() {
                           }}
                         />
                       </motion.div>
-                    ))
-                  )}
+                    ));
+                  })()}
                 </div>
               </motion.div>
             )}
@@ -1155,8 +1210,10 @@ function ClassroomCard({
   onCancelDelete,
   onClick,
   isGlobal,
+  isAdmin,
   globalAuthor,
   globalSubject,
+  globalStatus,
 }: {
   classroom: StageListItem;
   slide?: Slide;
@@ -1167,8 +1224,10 @@ function ClassroomCard({
   onCancelDelete: () => void;
   onClick: () => void;
   isGlobal?: boolean;
+  isAdmin?: boolean;
   globalAuthor?: string;
   globalSubject?: string;
+  globalStatus?: 'building' | 'completed';
 }) {
   const { t } = useI18n();
   const thumbRef = useRef<HTMLDivElement>(null);
@@ -1191,6 +1250,17 @@ function ClassroomCard({
         ref={thumbRef}
         className="relative w-full aspect-[16/9] rounded-2xl bg-slate-100 dark:bg-slate-800/80 overflow-hidden transition-transform duration-200 group-hover:scale-[1.02]"
       >
+        {isGlobal && globalStatus === 'building' && (
+          <div className="absolute top-2 left-2 z-10">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100/90 dark:bg-amber-900/80 backdrop-blur-sm px-2.5 py-1 text-[10px] font-bold text-amber-800 dark:text-amber-200 uppercase tracking-widest shadow-sm">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+              </span>
+              Construyendo
+            </span>
+          </div>
+        )}
         {slide && thumbWidth > 0 ? (
           <ThumbnailSlide
             slide={slide}
@@ -1208,7 +1278,7 @@ function ClassroomCard({
 
         {/* Delete — top-right, only on hover */}
         <AnimatePresence>
-          {!confirmingDelete && !isGlobal && (
+          {!confirmingDelete && (!isGlobal || isAdmin) && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

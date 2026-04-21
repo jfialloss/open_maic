@@ -31,6 +31,8 @@ export interface SceneGenerationContext {
  * Used to parse AI responses
  */
 export interface GeneratedSlideData {
+  layoutId?: string;
+  slots?: Record<string, any>;
   elements: Array<{
     type: 'text' | 'image' | 'video' | 'shape' | 'chart' | 'latex' | 'line';
     left: number;

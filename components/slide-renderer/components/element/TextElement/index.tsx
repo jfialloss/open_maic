@@ -182,7 +182,8 @@ export function TextElement({ elementInfo, selectElement }: TextElementProps) {
           className={`element-content relative p-[10px] leading-[1.5] break-words ${elementInfo.lock ? 'cursor-default' : 'cursor-move'}`}
           style={{
             width: elementInfo.vertical ? 'auto' : `${elementInfo.width}px`,
-            height: elementInfo.vertical ? `${elementInfo.height}px` : 'auto',
+            height: `${elementInfo.height}px`,
+            overflow: 'hidden',
             backgroundColor: elementInfo.fill,
             opacity: elementInfo.opacity,
             textShadow: shadowStyle,
