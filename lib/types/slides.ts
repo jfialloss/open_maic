@@ -48,6 +48,8 @@ export interface PPTWidgetElement extends PPTBaseElement {
   type: 'html_widget';
   html: string;
   sandbox?: string;
+  shadow?: PPTElementShadow;
+  outline?: PPTElementOutline;
 }
 
 /**
