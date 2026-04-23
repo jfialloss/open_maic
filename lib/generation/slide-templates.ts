@@ -7,10 +7,11 @@ export type TemplateId =
   | 'TWO_COLUMNS_TEXT' 
   | 'IMAGE_RIGHT' 
   | 'IMAGE_LEFT' 
-  | 'FORMULA_CENTERED';
+  | 'FORMULA_CENTERED'
+  | 'FULL_WIDGET';
 
 export interface PredefinedSlot {
-  type: 'text' | 'image' | 'video' | 'latex' | 'shape';
+  type: 'text' | 'image' | 'video' | 'latex' | 'shape' | 'html_widget';
   left: number;
   top: number;
   width: number;
@@ -60,6 +61,10 @@ export const SlideLayouts: Record<TemplateId, Record<string, PredefinedSlot>> = 
     topText: { type: 'text', left: 100, top: 150, width: 800, height: 80, fontSize: 20, align: 'center', defaultColor: '#334155' },
     formula: { type: 'latex', left: 100, top: 250, width: 800, height: 120 },
     bottomText: { type: 'text', left: 100, top: 400, width: 800, height: 100, fontSize: 18, align: 'center', defaultColor: '#64748b' }
+  },
+
+  FULL_WIDGET: {
+    widget: { type: 'html_widget', left: 40, top: 40, width: 920, height: 480 }
   }
 };
 
@@ -101,8 +106,18 @@ export function buildElementsFromTemplate(
       // Borrar estilos (font-size) que la IA haya inyectado por error
       contentStr = contentStr.replace(/style\s*=\s*['"][^'"]*['"]/ig, ''); 
       
+      // Auto-escala matemática para evitar que el texto desborde
+      let fontSize = slotConfig.fontSize || 18;
+      const charCount = contentStr.replace(/<[^>]*>?/gm, '').length;
+      const maxChars = (slotConfig.width * slotConfig.height) / (Math.pow(fontSize, 2) * 0.75);
+      
+      if (charCount > maxChars) {
+        fontSize = Math.floor(Math.sqrt((slotConfig.width * slotConfig.height) / (charCount * 0.75)));
+        fontSize = Math.max(14, fontSize); // Limite inferior para no hacerlo ilegible
+      }
+
       // Inyectar el CSS de nuestro Template Master en todos los párrafos
-      contentStr = contentStr.replace(/<p[^>]*>/ig, `<p style="font-size: ${slotConfig.fontSize || 18}px; ${alignCSS}">`);
+      contentStr = contentStr.replace(/<p[^>]*>/ig, `<p style="font-size: ${fontSize}px; ${alignCSS}">`);
 
       elements.push({
         ...baseEl,
@@ -129,6 +144,13 @@ export function buildElementsFromTemplate(
         latex: typeof rawContent === 'string' ? rawContent : rawContent.latex,
         color: '#000000',
         align: 'center'
+      } as any);
+    }
+    else if (slotConfig.type === 'html_widget') {
+      elements.push({
+        ...baseEl,
+        type: 'html_widget',
+        html: typeof rawContent === 'string' ? rawContent : rawContent.html,
       } as any);
     }
   }

@@ -19,7 +19,7 @@ const inter = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'Aula Interactiva de NEWMAN',
+  title: 'CORDIS AI - Aula Interactiva NEWMAN',
   description:
     'The open-source AI interactive classroom. Upload a PDF to instantly generate an immersive, multi-agent learning experience.',
 };

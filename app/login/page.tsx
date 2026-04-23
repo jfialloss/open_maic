@@ -52,12 +52,20 @@ export default function LoginPage() {
       >
         <div className="w-full rounded-2xl border border-border/60 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-xl shadow-black/[0.03] dark:shadow-black/20 p-8 flex flex-col items-center text-center">
           <motion.img
-            src="/logo_newman_maic.svg"
-            alt="Newman MAIC"
+            src="/logo_cordis_ai.svg"
+            alt="CORDISAI"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="h-14 mb-6"
+            className="h-[50px] mb-6 dark:hidden"
+          />
+          <motion.img
+            src="/logo_cordis_ai_dark.svg"
+            alt="CORDISAI"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="h-[50px] mb-6 hidden dark:block"
           />
           
           <motion.h1
@@ -108,7 +116,7 @@ export default function LoginPage() {
       
       {/* Footer */}
       <div className="absolute bottom-6 text-xs text-muted-foreground/40 font-medium">
-        Todos los derechos reservados a Centros de Estudios NEWMAN
+        Todos los derechos reservados a CORDISAI
       </div>
     </div>
   );

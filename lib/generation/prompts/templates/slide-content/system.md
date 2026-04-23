@@ -47,13 +47,14 @@ You MUST choose one of the following `layoutId`s based on your content:
 - `IMAGE_RIGHT`: Requires `title`, `leftText`, and `rightMedia` (image/video src).
 - `IMAGE_LEFT`: Requires `title`, `leftMedia`, and `rightText`.
 - `FORMULA_CENTERED`: Requires `title`, `topText`, `formula` (latex code), and `bottomText`.
+- `FULL_WIDGET`: Requires ONLY `widget` (raw HTML/JS/CSS code string) inside the `slots` object. Use ONLY when explicitly authorized via deep interaction instructions to generate interactive Canvas simulations.
 
 The server will AUTOMATICALLY position these slots on the 4-Zone Grid. You do **not** provide coordinates for `slots`. 
 
 `elements`: This array is ONLY for free-form supplementary items (like custom `shape`, `line` arrows, or `chart`). Do NOT put primary text or main images in here!
 
 **Element Layering**: Elements render in array order. Later elements appear on top. Place background shapes before text elements.
-
+{{deepInteractionAuth}}
 ---
 
 ## Element Types
@@ -70,6 +71,9 @@ You do NOT provide coordinates for primary content. You must place them inside t
   - For Assigned Images: use the exact ID (e.g., `"img_1"`). Do NOT invent URLs.
   - For Generated Media: use the generated ID (e.g., `"gen_img_1"` or `"gen_vid_1"`).
   - If no suitable image exists, choose a text-only template (like `CONTENT_ONLY`).
+- **Html Widget Slots** (like `widget`): Provide the raw HTML string for the simulation.
+  - Make sure to write pure, standalone HTML code that includes inline `<style>` and `<script>` tags.
+  - DO NOT use markdown code blocks inside the JSON string, just raw HTML text.
 
 ---
 

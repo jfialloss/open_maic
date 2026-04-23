@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useMemo } from 'react';
-import { Bot, Check, ChevronLeft, Globe, Paperclip, FileText, X, Globe2 } from 'lucide-react';
+import { Bot, Check, ChevronLeft, Globe, Paperclip, FileText, X, Globe2, Sparkles } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Select,
@@ -33,6 +33,8 @@ export interface GenerationToolbarProps {
   onLanguageChange: (lang: 'en-US' | 'es-ES') => void;
   webSearch: boolean;
   onWebSearchChange: (v: boolean) => void;
+  deepInteraction: boolean;
+  onDeepInteractionChange: (v: boolean) => void;
   onSettingsOpen: (section?: SettingsSection) => void;
   // PDF
   pdfFile: File | null;
@@ -49,6 +51,8 @@ export function GenerationToolbar({
   onLanguageChange,
   webSearch,
   onWebSearchChange,
+  deepInteraction,
+  onDeepInteractionChange,
   onSettingsOpen,
   pdfFile,
   onPdfFileChange,
@@ -284,9 +288,6 @@ export function GenerationToolbar({
           <PopoverTrigger asChild>
             <button className={webSearch ? pillActive : pillMuted}>
               <Globe2 className={cn('size-3.5', webSearch && 'animate-pulse')} />
-              {webSearch && (
-                <span>{WEB_SEARCH_PROVIDERS[webSearchProviderId]?.name || 'Search'}</span>
-              )}
             </button>
           </PopoverTrigger>
           <PopoverContent align="start" className="w-64 p-3 space-y-3">
@@ -363,6 +364,22 @@ export function GenerationToolbar({
           <TooltipContent>{t('toolbar.webSearchNoProvider')}</TooltipContent>
         </Tooltip>
       ))}
+
+      {/* ── Deep Interaction ── */}
+      {role === 'admin' && (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={() => onDeepInteractionChange(!deepInteraction)}
+              className={deepInteraction ? pillActive : pillMuted}
+            >
+              <Sparkles className={cn('size-3.5', deepInteraction && 'animate-pulse')} />
+              {deepInteraction && <span>Interacción Profunda</span>}
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>Generar diapositiva de simulación interactiva</TooltipContent>
+        </Tooltip>
+      )}
 
       {/* ── Language pill ── */}
       <Tooltip>

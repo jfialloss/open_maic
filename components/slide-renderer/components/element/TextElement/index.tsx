@@ -179,11 +179,12 @@ export function TextElement({ elementInfo, selectElement }: TextElementProps) {
       >
         <div
           ref={elementRef}
-          className={`element-content relative p-[10px] leading-[1.5] break-words ${elementInfo.lock ? 'cursor-default' : 'cursor-move'}`}
+          className={`element-content relative p-[10px] leading-[1.5] break-words ${elementInfo.lock ? 'cursor-default' : 'cursor-move'} flex flex-col justify-center`}
           style={{
             width: elementInfo.vertical ? 'auto' : `${elementInfo.width}px`,
             height: `${elementInfo.height}px`,
-            overflow: 'hidden',
+            overflowY: 'auto',
+            overflowX: 'hidden',
             backgroundColor: elementInfo.fill,
             opacity: elementInfo.opacity,
             textShadow: shadowStyle,

@@ -63,6 +63,7 @@ interface FormState {
   requirement: string;
   language: 'en-US' | 'es-ES';
   webSearch: boolean;
+  deepInteraction: boolean;
   subject: string;
 }
 
@@ -71,6 +72,7 @@ const initialFormState: FormState = {
   requirement: '',
   language: 'es-ES',
   webSearch: false,
+  deepInteraction: false,
   subject: 'none',
 };
 
@@ -339,12 +341,18 @@ function HomePage() {
         }
       }
 
+      let deepInteractionHint = '';
+      if (form.deepInteraction) {
+        deepInteractionHint = `\n\n[INSTRUCCIÓN CRÍTICA DE INTERACCIÓN PROFUNDA]: Se ha habilitado la Interacción Profunda. DEBES PLANIFICAR EL CURSO DE FORMA NORMAL (Introducción, Desarrollo con variedad de formatos, Conclusión). SIN EMBARGO, OBLIGATORIAMENTE DEBES INCLUIR UNA escena central de type: "interactive" (NO de tipo "slide") para contener una simulación interactiva HTML compleja sobre el tema central. El resto del curso debe usar el tipo de escena "slide".`;
+      }
+
       const requirements: UserRequirements = {
-        requirement: form.requirement + personaHint + curriculumContext,
+        requirement: form.requirement + personaHint + curriculumContext + deepInteractionHint,
         language: form.language,
         userNickname: userProfile.nickname || undefined,
         userBio: userProfile.bio || undefined,
         webSearch: form.webSearch || undefined,
+        deepInteraction: form.deepInteraction || undefined,
         subject: form.subject !== 'none' ? form.subject : undefined,
       };
 
@@ -608,8 +616,8 @@ function HomePage() {
       >
         {/* ── Logo ── */}
         <motion.img
-          src="/logo_newman_maic.svg"
-          alt="Newman MAIC"
+          src="/logo_cordis_ai.svg"
+          alt="CORDISAI"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{
@@ -618,7 +626,20 @@ function HomePage() {
             stiffness: 200,
             damping: 20,
           }}
-          className="h-16 md:h-24 mb-2 -ml-2 md:-ml-3"
+          className="h-[58px] md:h-[86px] mb-2 -ml-2 md:-ml-3 dark:hidden"
+        />
+        <motion.img
+          src="/logo_cordis_ai_dark.svg"
+          alt="CORDISAI"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{
+            delay: 0.1,
+            type: 'spring',
+            stiffness: 200,
+            damping: 20,
+          }}
+          className="h-[58px] md:h-[86px] mb-2 -ml-2 md:-ml-3 hidden dark:block"
         />
 
         {/* ── Slogan ── */}
@@ -666,6 +687,8 @@ function HomePage() {
                   onLanguageChange={(lang) => updateForm('language', lang)}
                   webSearch={form.webSearch}
                   onWebSearchChange={(v) => updateForm('webSearch', v)}
+                  deepInteraction={form.deepInteraction}
+                  onDeepInteractionChange={(v) => updateForm('deepInteraction', v)}
                   onSettingsOpen={(section) => {
                     setSettingsSection(section);
                     setSettingsOpen(true);

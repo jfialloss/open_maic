@@ -64,6 +64,7 @@ export async function generateFullScenes(
   store: StageStore,
   aiCall: AICallFn,
   callbacks?: GenerationCallbacks,
+  deepInteraction?: boolean,
 ): Promise<GenerationResult<string[]>> {
   const api = createStageAPI(store);
   const totalScenes = sceneOutlines.length;
@@ -78,11 +79,14 @@ export async function generateFullScenes(
     totalScenes,
   });
 
+  // If deep interaction is requested, the Stage 1 planner already assigned 'interactive' type to a scene.
+  // We no longer manually hack [USE_FULL_WIDGET] into slide descriptions.
+
   // Generate all scenes in parallel
   const results = await Promise.all(
     sceneOutlines.map(async (outline, index) => {
       try {
-        const sceneId = await generateSingleScene(outline, api, aiCall);
+        const sceneId = await generateSingleScene(outline, api, aiCall, deepInteraction);
 
         // Update progress (not atomic, but sufficient for UI display)
         completedCount++;
@@ -126,10 +130,11 @@ async function generateSingleScene(
   outline: SceneOutline,
   api: ReturnType<typeof createStageAPI>,
   aiCall: AICallFn,
+  deepInteraction?: boolean,
 ): Promise<string | null> {
   // Step 3.1: Generate content
   log.info(`Step 3.1: Generating content for: ${outline.title}`);
-  const content = await generateSceneContent(outline, aiCall);
+  const content = await generateSceneContent(outline, aiCall, undefined, undefined, undefined, undefined, undefined, undefined, deepInteraction);
   if (!content) {
     log.error(`Failed to generate content for: ${outline.title}`);
     return null;
@@ -156,6 +161,7 @@ export async function generateSceneContent(
   visionEnabled?: boolean,
   generatedMediaMapping?: ImageMapping,
   agents?: AgentInfo[],
+  deepInteraction?: boolean,
 ): Promise<
   | GeneratedSlideContent
   | GeneratedQuizContent
@@ -177,6 +183,7 @@ export async function generateSceneContent(
       visionEnabled,
       generatedMediaMapping,
       agents,
+      deepInteraction,
     );
   }
 
@@ -190,6 +197,7 @@ export async function generateSceneContent(
         visionEnabled,
         generatedMediaMapping,
         agents,
+        deepInteraction,
       );
     case 'quiz':
       return generateQuizContent(outline, aiCall);
@@ -480,6 +488,7 @@ async function generateSlideContent(
   visionEnabled?: boolean,
   generatedMediaMapping?: ImageMapping,
   agents?: AgentInfo[],
+  deepInteraction?: boolean,
 ): Promise<GeneratedSlideContent | null> {
   const lang = outline.language || 'zh-CN';
 
@@ -573,7 +582,8 @@ async function generateSlideContent(
   }
 
   const response = await aiCall(prompts.system, prompts.user, visionImages);
-  const generatedData = parseJsonResponse<GeneratedSlideData>(response);
+  
+  let generatedData = parseJsonResponse<GeneratedSlideData>(response);
 
   if (!generatedData) {
     log.error(`Failed to parse AI response for: ${outline.title}`);

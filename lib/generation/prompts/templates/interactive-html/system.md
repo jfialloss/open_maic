@@ -21,12 +21,14 @@ Generate a complete, self-contained HTML document that provides an interactive v
 - Responsive layout that works in an iframe container
 - Minimal text - prioritize visual interaction over text explanation
 
-### JavaScript
+### JavaScript & Canvas 2D
 
 - Pure JavaScript only (no frameworks or external JS libraries except Tailwind)
 - All logic must strictly follow the scientific constraints provided
+- **Animation Loop**: You MUST use `requestAnimationFrame` for all movement and physics updates.
+- **Canvas Rendering**: ALWAYS use `ctx.clearRect(0, 0, canvas.width, canvas.height)` at the start of every frame before drawing. Failure to do so will result in a broken or solid color screen!
+- **Resize Handling**: ALWAYS add a `window.addEventListener('resize', ...)` to dynamically update `canvas.width` and `canvas.height` to match `window.innerWidth/innerHeight` to avoid blurry or clipped graphics.
 - Interactive elements: drag, slider, click, animation as appropriate
-- Canvas API or SVG for visualizations when needed
 
 ### Math Formulas
 

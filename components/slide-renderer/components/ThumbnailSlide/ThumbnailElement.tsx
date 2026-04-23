@@ -9,6 +9,7 @@ import { BaseChartElement } from '../element/ChartElement/BaseChartElement';
 import { BaseLatexElement } from '../element/LatexElement/BaseLatexElement';
 import { BaseTableElement } from '../element/TableElement/BaseTableElement';
 import { BaseVideoElement } from '../element/VideoElement/BaseVideoElement';
+import { BaseWidgetElement } from '../element/WidgetElement/BaseWidgetElement';
 
 interface ThumbnailElementProps {
   readonly elementInfo: PPTElement;
@@ -33,6 +34,7 @@ export function ThumbnailElement({ elementInfo, elementIndex }: ThumbnailElement
       [ElementTypes.TABLE]: BaseTableElement,
       // TODO: Add other element types
       [ElementTypes.VIDEO]: BaseVideoElement,
+      [ElementTypes.HTML_WIDGET]: BaseWidgetElement,
       // [ElementTypes.AUDIO]: BaseAudioElement,
     };
     return elementTypeMap[elementInfo.type] || null;

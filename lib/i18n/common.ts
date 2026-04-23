@@ -6,7 +6,7 @@ export const commonZhCN = {
     loading: '加载中...',
   },
   home: {
-    slogan: 'Multi-Agent Generative Classroom for Interactive Learning',
+    slogan: 'Multi-Agent Generative Classroom for Interactive Learning from Centro de Estudios NEWMAN',
     greeting: '嗨，',
     footerRights: 'All rights reserved to Centros de Estudios NEWMAN',
   },
@@ -48,7 +48,7 @@ export const commonEnUS = {
     loading: 'Loading...',
   },
   home: {
-    slogan: 'Multi-Agent Generative Classroom for Interactive Learning',
+    slogan: 'Multi-Agent Generative Classroom for Interactive Learning from Centro de Estudios NEWMAN',
     greeting: 'Hi, ',
     footerRights: 'All rights reserved to Centros de Estudios NEWMAN',
   },
@@ -90,7 +90,7 @@ export const commonEsES = {
     loading: 'Cargando...',
   },
   home: {
-    slogan: 'Aula Generativa Multi-Agente para Aprendizaje Interactivo',
+    slogan: 'Aula Generativa Multi-Agente para Aprendizaje Interactivo del Centro de Estudios NEWMAN',
     greeting: 'Hola, ',
     footerRights: 'Todos los derechos reservados a Centros de Estudios NEWMAN',
   },

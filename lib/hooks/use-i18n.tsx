@@ -43,11 +43,11 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (typeof document !== 'undefined') {
       if (locale === 'es-ES') {
-        document.title = 'Aula Interactiva de NEWMAN';
+        document.title = 'CORDIS AI - Aula Interactiva NEWMAN';
       } else if (locale === 'en-US') {
-        document.title = 'NEWMAN Interactive Classroom';
+        document.title = 'CORDIS AI - NEWMAN Interactive Classroom';
       } else if (locale === 'zh-CN') {
-        document.title = 'NEWMAN 互动课堂';
+        document.title = 'CORDIS AI - NEWMAN 互动课堂';
       }
     }
   }, [locale]);

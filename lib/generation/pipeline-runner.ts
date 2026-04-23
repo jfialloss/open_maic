@@ -64,7 +64,7 @@ export async function runGenerationPipeline(
       totalScenes: session.sceneOutlines.length,
     });
 
-    const scenesResult = await generateFullScenes(session.sceneOutlines, store, aiCall, callbacks);
+    const scenesResult = await generateFullScenes(session.sceneOutlines, store, aiCall, callbacks, session.requirements.deepInteraction);
     if (!scenesResult.success) {
       throw new Error(scenesResult.error || 'Failed to generate scenes');
     }

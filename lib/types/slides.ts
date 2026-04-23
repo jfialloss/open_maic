@@ -32,6 +32,22 @@ export const enum ElementTypes {
   LATEX = 'latex',
   VIDEO = 'video',
   AUDIO = 'audio',
+  HTML_WIDGET = 'html_widget',
+}
+
+/**
+ * Html Widget element
+ *
+ * type: Element type (html_widget)
+ *
+ * html: Raw HTML/JS/CSS code
+ *
+ * sandbox?: iframe sandbox rules
+ */
+export interface PPTWidgetElement extends PPTBaseElement {
+  type: 'html_widget';
+  html: string;
+  sandbox?: string;
 }
 
 /**
@@ -672,7 +688,8 @@ export type PPTElement =
   | PPTTableElement
   | PPTLatexElement
   | PPTVideoElement
-  | PPTAudioElement;
+  | PPTAudioElement
+  | PPTWidgetElement;
 
 export type AnimationType = 'in' | 'out' | 'attention';
 export type AnimationTrigger = 'click' | 'meantime' | 'auto';
