@@ -144,6 +144,21 @@ Interactive 3D scenes using Three.js for immersive learning experiences.
 - Performance-optimized geometry
 - Smooth animations with requestAnimationFrame
 
+## AI-Generated Media
+
+When a slide scene needs an image or video but no suitable PDF image exists, mark it for AI generation:
+
+- Add a `mediaGenerations` array to the scene outline
+- Each entry specifies: `type` ("image" or "video"), `prompt` (description for the generation model), `elementId` (unique placeholder), and optionally `aspectRatio` (default "16:9") and `style`
+- **Image IDs**: use `"gen_img_1"`, `"gen_img_2"`, etc. — IDs are **globally unique across the entire course**
+- **Video IDs**: use `"gen_vid_1"`, `"gen_vid_2"`, etc.
+- Only request media generation when it genuinely enhances the content. Do NOT request duplicate media across slides.
+- Use **video** for content that benefits from motion/animation. Use **image** for static content.
+- Video generation takes 1-2 minutes, so use it sparingly.
+- **Language in images**: If the image contains text, the prompt MUST explicitly specify that all text should be in the course language.
+
+{{mediaGenerationPolicy}}
+
 ## Widget Selection Guide
 
 | Content Type | Recommended Widget | Reason |
@@ -257,7 +272,14 @@ Rules:
       "title": "Introduction to Projectile Motion",
       "description": "Introduce the concept and learning objectives",
       "keyPoints": ["What is projectile motion", "Real-world examples", "Key variables"],
-      "order": 1
+      "order": 1,
+      "mediaGenerations": [
+        {
+          "type": "image",
+          "prompt": "A cannon firing a cannonball showing a clear parabolic trajectory, abstract educational style",
+          "elementId": "gen_img_1"
+        }
+      ]
     },
     {
       "id": "scene_2",
@@ -286,7 +308,9 @@ Rules:
 
 **Scene-level rules:**
 
-4. **Interactive focus**: Prefer interactive widgets for hands-on learning.
+4. `type` is one of `"slide"`, `"quiz"`, `"interactive"`, `"pbl"`.
+5. `mediaGenerations` (optional) can be used to request AI-generated images/videos for slide scenes.
+6. **Interactive focus**: Prefer interactive widgets for hands-on learning.
 5. **Widget variety**: Use different widget types throughout the course when appropriate.
 6. **Flow**: Slides should introduce concepts, widgets should let students explore.
 7. **Language**: Apply the Language Inference decision rules above when producing `languageDirective`, and author all scene content in the inferred language.
