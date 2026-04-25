@@ -10,7 +10,7 @@ service firebase.storage {
     }
     
     // Carpeta de Media (Imágenes generadas, Audio TTS) para cursos
-    match /classrooms/{classroomId}/{fileName} {
+    match /courses_media/{classroomId}/{fileName} {
       // Cualquiera autenticado puede leer para ver los cursos
       allow read: if request.auth != null;
       // Solo el creador original o un administrador puede modificar archivos del curso

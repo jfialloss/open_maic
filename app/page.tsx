@@ -26,6 +26,7 @@ import {
   Filter,
   FileText,
   Award,
+  Lock,
 } from 'lucide-react';
 import { signOut } from 'firebase/auth';
 import { useAuth } from '@/lib/hooks/use-auth';
@@ -313,7 +314,10 @@ function HomePage() {
               if (fullData && fullData.stage && fullData.stage.subject) {
                  log.info(`[Passive Sync] Rescatando curso completo a la nube: ${gc.id}`);
                  try {
-                   await publishStageToCloud(gc.id, 'system', 'Docente NEWMAN', fullData.stage.subject);
+                   const currentUser = auth.currentUser;
+                   if (currentUser) {
+                     await publishStageToCloud(gc.id, currentUser.uid, currentUser.displayName || 'Docente', fullData.stage.subject);
+                   }
                  } catch (e) {
                    log.error(`[Passive Sync] Error syncing ${gc.id}`, e);
                  }
@@ -360,6 +364,9 @@ function HomePage() {
         await deleteDoc(doc(firestoreDb, 'global_classrooms', id));
       } catch (e) {}
 
+      // Limpiar del estado activo para que no salga en Cursos Pendientes o Mi Progreso
+      useUserProfileStore.getState().removeActiveCourse(id);
+
       await loadClassrooms();
     } catch (err) {
       log.error('Failed to delete classroom:', err);
@@ -372,6 +379,7 @@ function HomePage() {
     try {
       await deleteDoc(doc(firestoreDb, 'global_classrooms', id));
       setGlobalClassrooms((prev) => prev.filter((gc) => gc._id !== id));
+      useUserProfileStore.getState().removeActiveCourse(id);
       toast.success('Curso global eliminado');
     } catch (err) {
       log.error('Failed to delete global classroom:', err);
@@ -899,85 +907,113 @@ function HomePage() {
                     <FileText className="size-3.5" /> Temario Oficial ({form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : 'Ciencias Sociales'} - {globalGrade})
                   </p>
                 </div>
-                {mappedSublevel && syllabusData[form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : 'Ciencias Sociales']?.[mappedSublevel] && (
-                  <div className="flex flex-col gap-4 mt-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                    {Object.entries(syllabusData[form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : 'Ciencias Sociales'][mappedSublevel]).map(([unitName, unitData]: [string, any], unitIndex) => (
-                      <div key={unitName} className="flex flex-col gap-1.5 p-2.5 rounded-xl bg-white/50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-800/50">
-                        <div className="flex items-start justify-between gap-2">
-                          <h4 className="text-[13px] font-bold text-slate-700 dark:text-slate-200 leading-tight">
-                            {unitName}
-                          </h4>
-                          <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400 shrink-0">
-                            Bloque {unitIndex + 1}
-                          </span>
-                        </div>
-                        {unitData.objetivos && unitData.objetivos.length > 0 && (
-                          <div className="text-[10.5px] text-slate-500 dark:text-slate-400 italic mb-1.5 pl-2 border-l-2 border-slate-200 dark:border-slate-700">
-                            {unitData.objetivos[0]}
+                {mappedSublevel && syllabusData[form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : 'Ciencias Sociales']?.[mappedSublevel] && (() => {
+                  const subData = syllabusData[form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : 'Ciencias Sociales'][mappedSublevel];
+                  const lockedTopics = new Set<string>();
+                  let firstUnmasteredFound = false;
+                  Object.values(subData).forEach((uData: any) => {
+                    uData.temas.forEach((t: string) => {
+                      if (!masteredTopics?.includes(t)) {
+                        if (firstUnmasteredFound) lockedTopics.add(t);
+                        firstUnmasteredFound = true;
+                      }
+                    });
+                  });
+
+                  return (
+                    <div className="flex flex-col gap-4 mt-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                      {Object.entries(subData).map(([unitName, unitData]: [string, any], unitIndex) => (
+                        <div key={unitName} className="flex flex-col gap-1.5 p-2.5 rounded-xl bg-white/50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-800/50">
+                          <div className="flex items-start justify-between gap-2">
+                            <h4 className="text-[13px] font-bold text-slate-700 dark:text-slate-200 leading-tight">
+                              {unitName}
+                            </h4>
+                            <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400 shrink-0">
+                              Bloque {unitIndex + 1}
+                            </span>
                           </div>
-                        )}
-                        <div className="flex flex-col gap-1.5 mt-0.5">
-                          {unitData.temas.map((topic: string, i: number) => {
-                            const isMastered = masteredTopics?.includes(topic) || false;
-                            const prefix = `${unitIndex + 1}.${i + 1}`;
-                            const inProgressClassroom = !isMastered ? classrooms.find((c) => c.topic === topic || c.name === topic) : null;
-                            return (
-                              <button
-                                key={topic}
-                                onClick={() => {
-                                  if (inProgressClassroom) {
-                                    if (window.confirm(`Tienes un curso a medias sobre este tema.\n¿Deseas continuar donde te quedaste en lugar de crear uno nuevo?`)) {
-                                      router.push(`/classroom/${inProgressClassroom.id}`);
+                          {unitData.objetivos && unitData.objetivos.length > 0 && (
+                            <div className="text-[10.5px] text-slate-500 dark:text-slate-400 italic mb-1.5 pl-2 border-l-2 border-slate-200 dark:border-slate-700">
+                              {unitData.objetivos[0]}
+                            </div>
+                          )}
+                          <div className="flex flex-col gap-1.5 mt-0.5">
+                            {unitData.temas.map((topic: string, i: number) => {
+                              const isMastered = masteredTopics?.includes(topic) || false;
+                              const isLocked = lockedTopics.has(topic);
+                              const prefix = `${unitIndex + 1}.${i + 1}`;
+                              const inProgressClassroom = !isMastered && !isLocked ? classrooms.find((c) => c.topic === topic || c.name === topic) : null;
+                              return (
+                                <button
+                                  key={topic}
+                                  disabled={isLocked}
+                                  onClick={() => {
+                                    if (isLocked) return;
+                                    if (inProgressClassroom) {
+                                      if (window.confirm(`Tienes un curso a medias sobre este tema.\n¿Deseas continuar donde te quedaste en lugar de crear uno nuevo?`)) {
+                                        router.push(`/classroom/${inProgressClassroom.id}`);
+                                      }
+                                      return;
                                     }
-                                    return;
-                                  }
-                                  // Injecting topic and its objective to help the AI structure the class better
-                                  const humanPrompt = `Quiero que me des una clase sobre el tema: "${topic}".\nEl objetivo de aprendizaje principal debe ser: "${unitData.objetivos ? unitData.objetivos[0] : ''}".`;
-                                  updateForm('requirement', humanPrompt);
-                                  updateForm('topic', topic);
-                                }}
-                                className={cn(
-                                  "w-full text-[12px] px-3 py-2 rounded-lg border transition-all flex items-start gap-2 hover:shadow-sm active:scale-[0.99] text-left group",
-                                  isMastered 
-                                    ? "bg-emerald-50/70 text-emerald-800 border-emerald-200/60 dark:bg-emerald-950/20 dark:text-emerald-300 dark:border-emerald-800/50" 
-                                    : inProgressClassroom
-                                    ? "bg-amber-50/70 text-amber-900 border-amber-200/80 dark:bg-amber-950/30 dark:text-amber-300 dark:border-amber-800/60"
-                                    : "bg-white text-slate-700 border-slate-200 hover:border-sky-300 hover:bg-sky-50/50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:border-sky-700 dark:hover:bg-slate-800/80"
-                                )}
-                              >
-                                {isMastered ? (
-                                  <div className="shrink-0 mt-0.5 size-4 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
-                                    <Check className="size-2.5 text-emerald-600 dark:text-emerald-400" />
-                                  </div>
-                                ) : inProgressClassroom ? (
-                                  <div className="shrink-0 mt-0.5 size-4 rounded-full bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center">
-                                    <Clock className="size-2.5 text-amber-600 dark:text-amber-400" />
-                                  </div>
-                                ) : (
-                                  <div className="shrink-0 mt-0.5 w-4 font-bold text-[10px] text-slate-400 dark:text-slate-500 text-center">
-                                    {prefix}
-                                  </div>
-                                )}
-                                
-                                <span className="flex-1 leading-snug">{topic}</span>
-                                
-                                {isMastered ? (
-                                  <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-emerald-600/70 dark:text-emerald-400/70 mt-0.5 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                                    Superado
-                                  </span>
-                                ) : inProgressClassroom ? (
-                                  <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-amber-600/80 dark:text-amber-400/80 mt-0.5 group-hover:text-amber-700 dark:group-hover:text-amber-300 transition-colors">
-                                    En Curso
-                                  </span>
-                                ) : null}
-                              </button>
-                            );
-                          })}
+                                    // Injecting topic and its objective to help the AI structure the class better
+                                    const humanPrompt = `Quiero que me des una clase sobre el tema: "${topic}".\nEl objetivo de aprendizaje principal debe ser: "${unitData.objetivos ? unitData.objetivos[0] : ''}".`;
+                                    updateForm('requirement', humanPrompt);
+                                    updateForm('topic', topic);
+                                  }}
+                                  className={cn(
+                                    "w-full text-[12px] px-3 py-2 rounded-lg border transition-all flex items-start gap-2 text-left group",
+                                    isLocked
+                                      ? "bg-slate-50/50 text-slate-400 border-slate-100 dark:bg-slate-900/20 dark:text-slate-600 dark:border-slate-800/30 cursor-not-allowed opacity-70"
+                                      : "hover:shadow-sm active:scale-[0.99]",
+                                    isMastered 
+                                      ? "bg-emerald-50/70 text-emerald-800 border-emerald-200/60 dark:bg-emerald-950/20 dark:text-emerald-300 dark:border-emerald-800/50" 
+                                      : inProgressClassroom
+                                      ? "bg-amber-50/70 text-amber-900 border-amber-200/80 dark:bg-amber-950/30 dark:text-amber-300 dark:border-amber-800/60"
+                                      : !isLocked ? "bg-white text-slate-700 border-slate-200 hover:border-sky-300 hover:bg-sky-50/50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:border-sky-700 dark:hover:bg-slate-800/80" : ""
+                                  )}
+                                >
+                                  {isLocked ? (
+                                    <div className="shrink-0 mt-0.5 size-4 rounded-full bg-slate-200/50 dark:bg-slate-800/50 flex items-center justify-center">
+                                      <Lock className="size-2.5 text-slate-400 dark:text-slate-500" />
+                                    </div>
+                                  ) : isMastered ? (
+                                    <div className="shrink-0 mt-0.5 size-4 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
+                                      <Check className="size-2.5 text-emerald-600 dark:text-emerald-400" />
+                                    </div>
+                                  ) : inProgressClassroom ? (
+                                    <div className="shrink-0 mt-0.5 size-4 rounded-full bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center">
+                                      <Clock className="size-2.5 text-amber-600 dark:text-amber-400" />
+                                    </div>
+                                  ) : (
+                                    <div className="shrink-0 mt-0.5 w-4 font-bold text-[10px] text-slate-400 dark:text-slate-500 text-center">
+                                      {prefix}
+                                    </div>
+                                  )}
+                                  
+                                  <span className="flex-1 leading-snug">{topic}</span>
+                                  
+                                  {isLocked ? (
+                                    <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-slate-400/70 dark:text-slate-500/70 mt-0.5">
+                                      Bloqueado
+                                    </span>
+                                  ) : isMastered ? (
+                                    <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-emerald-600/70 dark:text-emerald-400/70 mt-0.5 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                                      Superado
+                                    </span>
+                                  ) : inProgressClassroom ? (
+                                    <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-amber-600/80 dark:text-amber-400/80 mt-0.5 group-hover:text-amber-700 dark:group-hover:text-amber-300 transition-colors">
+                                      En Curso
+                                    </span>
+                                  ) : null}
+                                </button>
+                              );
+                            })}
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                      ))}
+                    </div>
+                  );
+                })()}
               </div>
             </motion.div>
           )}
@@ -1168,11 +1204,19 @@ function HomePage() {
                         let totalTopics = 0;
                         let mCount = 0;
                         const units = Object.entries(subjectData);
+                        
+                        const lockedTopics = new Set<string>();
+                        let firstUnmasteredFound = false;
 
                         units.forEach(([_, uData]: any) => {
                           totalTopics += uData.temas.length;
                           uData.temas.forEach((t: string) => {
-                            if (masteredTopics?.includes(t)) mCount++;
+                            if (masteredTopics?.includes(t)) {
+                              mCount++;
+                            } else {
+                              if (firstUnmasteredFound) lockedTopics.add(t);
+                              firstUnmasteredFound = true;
+                            }
                           });
                         });
 
@@ -1199,20 +1243,32 @@ function HomePage() {
                                   <div className="flex flex-col gap-1.5">
                                     {uData.temas.map((t: string, tIdx: number) => {
                                       const isMastered = masteredTopics?.includes(t);
-                                      const inProgressClassroom = !isMastered ? classrooms.find((c) => c.topic === t || c.name === t) : null;
+                                      const isLocked = lockedTopics.has(t);
+                                      const inProgressClassroom = !isMastered && !isLocked ? classrooms.find((c) => (c.topic === t || c.name === t) && (c.sceneCount && c.sceneCount > 0)) : null;
                                       return (
                                         <div 
                                           key={t} 
                                           onClick={() => {
+                                            if (isLocked) return;
                                             if (inProgressClassroom) {
                                               router.push(`/classroom/${inProgressClassroom.id}`);
                                             }
                                           }}
-                                          className={cn("text-[11px] flex items-start gap-1.5 p-1.5 rounded-md transition-colors", inProgressClassroom ? "cursor-pointer" : "", isMastered ? "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-800 dark:text-emerald-300" : inProgressClassroom ? "bg-amber-50 dark:bg-amber-950/30 text-amber-900 dark:text-amber-300 hover:bg-amber-100/60 dark:hover:bg-amber-900/40" : "text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50")}
+                                          className={cn("text-[11px] flex items-start gap-1.5 p-1.5 rounded-md transition-colors", 
+                                            isLocked ? "text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-60" :
+                                            inProgressClassroom ? "cursor-pointer" : "", 
+                                            isMastered ? "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-800 dark:text-emerald-300" : 
+                                            inProgressClassroom ? "bg-amber-50 dark:bg-amber-950/30 text-amber-900 dark:text-amber-300 hover:bg-amber-100/60 dark:hover:bg-amber-900/40" : 
+                                            isLocked ? "" : "text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                                          )}
                                         >
-                                          {isMastered ? <Check className="size-3.5 shrink-0 mt-[1px]" /> : inProgressClassroom ? <Clock className="size-3.5 shrink-0 mt-[1px] text-amber-600 dark:text-amber-400" /> : <div className="size-3 shrink-0 rounded-full border border-slate-300 dark:border-slate-600 mt-0.5" />}
+                                          {isLocked ? <Lock className="size-3.5 shrink-0 mt-[1px] text-slate-300 dark:text-slate-600" /> :
+                                           isMastered ? <Check className="size-3.5 shrink-0 mt-[1px]" /> : 
+                                           inProgressClassroom ? <Clock className="size-3.5 shrink-0 mt-[1px] text-amber-600 dark:text-amber-400" /> : 
+                                           <div className="size-3 shrink-0 rounded-full border border-slate-300 dark:border-slate-600 mt-0.5" />}
                                           <span className="leading-snug flex-1">{t}</span>
-                                          {inProgressClassroom && <span className="shrink-0 text-[9px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wide mt-[2px]">En Curso</span>}
+                                          {isLocked ? <span className="shrink-0 text-[9px] font-bold text-slate-400 dark:text-slate-600 uppercase tracking-wide mt-[2px]">Bloqueado</span> :
+                                           inProgressClassroom && <span className="shrink-0 text-[9px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wide mt-[2px]">En Curso</span>}
                                         </div>
                                       );
                                     })}

@@ -2,9 +2,15 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Perfil de Usuario y Progreso (Solo el dueño puede leer y escribir)
-    match /users/{userId} {
+    // Perfil de Usuario y Progreso (Solo el dueño puede leer y escribir, incluyendo subcolecciones)
+    match /users/{userId}/{document=**} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Configuraciones del Sistema
+    match /system/{document=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.token.role == 'admin';
     }
 
     // Biblioteca Global de Cursos

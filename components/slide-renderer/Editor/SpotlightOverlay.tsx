@@ -70,7 +70,7 @@ export function SpotlightOverlay() {
   }, [measure, elements]);
 
   const active = !!spotlightElementId && !!spotlightOptions && !!rect;
-  const dimness = spotlightOptions?.dimness ?? 0.7;
+  const dimness = spotlightOptions?.dimness ?? 0.35;
 
   return (
     <div
@@ -94,6 +94,13 @@ export function SpotlightOverlay() {
               className="absolute inset-0"
             >
               <defs>
+                <filter id="spotlight-glow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="0.4" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
                 <mask id={`mask-${spotlightElementId}`}>
                   {/* White background = show mask layer (dimmed) */}
                   <rect x="0" y="0" width="100" height="100" fill="white" />
@@ -128,10 +135,10 @@ export function SpotlightOverlay() {
                 height="100"
                 fill={`rgba(0,0,0,${dimness})`}
                 mask={`url(#mask-${spotlightElementId})`}
-                className="backdrop-blur-[1.5px]"
+                className="backdrop-blur-[2.5px] transition-all duration-500"
               />
 
-              {/* THE ONE BORDER - white border */}
+              {/* THE ONE BORDER - Glowing Border */}
               <motion.rect
                 initial={{
                   x: rect.x - 4,
@@ -150,8 +157,9 @@ export function SpotlightOverlay() {
                   rx: 1,
                 }}
                 fill="none"
-                stroke="rgba(255,255,255,0.7)"
-                strokeWidth="1.2"
+                stroke="rgba(14, 165, 233, 0.95)"
+                strokeWidth="2.5"
+                filter="url(#spotlight-glow)"
                 style={{ vectorEffect: 'non-scaling-stroke' } as React.CSSProperties}
                 transition={{
                   duration: 0.5,

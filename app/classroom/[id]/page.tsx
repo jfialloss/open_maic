@@ -12,6 +12,7 @@ import { useMediaGenerationStore } from '@/lib/store/media-generation';
 import { createLogger } from '@/lib/logger';
 import { MediaStageProvider } from '@/lib/contexts/media-stage-context';
 import { generateMediaForOutlines } from '@/lib/media/media-orchestrator';
+import { auth } from '@/lib/firebase';
 
 const log = createLogger('Classroom');
 
@@ -173,7 +174,15 @@ export default function ClassroomDetailPage() {
           
           import('@/lib/utils/cloud-sync')
             .then(async ({ publishStageToCloud }) => {
-              await publishStageToCloud(classroomId, 'system', 'Docente NEWMAN', stage.subject!);
+              const user = auth.currentUser;
+              if (user) {
+                await publishStageToCloud(
+                  classroomId, 
+                  user.uid, 
+                  user.displayName || 'Docente', 
+                  stage.subject!
+                );
+              }
             })
             .catch(err => {
               log.error('Fallo al publicar auto a Cloud:', err);

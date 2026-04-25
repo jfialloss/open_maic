@@ -20,6 +20,7 @@ import {
 } from '@/lib/utils/image-storage';
 import { getCurrentModelConfig } from '@/lib/utils/model-config';
 import { db } from '@/lib/utils/database';
+import { auth } from '@/lib/firebase';
 import { MAX_PDF_CONTENT_CHARS, MAX_VISION_IMAGES } from '@/lib/constants/generation';
 import { nanoid } from 'nanoid';
 import type { Stage } from '@/lib/types/stage';
@@ -89,13 +90,24 @@ function GenerationPreviewContent() {
   }, []);
 
   // Get API credentials from localStorage
-  const getApiHeaders = () => {
+  const getApiHeaders = async () => {
     const modelConfig = getCurrentModelConfig();
     const settings = useSettingsStore.getState();
     const imageProviderConfig = settings.imageProvidersConfig?.[settings.imageProviderId];
     const videoProviderConfig = settings.videoProvidersConfig?.[settings.videoProviderId];
+    
+    let token = '';
+    try {
+      if (auth.currentUser) {
+        token = await auth.currentUser.getIdToken();
+      }
+    } catch (err) {
+      log.warn('Could not get auth token', err);
+    }
+
     return {
       'Content-Type': 'application/json',
+      ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
       'x-model': modelConfig.modelString,
       'x-api-key': modelConfig.apiKey,
       'x-base-url': modelConfig.baseUrl,
@@ -380,7 +392,16 @@ function GenerationPreviewContent() {
       if (stage.subject && stage.subject !== 'none') {
         import('@/lib/utils/cloud-sync')
           .then(({ publishBuildingStageToCloud }) => {
-            publishBuildingStageToCloud(stage.id, stage.name, 'system', 'Docente NEWMAN', stage.subject!);
+            const user = auth.currentUser;
+            if (user) {
+              publishBuildingStageToCloud(
+                stage.id, 
+                stage.name, 
+                user.uid, 
+                user.displayName || 'Docente', 
+                stage.subject!
+              );
+            }
           })
           .catch((err) => log.error('Failed to publish building stub', err));
       }
@@ -408,7 +429,7 @@ function GenerationPreviewContent() {
           // No outlines yet — agent generation uses only stage name + description
           const agentResp = await fetch('/api/generate/agent-profiles', {
             method: 'POST',
-            headers: getApiHeaders(),
+            headers: await getApiHeaders(),
             body: JSON.stringify({
               stageInfo: { name: stage.name, description: stage.description },
               language: currentSession.requirements.language || 'es-ES',
@@ -479,12 +500,13 @@ function GenerationPreviewContent() {
         log.debug('=== Generating outlines (SSE) ===');
         setStreamingOutlines([]);
 
+        const streamHeaders = await getApiHeaders();
         outlines = await new Promise<SceneOutline[]>((resolve, reject) => {
           const collected: SceneOutline[] = [];
 
           fetch('/api/generate/scene-outlines-stream', {
             method: 'POST',
-            headers: getApiHeaders(),
+            headers: streamHeaders,
             body: JSON.stringify({
               requirements: currentSession.requirements,
               pdfText: currentSession.pdfText,
@@ -608,7 +630,7 @@ function GenerationPreviewContent() {
       // Step 2: Generate content (currentStepIndex is already 2)
       const contentResp = await fetch('/api/generate/scene-content', {
         method: 'POST',
-        headers: getApiHeaders(),
+        headers: await getApiHeaders(),
         body: JSON.stringify({
           outline: firstOutline,
           allOutlines: outlines,
@@ -637,7 +659,7 @@ function GenerationPreviewContent() {
 
       const actionsResp = await fetch('/api/generate/scene-actions', {
         method: 'POST',
-        headers: getApiHeaders(),
+        headers: await getApiHeaders(),
         body: JSON.stringify({
           outline: contentData.effectiveOutline || firstOutline,
           allOutlines: outlines,
@@ -674,7 +696,7 @@ function GenerationPreviewContent() {
           try {
             const resp = await fetch('/api/generate/tts', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: await getApiHeaders(),
               body: JSON.stringify({
                 text: action.text,
                 audioId,
