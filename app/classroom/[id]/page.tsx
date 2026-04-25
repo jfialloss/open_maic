@@ -164,20 +164,21 @@ export default function ClassroomDetailPage() {
         (Object.keys(mediaTasks).length === 0 ||
          Object.values(mediaTasks).every((task) => task.status === 'done' || task.status === 'failed'));
 
-      if (isExportable && stage && stage.subject && stage.subject !== 'none') {
-        log.info('Course fully generated and exportable, publishing to Global Cloud Library...');
-        setHasPublishedToCloud(true);
-        
-        import('@/lib/utils/cloud-sync')
-          .then(async ({ publishStageToCloud }) => {
-            // You can also feed actual user info if auth is built-in
-            await publishStageToCloud(classroomId, 'system', 'Docente NEWMAN', stage.subject!);
-            toast.success('¡Curso 100% Completado y sincronizado con la Nube!');
-          })
-          .catch(err => {
-            log.error('Fallo al publicar auto a Cloud:', err);
-            toast.error('Error subiendo contenido a Firebase: ' + (err.message || 'Desconocido'));
-          });
+      if (isExportable && stage && stage.subject && !stage.isPublishedToCloud) {
+        import('@/lib/store/sync-store').then(({ useSyncStore }) => {
+          if (useSyncStore.getState().isSyncing(classroomId)) return;
+
+          log.info('Course fully generated and exportable, publishing to Global Cloud Library...');
+          setHasPublishedToCloud(true);
+          
+          import('@/lib/utils/cloud-sync')
+            .then(async ({ publishStageToCloud }) => {
+              await publishStageToCloud(classroomId, 'system', 'Docente NEWMAN', stage.subject!);
+            })
+            .catch(err => {
+              log.error('Fallo al publicar auto a Cloud:', err);
+            });
+        });
       }
     };
 
@@ -190,6 +191,30 @@ export default function ClassroomDetailPage() {
       unsubMedia();
     };
   }, [classroomId, hasPublishedToCloud]);
+
+  // Hook beforeunload to prevent accidental tab closing during generation
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      const state = useStageStore.getState();
+      const mediaTasks = useMediaGenerationStore.getState().tasks;
+      const { scenes, generatingOutlines, failedOutlines } = state;
+      
+      const isExportable =
+        scenes.length > 0 &&
+        generatingOutlines.length === 0 &&
+        failedOutlines.length === 0 &&
+        (Object.keys(mediaTasks).length === 0 ||
+         Object.values(mediaTasks).every((task) => task.status === 'done' || task.status === 'failed'));
+
+      if (!isExportable && state.stage) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
 
   return (
     <ThemeProvider>

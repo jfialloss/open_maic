@@ -114,13 +114,21 @@ function splitLongSpeechActions(actions: Action[], providerId: TTSProviderId): A
   return didSplit ? nextActions : actions;
 }
 
-function getApiHeaders(): HeadersInit {
+import { auth } from '@/lib/firebase';
+
+async function getApiHeaders(): Promise<HeadersInit> {
   const config = getCurrentModelConfig();
   const settings = useSettingsStore.getState();
   const imageProviderConfig = settings.imageProvidersConfig?.[settings.imageProviderId];
   const videoProviderConfig = settings.videoProvidersConfig?.[settings.videoProviderId];
 
+  let idToken = '';
+  if (auth.currentUser) {
+    idToken = await auth.currentUser.getIdToken();
+  }
+
   return {
+    'Authorization': `Bearer ${idToken}`,
     'Content-Type': 'application/json',
     'x-model': config.modelString || '',
     'x-api-key': config.apiKey || '',
@@ -163,7 +171,7 @@ async function fetchSceneContent(
 ): Promise<SceneContentResult> {
   const response = await fetch('/api/generate/scene-content', {
     method: 'POST',
-    headers: getApiHeaders(),
+    headers: await getApiHeaders(),
     body: JSON.stringify(params),
     signal,
   });
@@ -191,7 +199,7 @@ async function fetchSceneActions(
 ): Promise<SceneActionsResult> {
   const response = await fetch('/api/generate/scene-actions', {
     method: 'POST',
-    headers: getApiHeaders(),
+    headers: await getApiHeaders(),
     body: JSON.stringify(params),
     signal,
   });
@@ -214,9 +222,13 @@ export async function generateAndStoreTTS(
   if (settings.ttsProviderId === 'browser-native-tts') return;
 
   const ttsProviderConfig = settings.ttsProvidersConfig?.[settings.ttsProviderId];
+  const idToken = auth.currentUser ? await auth.currentUser.getIdToken() : '';
   const response = await fetch('/api/generate/tts', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${idToken}`
+    },
     body: JSON.stringify({
       text,
       audioId,

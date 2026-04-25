@@ -1,0 +1,34 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Perfil de Usuario y Progreso (Solo el dueño puede leer y escribir)
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Biblioteca Global de Cursos
+    match /global_classrooms/{classroomId} {
+      // Cualquiera autenticado puede leer para descargar cursos
+      allow read: if request.auth != null;
+      
+      // Solo administradores o el creador del curso pueden escribir o borrar
+      // NOTA: Para producción idealmente verificar un custom claim `request.auth.token.role == 'admin'`
+      // O verificar que el uid del usuario sea el creador `request.resource.data.createdBy == request.auth.uid`
+      allow create, update: if request.auth != null && (
+        request.auth.uid == request.resource.data.createdBy || 
+        request.auth.token.role == 'admin'
+      );
+      
+      allow delete: if request.auth != null && (
+        request.auth.uid == resource.data.createdBy || 
+        request.auth.token.role == 'admin'
+      );
+    }
+
+    // Por defecto, denegar todo lo demás
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

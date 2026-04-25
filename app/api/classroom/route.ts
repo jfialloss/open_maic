@@ -7,9 +7,11 @@ import {
   persistClassroom,
   readClassroom,
 } from '@/lib/server/classroom-storage';
+import { authenticateRequest } from '@/lib/server/auth';
 
 export async function POST(request: NextRequest) {
   try {
+    const authUser = await authenticateRequest(request);
     const body = await request.json();
     const { stage, scenes } = body;
 
@@ -28,6 +30,9 @@ export async function POST(request: NextRequest) {
 
     return apiSuccess({ id: persisted.id, url: persisted.url }, 201);
   } catch (error) {
+    if (error instanceof Error && (error.message === 'Unauthorized' || error.message.includes('Authorization'))) {
+      return apiError('UNAUTHORIZED', 401, 'Unauthorized request');
+    }
     return apiError(
       API_ERROR_CODES.INTERNAL_ERROR,
       500,

@@ -23,8 +23,9 @@ Based on the scene information above, generate a complete Canvas/PPT component f
 **Must Follow**:
 
 1. Output pure JSON directly
-2. Do not wrap with ```json code blocks (unless necessary)
-3. Ensure the JSON format is correct and can be parsed directly
+2. NEVER include conversational greetings ("Hola", "Bienvenidos") in the text. The text MUST be purely academic.
+3. Do not wrap with ```json code blocks (unless necessary)
+4. Ensure the JSON format is correct and can be parsed directly
 5. Use the provided image_id (e.g., `img_001`) for the `src` field of image elements
 6. All TextElement `height` values must be selected from the quick reference table in the system prompt
 

@@ -14,6 +14,7 @@ import type { TTSProviderId } from '@/lib/audio/types';
 import { createLogger } from '@/lib/logger';
 import { apiError, apiSuccess } from '@/lib/server/api-response';
 import { validateUrlForSSRF } from '@/lib/server/ssrf-guard';
+import { authenticateRequest } from '@/lib/server/auth';
 
 const log = createLogger('TTS API');
 
@@ -21,6 +22,7 @@ export const maxDuration = 30;
 
 export async function POST(req: NextRequest) {
   try {
+    await authenticateRequest(req);
     const body = await req.json();
     const { text, audioId, ttsProviderId, ttsVoice, ttsSpeed, ttsApiKey, ttsBaseUrl } = body as {
       text: string;
@@ -82,6 +84,9 @@ export async function POST(req: NextRequest) {
 
     return apiSuccess({ audioId, base64, format });
   } catch (error) {
+    if (error instanceof Error && (error.message === 'Unauthorized' || error.message.includes('Authorization'))) {
+      return apiError('UNAUTHORIZED', 401, 'Unauthorized request');
+    }
     log.error('TTS generation error:', error);
     return apiError(
       'GENERATION_FAILED',

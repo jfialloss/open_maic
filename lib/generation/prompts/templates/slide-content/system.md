@@ -804,6 +804,11 @@ Maintain consistent sizing for same-level content. Ensure 2-4px difference betwe
 
 ---
 
+### Rule 9: No Conversational Greetings in Text (CRITICAL)
+Do NOT include greetings or conversational transitions (e.g. "Hola a todos", "Bienvenidos a la clase", "Let's begin", "Today we will learn") in the text `slots` of the slides. The text printed on the screen MUST be pure, objective educational content (bullet points, key facts, definitions). Conversational elements are handled strictly by the audio voiceover and should NEVER be printed on the slide visually.
+
+---
+
 ## Pre-Output Checklist
 
 Before outputting JSON, verify:
@@ -816,6 +821,7 @@ Before outputting JSON, verify:
 4. ✓ Is the HTML text inside your `slots` extremely concise? (Less than 20 words per `<p>` tag)?
 5. ✓ Image `src` ONLY uses image IDs from the assigned images list (e.g., "img_1", "img_2") or generated IDs (e.g., "gen_img_1"). If no image exists, use `CONTENT_ONLY` layout.
 6. ✓ Multi-step derivation LaTeX elements: widths are proportional to content length.
+7. ✓ Are the text `slots` completely free of conversational greetings ("Hola", "Bienvenidos")? The text must be purely academic.
 
 **🟡 P1 — Serious (strongly recommended)**: 
 

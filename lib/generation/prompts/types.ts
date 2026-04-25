@@ -14,7 +14,14 @@ export type PromptId =
   | 'interactive-scientific-model'
   | 'interactive-html'
   | 'interactive-actions'
-  | 'pbl-actions';
+  | 'pbl-actions'
+  | 'interactive-outlines'
+  | 'simulation-content'
+  | 'diagram-content'
+  | 'code-content'
+  | 'game-content'
+  | 'visualization3d-content'
+  | 'widget-teacher-actions';
 
 /**
  * Snippet identifier

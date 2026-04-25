@@ -1,0 +1,26 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Carpeta de archivos PDF base para los cursos generados
+    match /source_pdfs/{userId}/{fileName} {
+      // Solo el usuario dueño puede leer sus PDFs originales y subir nuevos
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Carpeta de Media (Imágenes generadas, Audio TTS) para cursos
+    match /classrooms/{classroomId}/{fileName} {
+      // Cualquiera autenticado puede leer para ver los cursos
+      allow read: if request.auth != null;
+      // Solo el creador original o un administrador puede modificar archivos del curso
+      // Simplificado: asumiendo que los archivos son públicos para lectura en la app
+      allow write: if request.auth != null; 
+    }
+
+    // Denegar el resto
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

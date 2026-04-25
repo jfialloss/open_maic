@@ -29,6 +29,9 @@ export interface StageListItem {
   createdAt: number;
   updatedAt: number;
   subject?: string;
+  grade?: string;
+  topic?: string;
+  isPublishedToCloud?: boolean;
 }
 
 /**
@@ -48,6 +51,9 @@ export async function saveStageData(stageId: string, data: StageStoreData): Prom
       language: data.stage.language,
       style: data.stage.style,
       subject: data.stage.subject,
+      grade: data.stage.grade,
+      topic: data.stage.topic,
+      isPublishedToCloud: data.stage.isPublishedToCloud,
       currentSceneId: data.currentSceneId || undefined,
     });
 
@@ -150,6 +156,9 @@ export async function listStages(): Promise<StageListItem[]> {
           description: stage.description,
           sceneCount,
           subject: stage.subject,
+          grade: stage.grade,
+          topic: stage.topic,
+          isPublishedToCloud: stage.isPublishedToCloud,
           createdAt: stage.createdAt,
           updatedAt: stage.updatedAt,
         };

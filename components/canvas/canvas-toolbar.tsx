@@ -46,6 +46,7 @@ export interface CanvasToolbarProps {
   readonly onToggleAutoPlay?: () => void;
   readonly playbackSpeed?: number;
   readonly onCycleSpeed?: () => void;
+  readonly canAdvance?: boolean;
 }
 
 /* Compact control button */
@@ -102,10 +103,11 @@ export function CanvasToolbar({
   onToggleAutoPlay,
   playbackSpeed = 1,
   onCycleSpeed,
+  canAdvance = true,
 }: CanvasToolbarProps) {
   const { t } = useI18n();
   const canGoPrev = currentSceneIndex > 0;
-  const canGoNext = currentSceneIndex < scenesCount - 1;
+  const canGoNext = currentSceneIndex < scenesCount - 1 && canAdvance;
   const showPlayPause = !isLiveSession;
 
   const whiteboardElementCount = useStageStore(
@@ -316,17 +318,30 @@ export function CanvasToolbar({
 
           {/* Next scene */}
           {scenesCount > 1 && (
-            <button
-              onClick={onNextSlide}
-              disabled={!canGoNext}
-              className={cn(
-                ctrlBtn,
-                'w-6 h-6 text-gray-500 dark:text-gray-400 disabled:opacity-20 disabled:pointer-events-none',
-              )}
-              aria-label="Next scene"
-            >
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
+            <TooltipProvider delayDuration={0}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="inline-flex">
+                    <button
+                      onClick={onNextSlide}
+                      disabled={!canGoNext}
+                      className={cn(
+                        ctrlBtn,
+                        'w-6 h-6 text-gray-500 dark:text-gray-400 disabled:opacity-20 disabled:pointer-events-none',
+                      )}
+                      aria-label="Next scene"
+                    >
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  </span>
+                </TooltipTrigger>
+                {currentSceneIndex < scenesCount - 1 && !canAdvance && (
+                  <TooltipContent side="top" className="text-xs max-w-[200px] text-center">
+                    Espera unos segundos o a que el profesor termine para avanzar.
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
           )}
 
           <CtrlDivider />

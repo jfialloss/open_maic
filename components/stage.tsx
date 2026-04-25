@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useStageStore } from '@/lib/store';
+import { useWidgetIframeStore } from '@/lib/store/widget-iframe';
 import { PENDING_SCENE_ID } from '@/lib/store/stage';
 import { useCanvasStore } from '@/lib/store/canvas';
 import { useSettingsStore } from '@/lib/store/settings';
@@ -15,7 +16,8 @@ import type { EngineMode, TriggerEvent, Effect } from '@/lib/playback';
 import { ActionEngine } from '@/lib/action/engine';
 import { createAudioPlayer } from '@/lib/utils/audio-player';
 import type { Action, DiscussionAction, SpeechAction } from '@/lib/types/action';
-// Playback state persistence removed — refresh always starts from the beginning
+import { savePlaybackState, loadPlaybackState } from '@/lib/utils/playback-storage';
+import { useUserProfileStore } from '@/lib/store/user-profile';
 import { ChatArea, type ChatAreaRef } from '@/components/chat/chat-area';
 import { agentsToParticipants, useAgentRegistry } from '@/lib/orchestration/registry/store';
 import type { AgentConfig } from '@/lib/orchestration/registry/types';
@@ -93,6 +95,27 @@ export function Stage({
 
   // Scene switch confirmation dialog state
   const [pendingSceneId, setPendingSceneId] = useState<string | null>(null);
+
+  // Anti-skip constraint: minimum 10s wait or until playback completes
+  const [canAdvance, setCanAdvance] = useState(false);
+
+  useEffect(() => {
+    if (!currentSceneId) return;
+    setCanAdvance(false);
+    
+    // Unlock after 10 seconds unconditionally
+    const timer = setTimeout(() => {
+      setCanAdvance(true);
+    }, 10000);
+    
+    return () => clearTimeout(timer);
+  }, [currentSceneId]);
+
+  useEffect(() => {
+    if (playbackCompleted) {
+      setCanAdvance(true);
+    }
+  }, [playbackCompleted]);
 
   // Whiteboard state (from canvas store so AI tools can open it)
   const whiteboardOpen = useCanvasStore.use.whiteboardOpen();
@@ -257,8 +280,15 @@ export function Stage({
       engineRef.current.stop();
     }
 
-    // Create ActionEngine for playback (with audioPlayer for TTS)
-    const actionEngine = new ActionEngine(useStageStore, audioPlayerRef.current);
+    // Create ActionEngine for playback (with audioPlayer for TTS and widget messaging)
+    const actionEngine = new ActionEngine(
+      useStageStore,
+      audioPlayerRef.current,
+      (type, payload) => {
+        const sendMsg = useWidgetIframeStore.getState().getSendMessage();
+        if (sendMsg) sendMsg(type, payload);
+      }
+    );
 
     // Create new PlaybackEngine
     const engine = new PlaybackEngine([currentScene], actionEngine, audioPlayerRef.current, {
@@ -354,6 +384,21 @@ export function Stage({
         return ids.includes(agentId);
       },
       getPlaybackSpeed: () => useSettingsStore.getState().playbackSpeed || 1,
+      onProgress: (snapshot) => {
+        const stage = useStageStore.getState().stage;
+        if (stage) {
+          savePlaybackState(stage.id, snapshot).catch(err => console.error(err));
+          // Update cloud profile active courses
+          useUserProfileStore.getState().updateActiveCourse(stage.id, {
+            name: stage.name || 'Untitled',
+            topic: stage.topic || '',
+            subject: stage.subject || '',
+            grade: stage.grade || '',
+            sceneIndex: snapshot.sceneIndex,
+            actionIndex: snapshot.actionIndex
+          });
+        }
+      },
       onComplete: () => {
         // lectureSpeech intentionally NOT cleared — last sentence stays visible
         // until scene transition (auto-play) or user restarts. Scene change
@@ -418,6 +463,16 @@ export function Stage({
       })();
     } else {
       // Load saved playback state and restore position (but never auto-play).
+      const stage = useStageStore.getState().stage;
+      if (stage) {
+        loadPlaybackState(stage.id).then((snapshot) => {
+          if (snapshot && snapshot.sceneId === currentScene.id && engineRef.current) {
+            engineRef.current.restoreFromSnapshot(snapshot);
+            // We just restore internal engine cursors so the play button resumes correctly.
+            // View is naturally computed on the next start() or manually if we wanted to jump.
+          }
+        }).catch(err => console.error(err));
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- Only re-run when scene changes, functions are stable refs
   }, [currentScene]);
@@ -711,6 +766,7 @@ export function Stage({
             onToggleChat={() => setChatAreaCollapsed(!chatAreaCollapsed)}
             onPrevSlide={handlePreviousScene}
             onNextSlide={handleNextScene}
+            canAdvance={canAdvance}
             onPlayPause={handlePlayPause}
             onWhiteboardClose={handleWhiteboardToggle}
             showStopDiscussion={
@@ -823,6 +879,7 @@ export function Stage({
             onToggleChat={() => setChatAreaCollapsed(!chatAreaCollapsed)}
             onPrevSlide={handlePreviousScene}
             onNextSlide={handleNextScene}
+            canAdvance={canAdvance}
             onWhiteboardClose={handleWhiteboardToggle}
           />
         )}

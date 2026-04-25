@@ -22,6 +22,11 @@ const log = createLogger('QuizView');
 import type { QuizQuestion } from '@/lib/types/stage';
 import { useDraftCache } from '@/lib/hooks/use-draft-cache';
 import { SpeechButton } from '@/components/audio/speech-button';
+import { useStageStore } from '@/lib/store/stage';
+import { useUserProfileStore } from '@/lib/store/user-profile';
+import syllabusDataRaw from '@/lib/data/syllabus.json';
+
+const syllabusData = syllabusDataRaw as Record<string, Record<string, Record<string, { objetivos: string[], temas: string[] }>>>;
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -767,6 +772,41 @@ export function QuizView({ questions, sceneId }: QuizViewProps) {
       const ordered = questions.map((q) => allResultsMap.get(q.id)!).filter(Boolean);
 
       setResults(ordered);
+
+      // Check mastery
+      const earned = ordered.reduce((sum, r) => sum + r.earned, 0);
+      const total = questions.reduce((sum, q) => sum + (q.points ?? 1), 0);
+      if (total > 0 && earned / total >= 0.8) {
+        const stageTopic = useStageStore.getState().stage?.topic;
+        
+        if (stageTopic && stageTopic !== 'LIBRE') {
+          useUserProfileStore.getState().addMasteredTopic(stageTopic);
+        } else {
+          // Legacy fallback for old courses generated before topic metadata
+          const stageName = useStageStore.getState().stage?.name;
+          if (stageName) {
+            let matchedTopic: string | null = null;
+            for (const subjectGrades of Object.values(syllabusData)) {
+              for (const units of Object.values(subjectGrades)) {
+                for (const unit of Object.values(units)) {
+                  for (const topic of unit.temas) {
+                    if (stageName === topic || stageName.includes(topic)) {
+                      matchedTopic = topic;
+                      break;
+                    }
+                  }
+                  if (matchedTopic) break;
+                }
+                if (matchedTopic) break;
+              }
+              if (matchedTopic) break;
+            }
+            if (matchedTopic) {
+              useUserProfileStore.getState().addMasteredTopic(matchedTopic);
+            }
+          }
+        }
+      }
 
       setPhase('reviewing');
     })();

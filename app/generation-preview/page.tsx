@@ -370,6 +370,8 @@ function GenerationPreviewContent() {
         language: currentSession.requirements.language || 'es-ES',
         style: 'professional',
         subject: currentSession.requirements.subject || 'none',
+        grade: currentSession.requirements.grade || undefined,
+        topic: currentSession.requirements.topic || 'LIBRE',
         createdAt: Date.now(),
         updatedAt: Date.now(),
       };

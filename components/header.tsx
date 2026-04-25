@@ -86,7 +86,14 @@ export function Header({ currentSceneTitle }: HeaderProps) {
       <header className="h-20 px-8 flex items-center justify-between z-10 bg-transparent gap-4">
         <div className="flex items-center gap-3 min-w-0 flex-1">
           <button
-            onClick={() => router.push('/')}
+            onClick={() => {
+              if (!canExport) {
+                if (!window.confirm("El curso aún se está construyendo. Si regresas al inicio, el proceso se pausará y el curso quedará incompleto hasta que lo vuelvas a abrir. ¿Deseas salir?")) {
+                  return;
+                }
+              }
+              router.push('/');
+            }}
             className="shrink-0 p-2 rounded-lg text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
             title={t('generation.backToHome')}
           >

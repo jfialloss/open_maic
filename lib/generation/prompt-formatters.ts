@@ -68,42 +68,34 @@ export function formatTeacherPersonaForPrompt(agents?: AgentInfo[]): string {
   const teacher = agents.find((a) => a.role === 'teacher');
   if (!teacher?.persona) return '';
 
-  return `Teacher Persona:\nName: ${teacher.name}\n${teacher.persona}\n\nPlease adapt the content style and tone to match this teacher's personality and teaching approach.`;
+  return `Teacher Persona:\nName: ${teacher.name}\n${teacher.persona}\n\nCRITICAL INSTRUCTION FOR SLIDE GENERATION:\nYou may adapt the pedagogical tone to this persona, but YOU MUST NEVER INCLUDE CONVERSATIONAL GREETINGS (e.g. "Hola", "Bienvenidos", "Saludos") in the visual text slots of the slides. Visual text must be strictly academic. Conversational greetings are ONLY allowed in audio scripts.`;
 }
 
 /**
  * Format a single PdfImage description for prompt inclusion.
  * Includes dimension/aspect-ratio info when available.
  */
-export function formatImageDescription(img: PdfImage, language: string): string {
+export function formatImageDescription(img: PdfImage): string {
   let dimInfo = '';
   if (img.width && img.height) {
     const ratio = (img.width / img.height).toFixed(2);
-    dimInfo = language === 'zh-CN' 
-      ? ` | 尺寸: ${img.width}×${img.height} (宽高比${ratio})`
-      : ` | Dimensions: ${img.width}×${img.height} (aspect ratio ${ratio})`;
+    dimInfo = ` | Dimensions: ${img.width}×${img.height} (aspect ratio ${ratio})`;
   }
   const desc = img.description ? ` | ${img.description}` : '';
-  return language === 'zh-CN'
-    ? `- **${img.id}**: 来自PDF第${img.pageNumber}页${dimInfo}${desc}`
-    : `- **${img.id}**: from PDF page ${img.pageNumber}${dimInfo}${desc}`;
+  return `- **${img.id}**: from PDF page ${img.pageNumber}${dimInfo}${desc}`;
 }
 
 /**
  * Format a short image placeholder for vision mode.
  * Only ID + page + dimensions + aspect ratio (no description), since the model can see the actual image.
  */
-export function formatImagePlaceholder(img: PdfImage, language: string): string {
+export function formatImagePlaceholder(img: PdfImage): string {
   let dimInfo = '';
   if (img.width && img.height) {
     const ratio = (img.width / img.height).toFixed(2);
-    dimInfo = language === 'zh-CN' 
-      ? ` | 尺寸: ${img.width}×${img.height} (宽高比${ratio})`
-      : ` | Dimensions: ${img.width}×${img.height} (aspect ratio ${ratio})`;
+    dimInfo = ` | Dimensions: ${img.width}×${img.height} (aspect ratio ${ratio})`;
   }
-  return language === 'zh-CN'
-    ? `- **${img.id}**: PDF第${img.pageNumber}页的图片${dimInfo} [参见附图]`
-    : `- **${img.id}**: image from PDF page ${img.pageNumber}${dimInfo} [see attached]`;
+  return `- **${img.id}**: image from PDF page ${img.pageNumber}${dimInfo} [see attached]`;
 }
 
 /**

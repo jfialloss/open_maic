@@ -8,6 +8,7 @@ import {
   Check,
   ChevronDown,
   Clock,
+  Cloud,
   Copy,
   ImagePlus,
   Pencil,
@@ -19,6 +20,12 @@ import {
   BotOff,
   ChevronUp,
   LogOut,
+  Search,
+  ArrowDownAZ,
+  ArrowDownZA,
+  Filter,
+  FileText,
+  Award,
 } from 'lucide-react';
 import { signOut } from 'firebase/auth';
 import { useAuth } from '@/lib/hooks/use-auth';
@@ -51,6 +58,9 @@ import { toast } from 'sonner';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useDraftCache } from '@/lib/hooks/use-draft-cache';
 import { SpeechButton } from '@/components/audio/speech-button';
+import syllabusDataRaw from '@/lib/data/syllabus.json';
+
+const syllabusData = syllabusDataRaw as any;
 
 const log = createLogger('Home');
 
@@ -65,6 +75,7 @@ interface FormState {
   webSearch: boolean;
   deepInteraction: boolean;
   subject: string;
+  topic?: string;
 }
 
 const initialFormState: FormState = {
@@ -74,7 +85,38 @@ const initialFormState: FormState = {
   webSearch: false,
   deepInteraction: false,
   subject: 'none',
+  topic: undefined,
 };
+
+function getSublevelFromGrade(grade: string): string | null {
+  if (['Inicial 1', 'Inicial 2'].includes(grade)) return 'Educación Inicial';
+  if (['1º Grado de EGB'].includes(grade)) return 'Preparatoria';
+  if (['2º Grado de EGB', '3º Grado de EGB', '4º Grado de EGB'].includes(grade)) return 'Básica Elemental';
+  if (['5º Grado de EGB', '6º Grado de EGB', '7º Grado de EGB'].includes(grade)) return 'Básica Media';
+  if (['8º Grado de EGB', '9º Grado de EGB', '10º Grado de EGB'].includes(grade)) return 'Básica Superior';
+  if (['1º de Bachillerato', '2º de Bachillerato', '3º de Bachillerato'].includes(grade)) return 'Bachillerato';
+  return null;
+}
+
+function getSyllabusContext(subject?: string, grade?: string, topic?: string) {
+  if (!subject || subject === 'none' || !grade || !topic || topic === 'LIBRE') return null;
+  const mappedSubject = subject === 'matematicas' ? 'Matemática' : subject === 'ciencias' ? 'Ciencias Naturales' : subject === 'lengua' ? 'Lengua y Literatura' : 'Ciencias Sociales';
+  const mappedSublevel = getSublevelFromGrade(grade);
+  if (!mappedSublevel) return null;
+  
+  const subjectData = syllabusData[mappedSubject]?.[mappedSublevel];
+  if (!subjectData) return null;
+  
+  let unitIndex = 0;
+  for (const [unitName, unitData] of Object.entries(subjectData)) {
+    const uData = unitData as any;
+    if (uData.temas && uData.temas.includes(topic)) {
+      return { unitName, block: unitIndex + 1 };
+    }
+    unitIndex++;
+  }
+  return null;
+}
 
 function HomePage() {
   const { t, locale, setLocale } = useI18n();
@@ -93,6 +135,10 @@ function HomePage() {
 
   // Model setup state
   const currentModelId = useSettingsStore((s) => s.modelId);
+  const masteredTopics = useUserProfileStore((s) => s.masteredTopics);
+  const activeCourses = useUserProfileStore((s) => s.activeCourses);
+  const globalGrade = useUserProfileStore((s) => s.grade);
+  const mappedSublevel = getSublevelFromGrade(globalGrade);
   const [storeHydrated, setStoreHydrated] = useState(false);
   const [recentOpen, setRecentOpen] = useState(true);
 
@@ -141,8 +187,11 @@ function HomePage() {
   const [error, setError] = useState<string | null>(null);
   const [classrooms, setClassrooms] = useState<StageListItem[]>([]);
   const [globalClassrooms, setGlobalClassrooms] = useState<any[]>([]);
-  const [activeTab, setActiveTab] = useState<'local' | 'global'>('local');
+  const [activeTab, setActiveTab] = useState<'local' | 'global' | 'progress'>('local');
   const [globalFilter, setGlobalFilter] = useState<'all' | 'mine' | 'community'>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
   const [loadingGlobal, setLoadingGlobal] = useState(false);
   const [thumbnails, setThumbnails] = useState<Record<string, Slide>>({});
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
@@ -178,15 +227,108 @@ function HomePage() {
     }
   }, [activeTab]);
 
+  // Validate pending cloud courses to ensure they still exist in the cloud
+  useEffect(() => {
+    if (!storeHydrated || !activeCourses) return;
+    
+    const pendingCloud = Object.values(activeCourses).filter(
+      (ac) => !classrooms.some((c) => c.id === ac.stageId) && !masteredTopics.includes(ac.topic)
+    );
+    
+    if (pendingCloud.length === 0) return;
+
+    const validateCloud = async () => {
+      try {
+        const { getDoc, doc } = await import('firebase/firestore');
+        const { db } = await import('@/lib/firebase');
+        
+        for (const ac of pendingCloud) {
+          const docSnap = await getDoc(doc(db, 'global_classrooms', ac.stageId));
+          if (!docSnap.exists()) {
+            log.info(`[Cloud Validation] Course ${ac.stageId} no longer exists in cloud. Removing from pending.`);
+            useUserProfileStore.getState().removeActiveCourse(ac.stageId);
+          }
+        }
+      } catch (e) {
+        log.error('Failed to validate pending cloud courses:', e);
+      }
+    };
+    
+    validateCloud();
+  }, [storeHydrated, activeCourses, classrooms, masteredTopics]);
+
   const loadClassrooms = async () => {
     try {
       const list = await listStages();
-      setClassrooms(list);
+      const now = Date.now();
+      const TWO_HOURS = 2 * 60 * 60 * 1000;
+      
+      const validList: StageListItem[] = [];
+      const completeList: StageListItem[] = [];
+
+      for (const gc of list) {
+        // Garbage Collection Local
+        if ((!gc.sceneCount || gc.sceneCount === 0) && (now - gc.createdAt > TWO_HOURS)) {
+          log.info(`[GC] Eliminando curso truncado local: ${gc.id}`);
+          try {
+            await deleteStageData(gc.id);
+            await deleteDoc(doc(firestoreDb, 'global_classrooms', gc.id));
+          } catch(e) {}
+        } else {
+          validList.push(gc);
+          if (gc.sceneCount && gc.sceneCount > 0) {
+            completeList.push(gc);
+          }
+        }
+      }
+
+      setClassrooms(validList);
+
       // Load first slide thumbnails
-      if (list.length > 0) {
-        const slides = await getFirstSlideByStages(list.map((c) => c.id));
+      if (validList.length > 0) {
+        const slides = await getFirstSlideByStages(validList.map((c) => c.id));
         setThumbnails(slides);
       }
+
+      // Passive Sync for complete courses
+      setTimeout(async () => {
+        try {
+          const { loadStageData } = await import('@/lib/utils/stage-storage');
+          const { publishStageToCloud } = await import('@/lib/utils/cloud-sync');
+          const { getDoc } = await import('firebase/firestore');
+
+          for (const gc of completeList) {
+            // Optimización: Saltar Firebase si ya sabemos que está en la nube
+            if (gc.isPublishedToCloud) continue;
+
+            const { useSyncStore } = await import('@/lib/store/sync-store');
+            if (useSyncStore.getState().isSyncing(gc.id)) continue;
+
+            const docRef = doc(firestoreDb, 'global_classrooms', gc.id);
+            const docSnap = await getDoc(docRef);
+            
+            // Si no existe o se quedó atascado en 'building'
+            if (!docSnap.exists() || docSnap.data().status === 'building') {
+              const fullData = await loadStageData(gc.id);
+              if (fullData && fullData.stage && fullData.stage.subject) {
+                 log.info(`[Passive Sync] Rescatando curso completo a la nube: ${gc.id}`);
+                 try {
+                   await publishStageToCloud(gc.id, 'system', 'Docente NEWMAN', fullData.stage.subject);
+                 } catch (e) {
+                   log.error(`[Passive Sync] Error syncing ${gc.id}`, e);
+                 }
+              }
+            } else {
+              // Estaba en la nube pero no teníamos la marca local. Marcar localmente para ahorrar cuota en el futuro.
+              const { db: dexieDb } = await import('@/lib/utils/database');
+              await dexieDb.stages.update(gc.id, { isPublishedToCloud: true });
+            }
+          }
+        } catch (e) {
+          log.error('Error in passive sync', e);
+        }
+      }, 3000);
+
     } catch (err) {
       log.error('Failed to load classrooms:', err);
     }
@@ -212,6 +354,12 @@ function HomePage() {
     setPendingDeleteId(null);
     try {
       await deleteStageData(id);
+      
+      // Garbage Collection Global: Eliminar el cascarón huérfano si existe
+      try {
+        await deleteDoc(doc(firestoreDb, 'global_classrooms', id));
+      } catch (e) {}
+
       await loadClassrooms();
     } catch (err) {
       log.error('Failed to delete classroom:', err);
@@ -354,6 +502,8 @@ function HomePage() {
         webSearch: form.webSearch || undefined,
         deepInteraction: form.deepInteraction || undefined,
         subject: form.subject !== 'none' ? form.subject : undefined,
+        grade: globalGrade || undefined,
+        topic: form.topic || 'LIBRE',
       };
 
       let pdfStorageKey: string | undefined;
@@ -419,7 +569,7 @@ function HomePage() {
   };
 
   return (
-    <div className="min-h-[100dvh] w-full bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 flex flex-col items-center p-4 pt-16 md:p-8 md:pt-16 overflow-x-hidden">
+    <div className="min-h-[100dvh] w-full bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 flex flex-col items-center p-4 pt-16 md:p-8 md:pt-16 overflow-x-hidden [overflow-anchor:none]">
       {/* ═══ Top-right pill (unchanged) ═══ */}
       <div
         ref={toolbarRef}
@@ -610,7 +760,7 @@ function HomePage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
         className={cn(
-          'relative z-20 w-full max-w-[800px] flex flex-col items-center',
+          'relative z-20 w-full max-w-[800px] flex flex-col items-center [overflow-anchor:none]',
           classrooms.length === 0 ? 'justify-center min-h-[calc(100dvh-8rem)]' : 'mt-[10vh]',
         )}
       >
@@ -656,7 +806,7 @@ function HomePage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.97 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.35 }}
+          transition={{ opacity: { delay: 0.35 }, scale: { delay: 0.35 } }}
           className="w-full"
         >
           <div className="w-full rounded-2xl border border-border/60 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-xl shadow-black/[0.03] dark:shadow-black/20 transition-shadow focus-within:shadow-2xl focus-within:shadow-sky-500/[0.06]">
@@ -697,7 +847,11 @@ function HomePage() {
                   onPdfFileChange={(f) => updateForm('pdfFile', f)}
                   onPdfError={setError}
                   subject={form.subject}
-                  onSubjectChange={(v) => updateForm('subject', v)}
+                  onSubjectChange={(v) => {
+                    updateForm('subject', v);
+                    updateForm('requirement', '');
+                    updateForm('topic', undefined);
+                  }}
                 />
               </div>
 
@@ -728,6 +882,106 @@ function HomePage() {
                 <ArrowUp className="size-3.5" />
               </button>
             </div>
+            
+            {/* ── Syllabus Topics ── */}
+            <AnimatePresence>
+              {form.subject !== 'none' && syllabusData[form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : 'Ciencias Sociales'] && (
+                <motion.div 
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="overflow-hidden"
+                >
+                  <div className="px-3 pb-3 pt-2 border-t border-border/40 mt-1 bg-muted/20 rounded-b-2xl flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+                    <FileText className="size-3.5" /> Temario Oficial ({form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : 'Ciencias Sociales'} - {globalGrade})
+                  </p>
+                </div>
+                {mappedSublevel && syllabusData[form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : 'Ciencias Sociales']?.[mappedSublevel] && (
+                  <div className="flex flex-col gap-4 mt-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                    {Object.entries(syllabusData[form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : 'Ciencias Sociales'][mappedSublevel]).map(([unitName, unitData]: [string, any], unitIndex) => (
+                      <div key={unitName} className="flex flex-col gap-1.5 p-2.5 rounded-xl bg-white/50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-800/50">
+                        <div className="flex items-start justify-between gap-2">
+                          <h4 className="text-[13px] font-bold text-slate-700 dark:text-slate-200 leading-tight">
+                            {unitName}
+                          </h4>
+                          <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400 shrink-0">
+                            Bloque {unitIndex + 1}
+                          </span>
+                        </div>
+                        {unitData.objetivos && unitData.objetivos.length > 0 && (
+                          <div className="text-[10.5px] text-slate-500 dark:text-slate-400 italic mb-1.5 pl-2 border-l-2 border-slate-200 dark:border-slate-700">
+                            {unitData.objetivos[0]}
+                          </div>
+                        )}
+                        <div className="flex flex-col gap-1.5 mt-0.5">
+                          {unitData.temas.map((topic: string, i: number) => {
+                            const isMastered = masteredTopics?.includes(topic) || false;
+                            const prefix = `${unitIndex + 1}.${i + 1}`;
+                            const inProgressClassroom = !isMastered ? classrooms.find((c) => c.topic === topic || c.name === topic) : null;
+                            return (
+                              <button
+                                key={topic}
+                                onClick={() => {
+                                  if (inProgressClassroom) {
+                                    if (window.confirm(`Tienes un curso a medias sobre este tema.\n¿Deseas continuar donde te quedaste en lugar de crear uno nuevo?`)) {
+                                      router.push(`/classroom/${inProgressClassroom.id}`);
+                                    }
+                                    return;
+                                  }
+                                  // Injecting topic and its objective to help the AI structure the class better
+                                  const humanPrompt = `Quiero que me des una clase sobre el tema: "${topic}".\nEl objetivo de aprendizaje principal debe ser: "${unitData.objetivos ? unitData.objetivos[0] : ''}".`;
+                                  updateForm('requirement', humanPrompt);
+                                  updateForm('topic', topic);
+                                }}
+                                className={cn(
+                                  "w-full text-[12px] px-3 py-2 rounded-lg border transition-all flex items-start gap-2 hover:shadow-sm active:scale-[0.99] text-left group",
+                                  isMastered 
+                                    ? "bg-emerald-50/70 text-emerald-800 border-emerald-200/60 dark:bg-emerald-950/20 dark:text-emerald-300 dark:border-emerald-800/50" 
+                                    : inProgressClassroom
+                                    ? "bg-amber-50/70 text-amber-900 border-amber-200/80 dark:bg-amber-950/30 dark:text-amber-300 dark:border-amber-800/60"
+                                    : "bg-white text-slate-700 border-slate-200 hover:border-sky-300 hover:bg-sky-50/50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:border-sky-700 dark:hover:bg-slate-800/80"
+                                )}
+                              >
+                                {isMastered ? (
+                                  <div className="shrink-0 mt-0.5 size-4 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
+                                    <Check className="size-2.5 text-emerald-600 dark:text-emerald-400" />
+                                  </div>
+                                ) : inProgressClassroom ? (
+                                  <div className="shrink-0 mt-0.5 size-4 rounded-full bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center">
+                                    <Clock className="size-2.5 text-amber-600 dark:text-amber-400" />
+                                  </div>
+                                ) : (
+                                  <div className="shrink-0 mt-0.5 w-4 font-bold text-[10px] text-slate-400 dark:text-slate-500 text-center">
+                                    {prefix}
+                                  </div>
+                                )}
+                                
+                                <span className="flex-1 leading-snug">{topic}</span>
+                                
+                                {isMastered ? (
+                                  <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-emerald-600/70 dark:text-emerald-400/70 mt-0.5 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                                    Superado
+                                  </span>
+                                ) : inProgressClassroom ? (
+                                  <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-amber-600/80 dark:text-amber-400/80 mt-0.5 group-hover:text-amber-700 dark:group-hover:text-amber-300 transition-colors">
+                                    En Curso
+                                  </span>
+                                ) : null}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
           </div>
         </motion.div>
 
@@ -752,7 +1006,7 @@ function HomePage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="relative z-10 mt-10 w-full max-w-6xl flex flex-col items-center"
+          className="relative z-10 mt-6 w-full max-w-6xl flex flex-col items-center"
         >
           {/* Trigger — divider-line with centered text */}
           <div
@@ -783,6 +1037,13 @@ function HomePage() {
                 >
                   Biblioteca Global
                 </button>
+                <button
+                  className={cn("px-2 py-0.5 rounded-sm transition-colors cursor-pointer flex items-center gap-1", activeTab === 'progress' ? "bg-white dark:bg-slate-800 shadow-sm text-emerald-600 dark:text-emerald-400" : "text-muted-foreground")}
+                  onClick={() => setActiveTab('progress')}
+                >
+                  <Award className="size-3" />
+                  Mi Progreso
+                </button>
               </div>
               <motion.div
                 animate={{ rotate: recentOpen ? 180 : 0 }}
@@ -805,9 +1066,10 @@ function HomePage() {
                 transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
                 className="w-full overflow-hidden"
               >
-                {activeTab === 'global' && (
-                  <div className="pt-4 pb-2 flex justify-center">
-                    <div className="flex bg-muted/40 p-1 rounded-lg border border-border/40 gap-1">
+                <div className="pt-4 pb-2 flex flex-col sm:flex-row items-center justify-between gap-4">
+                  {/* Left Side: Tabs if global, empty if local to keep right side aligned */}
+                  {activeTab === 'global' ? (
+                    <div className="flex bg-muted/40 p-1 rounded-lg border border-border/40 gap-1 shrink-0">
                       <button
                         className={cn("px-4 py-1.5 rounded-md text-[13px] font-medium transition-colors cursor-pointer", globalFilter === 'all' ? "bg-white dark:bg-slate-800 shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
                         onClick={() => setGlobalFilter('all')}
@@ -827,12 +1089,179 @@ function HomePage() {
                         De la Comunidad
                       </button>
                     </div>
+                  ) : (
+                    <div className="hidden sm:block" />
+                  )}
+
+                  {/* Right Side: Search and Filters (Visible for both) */}
+                  <div className="flex items-center gap-2 w-full sm:w-auto bg-white/60 dark:bg-gray-800/60 backdrop-blur-md px-2 py-1.5 rounded-xl border border-gray-100/50 dark:border-gray-700/50 shadow-sm">
+                    <div className="relative flex-1 sm:w-48">
+                      <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+                        <Search className="size-3.5 text-muted-foreground" />
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Buscar cursos o autores..."
+                        className="w-full bg-transparent border-none focus:ring-0 text-[13px] pl-8 pr-3 py-1 outline-none placeholder:text-muted-foreground/60 text-foreground"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+                    </div>
+                    
+                    <div className="w-[1px] h-4 bg-border/40" />
+                    
+                    <div className="relative flex items-center gap-1.5 px-2">
+                      <Filter className="size-3.5 text-muted-foreground shrink-0" />
+                      <select
+                        className="bg-transparent text-[13px] text-foreground border-none outline-none focus:ring-0 cursor-pointer pl-1 pr-6 py-1 appearance-none"
+                        value={categoryFilter}
+                        onChange={(e) => setCategoryFilter(e.target.value)}
+                      >
+                        <option value="all" className="bg-white dark:bg-slate-800 text-foreground">Todas las materias</option>
+                        {(() => {
+                          const subjects = new Set<string>();
+                          if (activeTab === 'global') {
+                            globalClassrooms.forEach(gc => {
+                              subjects.add((!gc.subject || gc.subject === 'none') ? 'Libre' : gc.subject);
+                            });
+                          } else {
+                            classrooms.forEach(c => {
+                              subjects.add((!c.subject || c.subject === 'none') ? 'Libre' : c.subject);
+                            });
+                          }
+                          return Array.from(subjects).sort().map(s => (
+                            <option key={s} value={s} className="bg-white dark:bg-slate-800 text-foreground">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+                          ));
+                        })()}
+                      </select>
+                      <ChevronDown className="absolute right-2 size-3 text-muted-foreground pointer-events-none" />
+                    </div>
+
+                    <div className="w-[1px] h-4 bg-border/40" />
+
+                    <button
+                      onClick={() => setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc')}
+                      className="p-1.5 rounded-md hover:bg-black/5 dark:hover:bg-white/5 text-muted-foreground hover:text-foreground transition-colors"
+                      title={sortOrder === 'desc' ? "Más recientes primero" : "Más antiguos primero"}
+                    >
+                      {sortOrder === 'desc' ? <ArrowDownAZ className="size-4" /> : <ArrowDownZA className="size-4" />}
+                    </button>
                   </div>
-                )}
-                <div className={cn("grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-8", activeTab === 'global' ? "pt-4" : "pt-8")}>
-                  {activeTab === 'local' ? (
-                    classrooms.length > 0 ? (
-                      classrooms.map((classroom, i) => (
+                </div>
+                <div className={activeTab === 'local' ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-8 pt-8" : activeTab === 'progress' ? "w-full pt-6" : "flex flex-col w-full gap-8 pt-4"}>
+                  {activeTab === 'progress' ? (
+                    <div className="flex flex-col gap-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="size-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
+                          <Award className="size-5 text-emerald-600 dark:text-emerald-400" />
+                        </div>
+                        <div>
+                          <h2 className="text-lg font-bold text-foreground leading-tight">Tu Progreso Académico</h2>
+                          <p className="text-sm text-muted-foreground mt-0.5">Nivel: {globalGrade} ({mappedSublevel})</p>
+                        </div>
+                      </div>
+
+                      {mappedSublevel && ['Matemática', 'Ciencias Naturales', 'Lengua y Literatura', 'Ciencias Sociales'].map(subject => {
+                        const subjectData = syllabusData[subject]?.[mappedSublevel];
+                        if (!subjectData) return null;
+                        
+                        let totalTopics = 0;
+                        let mCount = 0;
+                        const units = Object.entries(subjectData);
+
+                        units.forEach(([_, uData]: any) => {
+                          totalTopics += uData.temas.length;
+                          uData.temas.forEach((t: string) => {
+                            if (masteredTopics?.includes(t)) mCount++;
+                          });
+                        });
+
+                        const progress = totalTopics > 0 ? Math.round((mCount / totalTopics) * 100) : 0;
+
+                        return (
+                          <div key={subject} className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-xl border border-border/60 p-4 shadow-sm">
+                            <div className="flex items-center justify-between mb-3">
+                              <h3 className="font-bold text-[15px] text-slate-800 dark:text-slate-200">{subject}</h3>
+                              <span className="text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 px-2.5 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800/50">
+                                {progress}% Completado
+                              </span>
+                            </div>
+                            <div className="w-full bg-slate-200/60 dark:bg-slate-700/60 rounded-full h-2 mb-6 overflow-hidden">
+                              <div className="bg-emerald-500 h-2 rounded-full transition-all duration-700" style={{ width: `${progress}%` }} />
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                              {units.map(([uName, uData]: any, uIdx) => (
+                                <div key={uName} className="flex flex-col gap-2">
+                                  <h4 className="text-[12px] font-bold text-slate-600 dark:text-slate-300 leading-tight">
+                                    Bloque {uIdx + 1}: {uName.split(': ')[1] || uName}
+                                  </h4>
+                                  <div className="flex flex-col gap-1.5">
+                                    {uData.temas.map((t: string, tIdx: number) => {
+                                      const isMastered = masteredTopics?.includes(t);
+                                      const inProgressClassroom = !isMastered ? classrooms.find((c) => c.topic === t || c.name === t) : null;
+                                      return (
+                                        <div 
+                                          key={t} 
+                                          onClick={() => {
+                                            if (inProgressClassroom) {
+                                              router.push(`/classroom/${inProgressClassroom.id}`);
+                                            }
+                                          }}
+                                          className={cn("text-[11px] flex items-start gap-1.5 p-1.5 rounded-md transition-colors", inProgressClassroom ? "cursor-pointer" : "", isMastered ? "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-800 dark:text-emerald-300" : inProgressClassroom ? "bg-amber-50 dark:bg-amber-950/30 text-amber-900 dark:text-amber-300 hover:bg-amber-100/60 dark:hover:bg-amber-900/40" : "text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50")}
+                                        >
+                                          {isMastered ? <Check className="size-3.5 shrink-0 mt-[1px]" /> : inProgressClassroom ? <Clock className="size-3.5 shrink-0 mt-[1px] text-amber-600 dark:text-amber-400" /> : <div className="size-3 shrink-0 rounded-full border border-slate-300 dark:border-slate-600 mt-0.5" />}
+                                          <span className="leading-snug flex-1">{t}</span>
+                                          {inProgressClassroom && <span className="shrink-0 text-[9px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wide mt-[2px]">En Curso</span>}
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : activeTab === 'local' ? (
+                    (() => {
+                      let filtered = [...classrooms];
+
+                      // Búsqueda
+                      if (searchQuery.trim()) {
+                        const q = searchQuery.toLowerCase();
+                        filtered = filtered.filter(c => {
+                          const name = (c.name || 'Untitled').toLowerCase();
+                          const author = 'yo'; // Los cursos locales siempre son propios, pero dejamos este string por completitud
+                          return name.includes(q) || author.includes(q);
+                        });
+                      }
+
+                      // Filtro de Categoría
+                      if (categoryFilter !== 'all') {
+                        filtered = filtered.filter(c => {
+                          const subj = (!c.subject || c.subject === 'none') ? 'Libre' : c.subject;
+                          return subj === categoryFilter;
+                        });
+                      }
+
+                      // Ordenamiento
+                      filtered.sort((a, b) => {
+                        const timeA = a.createdAt || 0;
+                        const timeB = b.createdAt || 0;
+                        return sortOrder === 'desc' ? timeB - timeA : timeA - timeB;
+                      });
+
+                      if (classrooms.length === 0) {
+                        return <div className="col-span-full py-8 text-center text-muted-foreground text-sm">No tienes cursos locales aún.</div>;
+                      }
+
+                      if (filtered.length === 0) {
+                        return <div className="col-span-full py-8 text-center text-muted-foreground text-sm">No se encontraron cursos con este filtro.</div>;
+                      }
+
+                      const localCourseCards = filtered.map((classroom, i) => (
                         <motion.div
                           key={classroom.id}
                           initial={{ opacity: 0, y: 16 }}
@@ -850,70 +1279,215 @@ function HomePage() {
                             onClick={() => router.push(`/classroom/${classroom.id}`)}
                           />
                         </motion.div>
-                      ))
-                    ) : (
-                      <div className="col-span-full py-8 text-center text-muted-foreground text-sm">No tienes cursos locales aún.</div>
-                    )
+                      ));
+
+                      const pendingCloud = Object.values(activeCourses || {}).filter(
+                        (ac) => !classrooms.some((c) => c.id === ac.stageId) && !masteredTopics.includes(ac.topic)
+                      );
+
+                      return (
+                        <div className="col-span-full w-full flex flex-col gap-8">
+                          {pendingCloud.length > 0 && (
+                            <div className="flex flex-col gap-4">
+                              <h3 className="text-lg font-semibold text-amber-600 dark:text-amber-500 border-b border-border/40 pb-2 flex items-center gap-2">
+                                <Clock className="size-5" /> Cursos Pendientes en la Nube
+                              </h3>
+                              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-8">
+                                {pendingCloud.map((ac: any, i: number) => {
+                                  // Mock a classroom object for the Global ClassroomListRow or a simplified card
+                                  return (
+                                    <motion.div
+                                      key={ac.stageId}
+                                      initial={{ opacity: 0, y: 16 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      transition={{ delay: i * 0.04, duration: 0.35, ease: 'easeOut' }}
+                                      className="relative group bg-white/40 dark:bg-slate-800/40 border-2 border-dashed border-amber-300 dark:border-amber-700/50 rounded-2xl p-4 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-all min-h-[220px]"
+                                      onClick={async () => {
+                                        toast.loading('Descargando clase para continuar...', { id: ac.stageId });
+                                        try {
+                                          const { findSimilarGlobalClassroom, processCloudDownload } = await import('@/lib/utils/cloud-sync');
+                                          // Find the course in global library by stageId
+                                          const { getDoc, doc } = await import('firebase/firestore');
+                                          const { db } = await import('@/lib/firebase');
+                                          const docSnap = await getDoc(doc(db, 'global_classrooms', ac.stageId));
+                                          if (docSnap.exists()) {
+                                            await processCloudDownload(ac.stageId, docSnap.data() as any);
+                                            toast.success('Clonación completa', { id: ac.stageId });
+                                            router.push(`/classroom/${ac.stageId}`);
+                                          } else {
+                                            toast.error('El curso no está disponible en la biblioteca global', { id: ac.stageId });
+                                          }
+                                        } catch (e) {
+                                          console.error(e);
+                                          toast.error('Fallo al descargar curso', { id: ac.stageId });
+                                        }
+                                      }}
+                                    >
+                                      <Cloud className="size-10 text-amber-500 mb-3 opacity-80 group-hover:scale-110 transition-transform" />
+                                      <h4 className="font-bold text-[15px] text-slate-800 dark:text-slate-200 line-clamp-2 leading-tight mb-2">
+                                        {ac.name}
+                                      </h4>
+                                      <div className="flex flex-wrap items-center justify-center gap-1.5 mb-3">
+                                        <span className="inline-flex items-center rounded-sm bg-indigo-100 dark:bg-indigo-900/40 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-700 dark:text-indigo-400">
+                                          {ac.subject}
+                                        </span>
+                                      </div>
+                                      <p className="text-[12px] text-muted-foreground mt-auto">
+                                        Dejado en diapositiva {ac.sceneIndex + 1}
+                                      </p>
+                                      <div className="absolute -top-2.5 -right-2.5 bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">
+                                        Retomar
+                                      </div>
+                                    </motion.div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {localCourseCards.length > 0 && (
+                            <div className="flex flex-col gap-4 mt-2">
+                              {pendingCloud.length > 0 && (
+                                <h3 className="text-lg font-semibold text-foreground/90 border-b border-border/40 pb-2">
+                                  Cursos Descargados
+                                </h3>
+                              )}
+                              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-8">
+                                {localCourseCards}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()
                   ) : loadingGlobal ? (
                     <div className="col-span-full py-8 text-center text-muted-foreground text-sm">Cargando biblioteca global...</div>
                   ) : globalClassrooms.length === 0 ? (
                     <div className="col-span-full py-8 text-center text-muted-foreground text-sm">No hay cursos en la biblioteca global aún.</div>
                   ) : (() => {
-                    const filtered = globalClassrooms.filter((gc) => {
+                    const now = Date.now();
+                    const TWO_HOURS = 2 * 60 * 60 * 1000;
+
+                    let filtered = globalClassrooms.filter((gc) => {
                       // Ocultar cascarones a los no-administradores
-                      if (gc.status === 'building' && role !== 'admin') return false;
+                      if (gc.status === 'building' && role !== 'admin') {
+                        return false;
+                      }
+
+                      // Limpieza Global (Garbage Collection Visual)
+                      // Ocultar cursos "Construyendo" que lleven más de 2 horas
+                      if (gc.status === 'building' && (now - (gc.createdAtTime || 0)) > TWO_HOURS) {
+                        return false;
+                      }
+
                       
                       if (globalFilter === 'mine') return gc.createdBy === user?.uid;
                       if (globalFilter === 'community') return gc.createdBy !== user?.uid;
                       return true;
                     });
+
+                    // Búsqueda
+                    if (searchQuery.trim()) {
+                      const q = searchQuery.toLowerCase();
+                      filtered = filtered.filter(gc => {
+                        const name = (gc.stage?.name || 'Untitled').toLowerCase();
+                        const author = (gc.authorNickname || '').toLowerCase();
+                        return name.includes(q) || author.includes(q);
+                      });
+                    }
+
+                    // Filtro de Categoría
+                    if (categoryFilter !== 'all') {
+                      filtered = filtered.filter(gc => {
+                        const subj = (!gc.subject || gc.subject === 'none') ? 'Libre' : gc.subject;
+                        return subj === categoryFilter;
+                      });
+                    }
+
+                    // Ordenamiento (Global Classrooms ya vienen ordenados DESC desde Firebase, pero podemos reordenarlos)
+                    filtered = [...filtered].sort((a, b) => {
+                      const timeA = a.createdAtTime || 0;
+                      const timeB = b.createdAtTime || 0;
+                      return sortOrder === 'desc' ? timeB - timeA : timeA - timeB;
+                    });
+
                     if (filtered.length === 0) {
                       return <div className="col-span-full py-8 text-center text-muted-foreground text-sm">No se encontraron cursos con este filtro.</div>;
                     }
-                    return filtered.map((gc, i) => (
-                      <motion.div
-                        key={gc._id}
-                        initial={{ opacity: 0, y: 16 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.04, duration: 0.35, ease: 'easeOut' }}
-                      >
-                        <ClassroomCard
-                          classroom={{
-                            id: gc._id,
-                            name: gc.stage?.name || 'Untitled',
-                            sceneCount: gc.scenes?.length || 0,
-                            createdAt: gc.createdAtTime || 0,
-                            updatedAt: gc.createdAtTime || 0,
-                          }}
-                          slide={gc.scenes?.find((s: any) => s.content?.type === 'slide')?.content?.canvas}
-                          isGlobal
-                          globalAuthor={gc.authorNickname}
-                          globalSubject={gc.subject}
-                          globalStatus={gc.status}
-                          isAdmin={role === 'admin'}
-                          formatDate={formatDate}
-                          onDelete={(id, e) => {
-                            e.stopPropagation();
-                            setPendingDeleteGlobalId(id);
-                          }}
-                          confirmingDelete={pendingDeleteGlobalId === gc._id}
-                          onConfirmDelete={() => confirmDeleteGlobal(gc._id)}
-                          onCancelDelete={() => setPendingDeleteGlobalId(null)}
-                          onClick={async () => {
-                            toast.loading('Clonando curso desde la nube...', { id: gc._id });
-                            try {
-                              const { processCloudDownload } = await import('@/lib/utils/cloud-sync');
-                              await processCloudDownload(gc._id, gc);
-                              toast.success('Clonación completa', { id: gc._id });
-                              router.push(`/classroom/${gc._id}`);
-                            } catch (e) {
-                              log.error('Fallo al clonar curso', e);
-                              toast.error('Fallo al clonar curso', { id: gc._id });
-                            }
-                          }}
-                        />
-                      </motion.div>
-                    ));
+                    
+                    // Group by subject
+                    const grouped = filtered.reduce((acc, gc) => {
+                      const subject = (!gc.subject || gc.subject === 'none') ? 'Libre' : gc.subject;
+                      if (!acc[subject]) acc[subject] = [];
+                      acc[subject].push(gc);
+                      return acc;
+                    }, {} as Record<string, typeof filtered>);
+
+                    // Sort subjects alphabetically, but maybe put 'Libre' at the end
+                    const subjects = Object.keys(grouped).sort((a, b) => {
+                      if (a === 'Libre') return 1;
+                      if (b === 'Libre') return -1;
+                      return a.localeCompare(b);
+                    });
+
+                    return (
+                      <div className="flex flex-col w-full gap-10">
+                        {subjects.map(subject => (
+                          <div key={subject} className="flex flex-col gap-4">
+                            <h3 className="text-lg font-semibold text-foreground/90 border-b border-border/40 pb-2">
+                              {subject.charAt(0).toUpperCase() + subject.slice(1)}
+                            </h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              {grouped[subject].map((gc: any, i: number) => (
+                                <motion.div
+                                  key={gc._id}
+                                  initial={{ opacity: 0, y: 16 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ delay: i * 0.04, duration: 0.35, ease: 'easeOut' }}
+                                >
+                                  <ClassroomListRow
+                                    classroom={{
+                                      id: gc._id,
+                                      name: gc.stage?.name || 'Untitled',
+                                      sceneCount: gc.scenes?.length || 0,
+                                      subject: gc.subject,
+                                      grade: gc.stage?.grade,
+                                      topic: gc.stage?.topic,
+                                      createdAt: gc.createdAtTime || 0,
+                                      updatedAt: gc.createdAtTime || 0,
+                                    }}
+                                    slide={gc.scenes?.find((s: any) => s.content?.type === 'slide')?.content?.canvas}
+                                    globalAuthor={gc.authorNickname}
+                                    globalStatus={gc.status}
+                                    isAdmin={role === 'admin'}
+                                    formatDate={formatDate}
+                                    onDelete={(id, e) => {
+                                      e.stopPropagation();
+                                      setPendingDeleteGlobalId(id);
+                                    }}
+                                    confirmingDelete={pendingDeleteGlobalId === gc._id}
+                                    onConfirmDelete={() => confirmDeleteGlobal(gc._id)}
+                                    onCancelDelete={() => setPendingDeleteGlobalId(null)}
+                                    onClick={async () => {
+                                      toast.loading('Clonando curso desde la nube...', { id: gc._id });
+                                      try {
+                                        const { processCloudDownload } = await import('@/lib/utils/cloud-sync');
+                                        await processCloudDownload(gc._id, gc);
+                                        toast.success('Clonación completa', { id: gc._id });
+                                        router.push(`/classroom/${gc._id}`);
+                                      } catch (e) {
+                                        log.error('Fallo al clonar curso', e);
+                                        toast.error('Fallo al clonar curso', { id: gc._id });
+                                      }
+                                    }}
+                                  />
+                                </motion.div>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    );
                   })()}
                 </div>
               </motion.div>
@@ -943,9 +1517,11 @@ function GreetingBar() {
   const avatar = useUserProfileStore((s) => s.avatar);
   const nickname = useUserProfileStore((s) => s.nickname);
   const bio = useUserProfileStore((s) => s.bio);
+  const grade = useUserProfileStore((s) => s.grade);
   const setAvatar = useUserProfileStore((s) => s.setAvatar);
   const setNickname = useUserProfileStore((s) => s.setNickname);
   const setBio = useUserProfileStore((s) => s.setBio);
+  const setGrade = useUserProfileStore((s) => s.setGrade);
 
   const [open, setOpen] = useState(false);
   const [editingName, setEditingName] = useState(false);
@@ -1026,37 +1602,39 @@ function GreetingBar() {
 
       {/* ── Collapsed pill (always in flow) ── */}
       {!open && (
-        <div
-          className="flex items-center gap-2.5 cursor-pointer transition-all duration-200 group rounded-full px-2.5 py-1.5 border border-border/50 text-muted-foreground/70 hover:text-foreground hover:bg-muted/60 active:scale-[0.97]"
-          onClick={() => setOpen(true)}
-        >
-          <div className="shrink-0 relative">
-            <div className="size-8 rounded-full overflow-hidden ring-[1.5px] ring-border/30 group-hover:ring-sky-400/60 dark:group-hover:ring-sky-400/40 transition-all duration-300">
-              <img src={displayAvatar} alt="" className="size-full object-cover" />
+        <div className="flex items-center gap-3">
+          <div
+            className="flex items-center gap-2.5 cursor-pointer transition-all duration-200 group rounded-full px-2.5 py-1.5 border border-border/50 text-muted-foreground/70 hover:text-foreground hover:bg-muted/60 active:scale-[0.97]"
+            onClick={() => setOpen(true)}
+          >
+            <div className="shrink-0 relative">
+              <div className="size-8 rounded-full overflow-hidden ring-[1.5px] ring-border/30 group-hover:ring-sky-400/60 dark:group-hover:ring-sky-400/40 transition-all duration-300">
+                <img src={displayAvatar} alt="" className="size-full object-cover" />
+              </div>
+              <div className="absolute -bottom-0.5 -right-0.5 size-3.5 rounded-full bg-white dark:bg-slate-800 border border-border/40 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity">
+                <Pencil className="size-[7px] text-muted-foreground/70" />
+              </div>
             </div>
-            <div className="absolute -bottom-0.5 -right-0.5 size-3.5 rounded-full bg-white dark:bg-slate-800 border border-border/40 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity">
-              <Pencil className="size-[7px] text-muted-foreground/70" />
-            </div>
-          </div>
-          <div className="flex-1 min-w-0">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span className="leading-none select-none flex items-center gap-1">
-                  <span>
-                    <span className="text-xs text-muted-foreground/60 group-hover:text-muted-foreground transition-colors">
-                      {t('home.greeting')}
+            <div className="flex-1 min-w-0">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="leading-none select-none flex items-center gap-2">
+                    <span className="flex flex-col items-start justify-center">
+                      <span className="text-[13px] font-semibold text-foreground/85 group-hover:text-foreground transition-colors leading-none mb-1">
+                        {t('home.greeting')} {displayName}
+                      </span>
+                      <span className="text-[10px] font-medium text-sky-600 dark:text-sky-400 group-hover:text-sky-700 dark:group-hover:text-sky-300 transition-colors leading-none">
+                        {grade}
+                      </span>
                     </span>
-                    <span className="text-[13px] font-semibold text-foreground/85 group-hover:text-foreground transition-colors">
-                      {displayName}
-                    </span>
+                    <ChevronDown className="size-3 text-muted-foreground/30 group-hover:text-muted-foreground/60 transition-colors shrink-0" />
                   </span>
-                  <ChevronDown className="size-3 text-muted-foreground/30 group-hover:text-muted-foreground/60 transition-colors shrink-0" />
-                </span>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" sideOffset={4}>
-                {t('profile.editTooltip')}
-              </TooltipContent>
-            </Tooltip>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" sideOffset={4}>
+                  {t('profile.editTooltip')}
+                </TooltipContent>
+              </Tooltip>
+            </div>
           </div>
         </div>
       )}
@@ -1213,6 +1791,46 @@ function GreetingBar() {
                   rows={2}
                   className="resize-none border-border/40 bg-transparent min-h-[72px] !text-[13px] !leading-relaxed placeholder:!text-[11px] placeholder:!leading-relaxed focus-visible:ring-1 focus-visible:ring-border/60"
                 />
+
+                {/* Global Grade Settings */}
+                <div className="pt-2 border-t border-border/40 mt-1">
+                  <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
+                    Grado Académico Actual
+                  </label>
+                  <select
+                    className="w-full text-[13px] bg-slate-50 dark:bg-slate-900 border border-border/40 rounded-lg px-2 py-1.5 outline-none focus:ring-1 ring-sky-400"
+                    value={grade}
+                    onChange={(e) => setGrade(e.target.value)}
+                  >
+                    <optgroup label="Educación Inicial">
+                      <option value="Inicial 1">Inicial 1</option>
+                      <option value="Inicial 2">Inicial 2</option>
+                    </optgroup>
+                    <optgroup label="Preparatoria">
+                      <option value="1º Grado de EGB">1º Grado de EGB</option>
+                    </optgroup>
+                    <optgroup label="Básica Elemental">
+                      <option value="2º Grado de EGB">2º Grado de EGB</option>
+                      <option value="3º Grado de EGB">3º Grado de EGB</option>
+                      <option value="4º Grado de EGB">4º Grado de EGB</option>
+                    </optgroup>
+                    <optgroup label="Básica Media">
+                      <option value="5º Grado de EGB">5º Grado de EGB</option>
+                      <option value="6º Grado de EGB">6º Grado de EGB</option>
+                      <option value="7º Grado de EGB">7º Grado de EGB</option>
+                    </optgroup>
+                    <optgroup label="Básica Superior">
+                      <option value="8º Grado de EGB">8º Grado de EGB</option>
+                      <option value="9º Grado de EGB">9º Grado de EGB</option>
+                      <option value="10º Grado de EGB">10º Grado de EGB</option>
+                    </optgroup>
+                    <optgroup label="Bachillerato">
+                      <option value="1º de Bachillerato">1º de Bachillerato</option>
+                      <option value="2º de Bachillerato">2º de Bachillerato</option>
+                      <option value="3º de Bachillerato">3º de Bachillerato</option>
+                    </optgroup>
+                  </select>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -1358,20 +1976,39 @@ function ClassroomCard({
 
       {/* Info — outside the thumbnail */}
       <div className="mt-2.5 px-1 flex flex-col gap-1">
-        <div className="flex items-center gap-2">
-          {isGlobal ? (
-            <span className="shrink-0 inline-flex items-center rounded-full bg-indigo-100 dark:bg-indigo-900/30 px-2 py-0.5 text-[11px] font-medium text-indigo-600 dark:text-indigo-400 truncate max-w-[150px]">
-              {globalSubject} · {globalAuthor}
+        <div className="flex flex-wrap items-center gap-1.5 mb-0.5">
+          {/* Materia */}
+          {isGlobal && globalSubject ? (
+            <span className="shrink-0 inline-flex items-center rounded-sm bg-indigo-100 dark:bg-indigo-900/40 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-700 dark:text-indigo-400">
+              {globalSubject}
             </span>
           ) : (
-            <span className="shrink-0 inline-flex items-center rounded-full bg-sky-100 dark:bg-sky-900/30 px-2 py-0.5 text-[11px] font-medium text-sky-600 dark:text-sky-400">
-              {(!classroom.subject || classroom.subject === 'none') ? 'Libre' : classroom.subject.charAt(0).toUpperCase() + classroom.subject.slice(1)} · {classroom.sceneCount} {t('classroom.slides')} · {formatDate(classroom.updatedAt)}
+            <span className="shrink-0 inline-flex items-center rounded-sm bg-indigo-100 dark:bg-indigo-900/40 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-700 dark:text-indigo-400">
+              {(!classroom.subject || classroom.subject === 'none') ? 'Libre' : classroom.subject.charAt(0).toUpperCase() + classroom.subject.slice(1)}
             </span>
           )}
+          {/* Grado */}
+          {classroom.grade && (
+            <span className="shrink-0 inline-flex items-center rounded-sm bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 text-[10px] font-medium text-slate-600 dark:text-slate-400">
+              {classroom.grade}
+            </span>
+          )}
+          {/* Bloque */}
+          {(() => {
+            const syllabusCtx = getSyllabusContext(classroom.subject, classroom.grade, classroom.topic);
+            if (syllabusCtx) {
+              return (
+                <span className="shrink-0 inline-flex items-center rounded-sm bg-amber-100 dark:bg-amber-900/30 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:text-amber-400" title={syllabusCtx.unitName}>
+                  Bloque {syllabusCtx.block}
+                </span>
+              );
+            }
+            return null;
+          })()}
         </div>
         <Tooltip>
           <TooltipTrigger asChild>
-            <p className="font-medium text-[15px] truncate text-foreground/90 min-w-0">
+            <p className="font-semibold text-[14px] truncate text-foreground/90 min-w-0">
               {classroom.name}
             </p>
           </TooltipTrigger>
@@ -1395,6 +2032,21 @@ function ClassroomCard({
             </div>
           </TooltipContent>
         </Tooltip>
+
+        {classroom.topic && classroom.topic !== 'LIBRE' && (
+          <p className="text-[11px] text-muted-foreground truncate leading-snug" title={classroom.topic}>
+            {classroom.topic}
+          </p>
+        )}
+        
+        {/* Extra info for local cards */}
+        {!isGlobal && (
+          <div className="flex items-center gap-2 text-[10px] text-muted-foreground/70 mt-0.5">
+            <span>{classroom.sceneCount} {t('classroom.slides')}</span>
+            <span>·</span>
+            <span>{formatDate(classroom.updatedAt)}</span>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -1402,4 +2054,209 @@ function ClassroomCard({
 
 export default function Page() {
   return <HomePage />;
+}
+
+// ─── Classroom List Row — for global library ──────────────────────
+function ClassroomListRow({
+  classroom,
+  slide,
+  formatDate,
+  onDelete,
+  confirmingDelete,
+  onConfirmDelete,
+  onCancelDelete,
+  onClick,
+  isAdmin,
+  globalAuthor,
+  globalStatus,
+}: {
+  classroom: StageListItem;
+  slide?: Slide;
+  formatDate: (ts: number) => string;
+  onDelete: (id: string, e: React.MouseEvent) => void;
+  confirmingDelete: boolean;
+  onConfirmDelete: () => void;
+  onCancelDelete: () => void;
+  onClick: () => void;
+  isAdmin?: boolean;
+  globalAuthor?: string;
+  globalStatus?: 'building' | 'completed';
+}) {
+  const { t } = useI18n();
+  const thumbRef = useRef<HTMLDivElement>(null);
+  const [thumbWidth, setThumbWidth] = useState(0);
+
+  useEffect(() => {
+    const el = thumbRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      setThumbWidth(Math.round(entry.contentRect.width));
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  return (
+    <div 
+      className="group relative flex items-center gap-4 p-3 rounded-2xl bg-white dark:bg-slate-800/60 border border-border/40 hover:border-sky-500/30 hover:bg-sky-50/50 dark:hover:bg-sky-900/10 cursor-pointer transition-all shadow-sm hover:shadow-md h-[88px]"
+      onClick={confirmingDelete ? undefined : onClick}
+    >
+      {/* Thumbnail */}
+      <div
+        ref={thumbRef}
+        className="relative shrink-0 w-28 h-full rounded-xl bg-slate-100 dark:bg-slate-900 overflow-hidden"
+      >
+        {globalStatus === 'building' && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+            <span className="text-[9px] font-bold text-white tracking-widest uppercase">
+              Construyendo
+            </span>
+          </div>
+        )}
+        {slide && thumbWidth > 0 ? (
+          <ThumbnailSlide
+            slide={slide}
+            size={thumbWidth}
+            viewportSize={slide.viewportSize ?? 1000}
+            viewportRatio={slide.viewportRatio ?? 0.5625}
+          />
+        ) : !slide ? (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="size-8 rounded-lg bg-gradient-to-br from-sky-100 to-blue-100 dark:from-sky-900/30 dark:to-blue-900/30 flex items-center justify-center">
+              <span className="text-sm opacity-50">📄</span>
+            </div>
+          </div>
+        ) : null}
+      </div>
+
+      {/* Info */}
+      <div className="flex-1 min-w-0 flex flex-col justify-center gap-0.5">
+        <div className="flex flex-wrap items-center gap-1.5 mb-1">
+          {/* Materia */}
+          <span className="shrink-0 inline-flex items-center rounded-sm bg-indigo-100 dark:bg-indigo-900/40 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-700 dark:text-indigo-400">
+            {(!classroom.subject || classroom.subject === 'none') ? 'Libre' : classroom.subject.charAt(0).toUpperCase() + classroom.subject.slice(1)}
+          </span>
+          {/* Grado */}
+          {classroom.grade && (
+            <span className="shrink-0 inline-flex items-center rounded-sm bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 text-[10px] font-medium text-slate-600 dark:text-slate-400">
+              {classroom.grade}
+            </span>
+          )}
+          {/* Bloque */}
+          {(() => {
+            const syllabusCtx = getSyllabusContext(classroom.subject, classroom.grade, classroom.topic);
+            if (syllabusCtx) {
+              return (
+                <span className="shrink-0 inline-flex items-center rounded-sm bg-amber-100 dark:bg-amber-900/30 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:text-amber-400" title={syllabusCtx.unitName}>
+                  Bloque {syllabusCtx.block}
+                </span>
+              );
+            }
+            return null;
+          })()}
+        </div>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <p className="font-semibold text-[14px] truncate text-foreground/90 min-w-0">
+              {classroom.name}
+            </p>
+          </TooltipTrigger>
+          <TooltipContent
+            side="bottom"
+            sideOffset={4}
+            className="!max-w-[min(90vw,32rem)] break-words whitespace-normal"
+          >
+            <div className="flex items-center gap-1.5">
+              <span className="break-all">{classroom.name}</span>
+              <button
+                className="shrink-0 p-0.5 rounded hover:bg-foreground/10 transition-colors"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigator.clipboard.writeText(classroom.name);
+                  toast.success(t('classroom.nameCopied'));
+                }}
+              >
+                <Copy className="size-3 opacity-60" />
+              </button>
+            </div>
+          </TooltipContent>
+        </Tooltip>
+
+        {classroom.topic && classroom.topic !== 'LIBRE' && (
+          <p className="text-[11px] text-muted-foreground truncate leading-snug mb-0.5" title={classroom.topic}>
+            {classroom.topic}
+          </p>
+        )}
+        
+        <div className="flex items-center gap-2 text-[11px] text-muted-foreground/80">
+          <span className="truncate max-w-[120px] font-medium text-sky-600 dark:text-sky-400">
+            {globalAuthor}
+          </span>
+          <span>·</span>
+          <span>{classroom.sceneCount} {t('classroom.slides')}</span>
+          <span>·</span>
+          <span>{formatDate(classroom.createdAt)}</span>
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="shrink-0 flex items-center justify-end w-8">
+        <AnimatePresence>
+          {!confirmingDelete && isAdmin && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+            >
+              <Button
+                size="icon"
+                variant="ghost"
+                className="size-8 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/10 text-muted-foreground hover:text-destructive rounded-full"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete(classroom.id, e);
+                }}
+              >
+                <Trash2 className="size-4" />
+              </Button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Inline delete confirmation overlay */}
+      <AnimatePresence>
+        {confirmingDelete && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="absolute inset-0 z-20 flex items-center justify-between px-4 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md rounded-2xl border border-destructive/20"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span className="text-[13px] font-medium text-destructive">
+              {t('classroom.deleteConfirmTitle')}?
+            </span>
+            <div className="flex gap-2">
+              <button
+                className="px-3.5 py-1.5 rounded-lg text-[12px] font-medium bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
+                onClick={onCancelDelete}
+              >
+                {t('common.cancel')}
+              </button>
+              <button
+                className="px-3.5 py-1.5 rounded-lg text-[12px] font-medium bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors"
+                onClick={onConfirmDelete}
+              >
+                {t('classroom.delete')}
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 }

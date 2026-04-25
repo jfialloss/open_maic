@@ -120,8 +120,7 @@ export async function POST(req: NextRequest) {
     const hasVision = !!modelInfo?.capabilities?.vision;
 
     // Build prompt (same logic as generateSceneOutlinesFromRequirements)
-    let availableImagesText =
-      requirements.language === 'zh-CN' ? '无可用图片' : 'No images available';
+    let availableImagesText = 'No images available';
     let visionImages: Array<{ id: string; src: string }> | undefined;
 
     if (pdfImages && pdfImages.length > 0) {
@@ -133,10 +132,10 @@ export async function POST(req: NextRequest) {
         const noSrcImages = pdfImages.filter((img) => !imageMapping[img.id]);
 
         const visionDescriptions = visionSlice.map((img) =>
-          formatImagePlaceholder(img, requirements.language),
+          formatImagePlaceholder(img),
         );
         const textDescriptions = [...textOnlySlice, ...noSrcImages].map((img) =>
-          formatImageDescription(img, requirements.language),
+          formatImageDescription(img),
         );
         availableImagesText = [...visionDescriptions, ...textDescriptions].join('\n');
 
@@ -147,9 +146,8 @@ export async function POST(req: NextRequest) {
           height: img.height,
         }));
       } else {
-        // Text-only mode: full descriptions
         availableImagesText = pdfImages
-          .map((img) => formatImageDescription(img, requirements.language))
+          .map((img) => formatImageDescription(img))
           .join('\n');
       }
     }
@@ -172,16 +170,15 @@ export async function POST(req: NextRequest) {
     // Build teacher context from agents (if available)
     const teacherContext = formatTeacherPersonaForPrompt(agents);
 
-    const prompts = buildPrompt(PROMPT_IDS.REQUIREMENTS_TO_OUTLINES, {
+    const promptId = requirements.interactiveMode
+      ? PROMPT_IDS.INTERACTIVE_OUTLINES
+      : PROMPT_IDS.REQUIREMENTS_TO_OUTLINES;
+
+    const prompts = buildPrompt(promptId, {
       requirement: requirements.requirement,
-      language: requirements.language,
-      pdfContent: pdfText
-        ? pdfText.substring(0, MAX_PDF_CONTENT_CHARS)
-        : requirements.language === 'zh-CN'
-          ? '无'
-          : 'None',
+      pdfContent: pdfText ? pdfText.substring(0, MAX_PDF_CONTENT_CHARS) : 'None',
       availableImages: availableImagesText,
-      researchContext: researchContext || (requirements.language === 'zh-CN' ? '无' : 'None'),
+      researchContext: researchContext || 'None',
       mediaGenerationPolicy,
       teacherContext,
     });

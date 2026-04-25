@@ -11,6 +11,8 @@ import { AuthProvider } from '@/lib/hooks/use-auth';
 import { Toaster } from '@/components/ui/sonner';
 import { ServerProvidersInit } from '@/components/server-providers-init';
 import { GlobalSettingsSync } from '@/components/global-settings-sync';
+import { UserProfileSync } from '@/components/user-profile-sync';
+import { SyncWidget } from '@/components/sync-widget';
 
 const inter = localFont({
   src: '../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2',
@@ -40,7 +42,9 @@ export default function RootLayout({
             <AuthProvider>
               <ServerProvidersInit />
               <GlobalSettingsSync />
+              <UserProfileSync />
               {children}
+              <SyncWidget />
               <Toaster position="top-center" />
             </AuthProvider>
           </I18nProvider>

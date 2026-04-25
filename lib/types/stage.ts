@@ -2,6 +2,7 @@
 import type { Slide } from '@/lib/types/slides';
 import type { Action } from '@/lib/types/action';
 import type { PBLProjectConfig } from '@/lib/pbl/types';
+import type { WidgetType, WidgetConfig, TeacherAction } from '@/lib/types/widgets';
 
 export type SceneType = 'slide' | 'quiz' | 'interactive' | 'pbl';
 
@@ -22,6 +23,10 @@ export interface Stage {
   language?: string;
   style?: string;
   subject?: string; // e.g. "matematicas", "ciencias"
+  grade?: string; // e.g. "2EGB", "3BGU"
+  topic?: string; // The syllabus topic or "LIBRE"
+  isPublishedToCloud?: boolean; // Flag to skip unnecessary passive syncs
+  interactiveMode?: boolean; // True when this classroom was generated with Interactive Mode enabled
   // Whiteboard data
   whiteboard?: Whiteboard[];
 }
@@ -104,6 +109,10 @@ export interface InteractiveContent {
   url: string; // URL of the interactive page
   // Optional: embedded HTML content
   html?: string;
+  // Deep Interactive Mode fields
+  widgetType?: WidgetType;
+  widgetConfig?: WidgetConfig;
+  teacherActions?: TeacherAction[];
 }
 
 /**

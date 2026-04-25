@@ -18,6 +18,7 @@ import type { SceneOutline, PdfImage, ImageMapping } from '@/lib/types/generatio
 import { createLogger } from '@/lib/logger';
 import { apiError, apiSuccess } from '@/lib/server/api-response';
 import { resolveModelFromHeaders } from '@/lib/server/resolve-model';
+import { authenticateRequest } from '@/lib/server/auth';
 
 const log = createLogger('Scene Content API');
 
@@ -25,6 +26,7 @@ export const maxDuration = 300;
 
 export async function POST(req: NextRequest) {
   try {
+    const authUser = await authenticateRequest(req);
     const body = await req.json();
     const {
       outline: rawOutline,
@@ -67,7 +69,6 @@ export async function POST(req: NextRequest) {
     // Ensure outline has language from stageInfo (fallback for older outlines)
     const outline: SceneOutline = {
       ...rawOutline,
-      language: rawOutline.language || (stageInfo?.language as 'zh-CN' | 'en-US') || 'zh-CN',
     };
 
     // ── Model resolution from request headers ──
@@ -139,12 +140,14 @@ export async function POST(req: NextRequest) {
     const content = await generateSceneContent(
       effectiveOutline,
       aiCall,
-      assignedImages,
-      imageMapping,
-      effectiveOutline.type === 'pbl' ? languageModel : undefined,
-      hasVision,
-      generatedMediaMapping,
-      agents,
+      {
+        assignedImages,
+        imageMapping,
+        languageModel: effectiveOutline.type === 'pbl' ? languageModel : undefined,
+        visionEnabled: hasVision,
+        generatedMediaMapping,
+        agents,
+      }
     );
 
     if (!content) {
@@ -161,6 +164,9 @@ export async function POST(req: NextRequest) {
 
     return apiSuccess({ content, effectiveOutline });
   } catch (error) {
+    if (error instanceof Error && (error.message === 'Unauthorized' || error.message.includes('Authorization'))) {
+      return apiError('UNAUTHORIZED', 401, 'Unauthorized request');
+    }
     log.error('Scene content generation error:', error);
     return apiError('INTERNAL_ERROR', 500, error instanceof Error ? error.message : String(error));
   }

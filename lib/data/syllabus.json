@@ -1,0 +1,661 @@
+{
+  "Ciencias Naturales": {
+    "Básica Elemental": {
+      "Unidad 1: Mi cuerpo y yo": {
+        "objetivos": [
+          "Identificar las principales partes del cuerpo humano y sus funciones básicas.",
+          "Reconocer la importancia de los hábitos de higiene y alimentación saludable."
+        ],
+        "temas": [
+          "Partes principales del cuerpo: cabeza, tronco y extremidades",
+          "Los cinco sentidos y sus órganos",
+          "Sistema locomotor básico: huesos y músculos",
+          "Sistema digestivo: el viaje de los alimentos",
+          "Sistema respiratorio: cómo respiramos",
+          "Alimentación saludable y la pirámide alimenticia",
+          "Hábitos diarios de higiene personal"
+        ]
+      },
+      "Unidad 2: El mundo de los seres vivos": {
+        "objetivos": [
+          "Diferenciar entre seres vivos y elementos sin vida.",
+          "Clasificar animales y plantas según sus características observables."
+        ],
+        "temas": [
+          "Características de los seres vivos (nacen, crecen, se reproducen, mueren)",
+          "Elementos inertes o sin vida",
+          "Ciclo vital de las plantas",
+          "Clasificación básica de plantas: con flor y sin flor",
+          "Ciclo vital de los animales",
+          "Animales vertebrados e invertebrados básicos",
+          "Animales domésticos vs. silvestres"
+        ]
+      },
+      "Unidad 3: Mi entorno y la materia": {
+        "objetivos": [
+          "Identificar los estados del agua y sus usos.",
+          "Comprender las nociones básicas de fuerza y movimiento."
+        ],
+        "temas": [
+          "El agua y sus estados: sólido, líquido, gaseoso",
+          "El ciclo del agua en la naturaleza de forma sencilla",
+          "Importancia y cuidado del agua en el hogar",
+          "Propiedades básicas de los objetos: color, forma, textura",
+          "El movimiento de los cuerpos y la noción de fuerza",
+          "Luz y sombra: fuentes naturales y artificiales"
+        ]
+      },
+      "Unidad 4: La Tierra y el firmamento": {
+        "objetivos": [
+          "Reconocer al Sol, la Tierra y la Luna como cuerpos celestes.",
+          "Comprender los fenómenos del día y la noche."
+        ],
+        "temas": [
+          "El Sol como fuente de luz y calor",
+          "La Tierra y sus movimientos de rotación y traslación",
+          "El día y la noche",
+          "La Luna y sus fases principales",
+          "El clima: nociones de lluvia, viento y sol",
+          "Las estaciones del año en diferentes partes del mundo"
+        ]
+      }
+    },
+    "Básica Media": {
+      "Unidad 1: Los seres vivos y su ambiente": {
+        "objetivos": [
+          "Explicar la estructura de la célula como unidad básica de vida.",
+          "Analizar los niveles de organización biológica, desde la célula hasta los ecosistemas."
+        ],
+        "temas": [
+          "Niveles de organización biológica (célula, tejido, órgano, sistema)",
+          "Estructura y función de la célula animal y vegetal",
+          "Diferencias principales entre células eucariotas y procariotas",
+          "Microorganismos perjudiciales y beneficiosos",
+          "Cadenas y redes alimenticias (productores, consumidores, descomponedores)",
+          "Tipos de ecosistemas: terrestres y acuáticos locales",
+          "Biodiversidad de las Islas Galápagos"
+        ]
+      },
+      "Unidad 2: Cuerpo humano y salud": {
+        "objetivos": [
+          "Identificar las estructuras de los sistemas vitales del cuerpo humano.",
+          "Comprender los cambios físicos de la pubertad."
+        ],
+        "temas": [
+          "El sistema circulatorio: corazón, sangre y vasos sanguíneos",
+          "El sistema respiratorio: intercambio de gases y pulmones",
+          "El sistema excretor: riñones y vías urinarias",
+          "El sistema nervioso central y periférico",
+          "Aparato reproductor y los cambios durante la pubertad",
+          "Enfermedades infecciosas comunes y prevención (vacunas)",
+          "Primeros auxilios básicos"
+        ]
+      },
+      "Unidad 3: Materia y energía": {
+        "objetivos": [
+          "Distinguir las propiedades de la materia y métodos de separación.",
+          "Analizar las formas de energía y su transformación."
+        ],
+        "temas": [
+          "Propiedades de la materia: masa, volumen y densidad",
+          "Sustancias puras y mezclas",
+          "Clasificación de mezclas (homogéneas y heterogéneas)",
+          "Métodos de separación (filtración, decantación, evaporación)",
+          "Tipos de energía: cinética, térmica, eléctrica y lumínica",
+          "Fuentes de energía renovables y no renovables",
+          "El calor y la dilatación de los cuerpos"
+        ]
+      },
+      "Unidad 4: La Tierra y el Universo": {
+        "objetivos": [
+          "Comprender la dinámica interna del planeta Tierra.",
+          "Reconocer las características del Sistema Solar."
+        ],
+        "temas": [
+          "Estructura interna de la Tierra: núcleo, manto y corteza",
+          "Tectónica de placas y formación de volcanes y sismos",
+          "El relieve ecuatoriano y sus pisos climáticos",
+          "Componentes del Sistema Solar: el Sol y los 8 planetas",
+          "Cuerpos menores: asteroides, cometas y meteoritos",
+          "La fuerza de gravedad en el universo"
+        ]
+      }
+    },
+    "Básica Superior": {
+      "Unidad 1: Genética y Reproducción": {
+        "objetivos": [
+          "Comprender los mecanismos de reproducción celular y la herencia genética.",
+          "Analizar la salud reproductiva integral."
+        ],
+        "temas": [
+          "Biomoléculas esenciales: glúcidos, lípidos, proteínas, ácidos nucleicos",
+          "El ADN y ARN: estructura y función en la herencia",
+          "Ciclo celular y división por Mitosis",
+          "División gamética: Meiosis y la variabilidad genética",
+          "Genética Mendeliana: leyes de la herencia",
+          "Infecciones de Transmisión Sexual (ITS) y medidas preventivas",
+          "Métodos anticonceptivos y paternidad responsable"
+        ]
+      },
+      "Unidad 2: Evolución y Ecología": {
+        "objetivos": [
+          "Analizar las teorías evolutivas y el origen de las especies.",
+          "Comprender las dinámicas de ecosistemas y el impacto humano."
+        ],
+        "temas": [
+          "Teorías del origen de la vida y evolución (Darwin, Lamarck)",
+          "Evidencias evolutivas (fósiles, anatomía comparada)",
+          "Evolución humana (proceso de hominización)",
+          "Ciclos biogeoquímicos (carbono, nitrógeno, agua, fósforo)",
+          "Impacto ambiental de la actividad industrial",
+          "Cambio climático, efecto invernadero y calentamiento global",
+          "Biomas del mundo y su distribución"
+        ]
+      },
+      "Unidad 3: Química Fundamental": {
+        "objetivos": [
+          "Describir la estructura atómica y organizar los elementos químicos.",
+          "Comprender la formación de enlaces y compuestos inorgánicos."
+        ],
+        "temas": [
+          "Estructura atómica: protones, neutrones, electrones e isótopos",
+          "Modelos atómicos históricos (Dalton, Thomson, Rutherford, Bohr)",
+          "La Tabla Periódica: grupos, períodos, metales y no metales",
+          "Propiedades periódicas (electronegatividad, radio atómico)",
+          "Regla del octeto y enlaces químicos (iónico, covalente, metálico)",
+          "Nomenclatura inorgánica: óxidos e hidróxidos",
+          "Formación de ácidos simples y sales"
+        ]
+      },
+      "Unidad 4: Física y Fuerzas": {
+        "objetivos": [
+          "Aplicar las leyes del movimiento en problemas de física clásica.",
+          "Comprender la electricidad y el magnetismo básico."
+        ],
+        "temas": [
+          "Cinemática: velocidad, aceleración y Movimiento Rectilíneo Uniforme",
+          "Las Leyes de Newton y el diagrama de cuerpo libre",
+          "Fuerzas de rozamiento, peso y masa",
+          "Trabajo, potencia y principios de máquinas simples",
+          "Escalas termométricas (Celsius, Fahrenheit, Kelvin)",
+          "Circuitos eléctricos (ley de Ohm, resistencias en serie y paralelo)",
+          "Magnetismo terrestre e imanes"
+        ]
+      }
+    },
+    "Bachillerato": {
+      "Unidad 1: Biología Molecular y Celular Avanzada": {
+        "objetivos": [
+          "Analizar a profundidad los mecanismos de transcripción genética y biotecnología."
+        ],
+        "temas": [
+          "Dogma central de la biología molecular (transcripción y traducción)",
+          "Mutaciones genéticas y síndromes cromosómicos",
+          "Biotecnología, transgénicos y clonación",
+          "Respiración celular aeróbica y anaeróbica",
+          "Fotosíntesis: fase luminosa y oscura",
+          "Sistema inmunológico: respuesta innata y adaptativa"
+        ]
+      },
+      "Unidad 2: Química Avanzada": {
+        "objetivos": [
+          "Aplicar la estequiometría de reacciones y comprender la química orgánica."
+        ],
+        "temas": [
+          "Concepto de mol, masa molar y número de Avogadro",
+          "Leyes de los gases ideales (Boyle, Charles, Gay-Lussac)",
+          "Balanceo de ecuaciones químicas (método de tanteo y redox)",
+          "Química orgánica: características del átomo de carbono",
+          "Nomenclatura de hidrocarburos (alcanos, alquenos, alquinos)",
+          "Grupos funcionales orgánicos (alcoholes, cetonas, aldehídos)"
+        ]
+      },
+      "Unidad 3: Física Clásica y Moderna": {
+        "objetivos": [
+          "Resolver problemas de cinemática bidimensional y conservación de energía."
+        ],
+        "temas": [
+          "Movimiento de proyectiles (parabólico) y movimiento circular",
+          "Leyes de conservación (energía mecánica y cantidad de movimiento)",
+          "Ley de la Gravitación Universal de Newton",
+          "Termodinámica: primera y segunda ley",
+          "Óptica geométrica: espejos cóncavos, convexos y lentes",
+          "Introducción a la física cuántica y relatividad"
+        ]
+      }
+    }
+  },
+  "Matemática": {
+    "Básica Elemental": {
+      "Unidad 1: Los números y el cálculo": {
+        "objetivos": [
+          "Comprender el sistema de numeración decimal y realizar sumas y restas.",
+          "Iniciar el pensamiento multiplicativo."
+        ],
+        "temas": [
+          "Números naturales hasta el 9.999",
+          "Valor posicional (unidades, decenas, centenas, unidades de mil)",
+          "Suma y resta con y sin reagrupación (llevar/pedir prestado)",
+          "Propiedades de la suma (conmutativa y asociativa)",
+          "Introducción a la multiplicación como suma repetida",
+          "Tablas de multiplicar del 2, 3, 4 y 5",
+          "Introducción a la división como reparto equitativo"
+        ]
+      },
+      "Unidad 2: Geometría plana y espacial": {
+        "objetivos": [
+          "Reconocer líneas, figuras y cuerpos geométricos en el entorno."
+        ],
+        "temas": [
+          "Líneas rectas, curvas y poligonales",
+          "Líneas paralelas y secantes",
+          "Figuras planas básicas (cuadrado, triángulo, rectángulo, círculo)",
+          "Características de figuras (lados, vértices)",
+          "Cuerpos geométricos (cubo, pirámide, esfera, cilindro)",
+          "Construcción de figuras con tangram"
+        ]
+      },
+      "Unidad 3: Sistema de Medidas": {
+        "objetivos": [
+          "Medir longitudes, masa y tiempo con unidades estandarizadas y no estandarizadas."
+        ],
+        "temas": [
+          "Medidas de longitud no convencionales (palmos, pasos)",
+          "El metro y el centímetro",
+          "Medidas de masa (kilogramo, libra y gramo)",
+          "Lectura del reloj análogo y digital (horas y minutos)",
+          "El calendario (días, meses, años)",
+          "Monedas y billetes nacionales: equivalencias y problemas de compra"
+        ]
+      },
+      "Unidad 4: Estadística básica": {
+        "objetivos": [
+          "Recolectar datos y leer gráficos simples."
+        ],
+        "temas": [
+          "Recolección y conteo de datos del entorno",
+          "Lectura e interpretación de pictogramas",
+          "Gráficos de barras simples",
+          "Patrones numéricos (secuencias de suma y resta)",
+          "Patrones de figuras y colores"
+        ]
+      }
+    },
+    "Básica Media": {
+      "Unidad 1: Álgebra y Numérica": {
+        "objetivos": [
+          "Dominar operaciones complejas con números naturales, fracciones y decimales."
+        ],
+        "temas": [
+          "Números naturales hasta el 999.999.999",
+          "Algoritmo de la multiplicación por 2 y 3 cifras",
+          "División exacta e inexacta por 2 cifras",
+          "Múltiplos, Divisores y Criterios de Divisibilidad (2,3,5,9,10)",
+          "Mínimo Común Múltiplo (MCM) y Máximo Común Divisor (MCD)",
+          "Fracciones (propias, impropias, equivalentes) y sus operaciones",
+          "Números decimales: operaciones (suma, resta, multiplicación)"
+        ]
+      },
+      "Unidad 2: Proporcionalidad y Lógica": {
+        "objetivos": [
+          "Establecer proporcionalidades y calcular porcentajes."
+        ],
+        "temas": [
+          "Relación de orden en fracciones y decimales (<, >, =)",
+          "Razones y proporciones numéricas",
+          "Regla de tres simple directa",
+          "Concepto de porcentaje (%)",
+          "Cálculo rápido de porcentajes (10%, 25%, 50%)"
+        ]
+      },
+      "Unidad 3: Geometría y Medida": {
+        "objetivos": [
+          "Medir ángulos, calcular perímetros y ubicar coordenadas."
+        ],
+        "temas": [
+          "Clasificación y medición de ángulos con graduador",
+          "Clasificación de triángulos por sus lados y ángulos",
+          "Perímetro de polígonos regulares e irregulares",
+          "Área de cuadrados, rectángulos y triángulos",
+          "Plano cartesiano (ubicación de pares en el primer cuadrante)",
+          "Medidas de longitud, superficie y conversiones"
+        ]
+      },
+      "Unidad 4: Estadística y Probabilidad": {
+        "objetivos": [
+          "Calcular promedios e interpretar gráficos."
+        ],
+        "temas": [
+          "Tabulación de datos discretos",
+          "Moda, Mediana y Media Aritmética (promedio)",
+          "Gráficos circulares o de pastel",
+          "Sucesos aleatorios, seguros e imposibles"
+        ]
+      }
+    },
+    "Básica Superior": {
+      "Unidad 1: Conjuntos numéricos": {
+        "objetivos": [
+          "Operar con fluidez en los conjuntos de números enteros y racionales."
+        ],
+        "temas": [
+          "Los números enteros (Z): la recta numérica y el valor absoluto",
+          "Suma y resta de enteros (ley de signos)",
+          "Multiplicación, división y operaciones combinadas de enteros",
+          "Los números racionales (Q): operaciones y propiedades",
+          "Potenciación y radicación de Z y Q",
+          "Notación científica"
+        ]
+      },
+      "Unidad 2: Álgebra": {
+        "objetivos": [
+          "Resolver ecuaciones lineales e introducir funciones."
+        ],
+        "temas": [
+          "Traducción de lenguaje natural a lenguaje algebraico",
+          "Monomios y polinomios (suma, resta, producto)",
+          "Ecuaciones de primer grado con una incógnita",
+          "Inecuaciones de primer grado",
+          "Regla de tres compuesta",
+          "Función lineal (y = mx + b) y representación en los 4 cuadrantes"
+        ]
+      },
+      "Unidad 3: Geometría Métrica": {
+        "objetivos": [
+          "Aplicar el Teorema de Pitágoras y calcular volúmenes."
+        ],
+        "temas": [
+          "Teorema de Pitágoras (cálculo de catetos e hipotenusa)",
+          "Teorema de Thales (semejanza)",
+          "Área de polígonos regulares",
+          "Volumen de prismas rectos, cilindros, conos y esferas",
+          "Conversión entre medidas de capacidad y volumen"
+        ]
+      },
+      "Unidad 4: Estadística Avanzada": {
+        "objetivos": [
+          "Interpretar datos agrupados y calcular probabilidad clásica."
+        ],
+        "temas": [
+          "Tablas de frecuencia de datos agrupados (intervalos)",
+          "Medidas de dispersión: rango y varianza",
+          "Regla de Laplace (probabilidad de eventos simples)",
+          "Experimentos aleatorios compuestos"
+        ]
+      }
+    },
+    "Bachillerato": {
+      "Unidad 1: Álgebra Avanzada y Funciones": {
+        "objetivos": [
+          "Resolver sistemas de ecuaciones y modelar funciones cuadráticas."
+        ],
+        "temas": [
+          "El conjunto de los números reales (R)",
+          "Sistemas de ecuaciones lineales 2x2 y 3x3 (método de sustitución, igualación, Cramer)",
+          "Ecuaciones cuadráticas (fórmula general y factorización)",
+          "Función cuadrática (parábola, raíces, vértice)",
+          "Logaritmos: propiedades y ecuaciones logarítmicas",
+          "Progresiones aritméticas y geométricas"
+        ]
+      },
+      "Unidad 2: Geometría Analítica y Trigonometría": {
+        "objetivos": [
+          "Analizar rectas, cónicas y razones trigonométricas."
+        ],
+        "temas": [
+          "Vectores en el plano R2",
+          "Ecuaciones paramétrica y general de la recta",
+          "Cónicas: circunferencia, elipse, parábola, hipérbola",
+          "Razones trigonométricas en triángulos rectángulos",
+          "Leyes de Senos y Cosenos",
+          "El círculo unitario trigonométrico"
+        ]
+      },
+      "Unidad 3: Cálculo y Probabilidad": {
+        "objetivos": [
+          "Introducir nociones de cálculo diferencial e inferencia estadística."
+        ],
+        "temas": [
+          "Límites de funciones polinomiales y racionales",
+          "Concepto de Derivada (regla de la cadena)",
+          "Aplicaciones de la derivada (optimización, máximos y mínimos)",
+          "Probabilidad condicional y Teorema de Bayes",
+          "Distribución Normal y Binomial"
+        ]
+      }
+    }
+  },
+  "Lengua y Literatura": {
+    "Básica Elemental": {
+      "Unidad 1: Lectura y Escritura Inicial": {
+        "objetivos": [
+          "Desarrollar la conciencia fonológica y habilidades de lecto-escritura."
+        ],
+        "temas": [
+          "Conciencia fonológica y silábica",
+          "Las vocales, consonantes y dígrafos (bl, pr, tr)",
+          "Uso de mayúsculas en nombres propios y al inicio",
+          "Signos de puntuación básicos: punto final, coma enumerativa",
+          "Lectura comprensiva de cuentos y fábulas cortos",
+          "Estructura del sustantivo y adjetivo calificativo",
+          "Noción del verbo (pasado, presente, futuro)"
+        ]
+      },
+      "Unidad 2: Expresión Oral y Textos Cotidianos": {
+        "objetivos": [
+          "Fomentar la comunicación oral y redacción de textos simples."
+        ],
+        "temas": [
+          "La estructura de la oración simple (Sujeto y Predicado)",
+          "Redacción de anécdotas y experiencias diarias",
+          "Lectura de rimas, adivinanzas y retahílas",
+          "Identificación de personajes en un cuento",
+          "Escritura de notas de invitación y mensajes cortos",
+          "Normas de cortesía y escucha activa"
+        ]
+      }
+    },
+    "Básica Media": {
+      "Unidad 1: Gramática y Ortografía": {
+        "objetivos": [
+          "Fortalecer el uso de reglas ortográficas y categorías gramaticales."
+        ],
+        "temas": [
+          "Reglas de acentuación: agudas, graves, esdrújulas",
+          "El uso de la tilde diacrítica",
+          "Uso ortográfico de B/V, C/S/Z y G/J",
+          "El pronombre personal y posesivo",
+          "Clasificación del sustantivo (común, propio, abstracto)",
+          "Tiempos verbales simples del indicativo",
+          "El párrafo: idea principal e ideas secundarias"
+        ]
+      },
+      "Unidad 2: Tipología Textual y Literatura": {
+        "objetivos": [
+          "Diferenciar tipos de textos y apreciar géneros literarios."
+        ],
+        "temas": [
+          "Estructura de mitos y leyendas tradicionales",
+          "La biografía y autobiografía",
+          "La carta formal e informal",
+          "Textos instruccionales (recetas, manuales)",
+          "Figuras literarias básicas (personificación, símil)",
+          "Uso del diccionario y sinónimos/antónimos",
+          "La exposición oral (preparación y material visual)"
+        ]
+      }
+    },
+    "Básica Superior": {
+      "Unidad 1: Sintaxis y Expresión Crítica": {
+        "objetivos": [
+          "Analizar oraciones complejas y redactar ensayos y artículos argumentativos."
+        ],
+        "temas": [
+          "Análisis sintáctico (núcleos y modificadores del sujeto y predicado)",
+          "Oraciones compuestas coordinadas y subordinadas",
+          "El modo subjuntivo e imperativo del verbo",
+          "El texto argumentativo (tesis, argumentos, conclusión)",
+          "La noticia y la crónica periodística",
+          "El debate: técnicas de argumentación y refutación",
+          "Variedades lingüísticas del Ecuador (dialectos)"
+        ]
+      },
+      "Unidad 2: Apreciación Literaria": {
+        "objetivos": [
+          "Analizar obras literarias y usar figuras retóricas avanzadas."
+        ],
+        "temas": [
+          "La novela corta y el cuento latinoamericano",
+          "Estructura métrica del poema (rima, estrofa, sílabas)",
+          "Figuras literarias avanzadas (metáfora, hipérbole, anáfora)",
+          "Vicios del lenguaje (barbarismos, pleonasmos)",
+          "Uso de citas textuales y referencias bibliográficas",
+          "La oratoria y técnicas de declamación poética"
+        ]
+      }
+    },
+    "Bachillerato": {
+      "Unidad 1: Literatura Universal e Hispanoamericana": {
+        "objetivos": [
+          "Analizar críticamente las corrientes literarias y su contexto histórico."
+        ],
+        "temas": [
+          "Literatura clásica grecorromana (Ilíada, Edipo Rey)",
+          "El Siglo de Oro Español y El Quijote",
+          "Romanticismo, Realismo y Vanguardismo",
+          "El Boom Latinoamericano (García Márquez, Cortázar)",
+          "Literatura ecuatoriana contemporánea (Grupo de Guayaquil)",
+          "Análisis semiótico del texto literario"
+        ]
+      },
+      "Unidad 2: Escritura Académica e Investigación": {
+        "objetivos": [
+          "Desarrollar habilidades de redacción académica formal."
+        ],
+        "temas": [
+          "El ensayo académico y normativas de citación (Normas APA)",
+          "El artículo de opinión y editorial",
+          "Técnicas de investigación documental fidedigna",
+          "Identificación de falacias argumentativas",
+          "Corrección de estilo y sintaxis avanzada",
+          "Evolución e historia de la lengua española"
+        ]
+      }
+    }
+  },
+  "Ciencias Sociales": {
+    "Básica Elemental": {
+      "Unidad 1: Entorno y Convivencia": {
+        "objetivos": [
+          "Reconocer las normas de convivencia en la familia y la escuela."
+        ],
+        "temas": [
+          "La familia: roles, deberes y el árbol genealógico",
+          "Mi escuela y mi barrio: normas de convivencia ciudadana",
+          "Profesiones y oficios que ayudan a mi comunidad",
+          "Derechos y deberes de las niñas y los niños",
+          "Cuidado del patrimonio natural local"
+        ]
+      },
+      "Unidad 2: Identidad y Orientación": {
+        "objetivos": [
+          "Ubicar puntos cardinales y reconocer la identidad nacional."
+        ],
+        "temas": [
+          "Identidad nacional: la Bandera, el Escudo y el Himno del Ecuador",
+          "Costumbres y tradiciones de mi cantón",
+          "Ubicación espacial básica: puntos cardinales (N, S, E, O)",
+          "Medios de transporte terrestres, aéreos y marítimos",
+          "El paisaje natural vs. el paisaje construido por humanos"
+        ]
+      }
+    },
+    "Básica Media": {
+      "Unidad 1: Geografía y Población del Ecuador": {
+        "objetivos": [
+          "Identificar las regiones geográficas, el clima y la diversidad cultural del país."
+        ],
+        "temas": [
+          "El mapa del Ecuador: relieve e hidrografía",
+          "Características de las 4 regiones (Costa, Sierra, Amazonía, Galápagos)",
+          "Organización territorial: 24 provincias y capitales",
+          "Pisos climáticos y agricultura nacional",
+          "Diversidad étnica y cultural (indígenas, montubios, afroecuatorianos)",
+          "Sectores de la economía (primario, secundario, terciario)"
+        ]
+      },
+      "Unidad 2: Historia y Ciudadanía Ecuatoriana": {
+        "objetivos": [
+          "Comprender la época aborigen, colonial e independentista de la nación."
+        ],
+        "temas": [
+          "Los primeros pobladores de América y Ecuador",
+          "El Imperio Inca y el Tahuantinsuyo",
+          "La conquista española y el mestizaje",
+          "La época colonial: sistema de haciendas y encomiendas",
+          "Proceso de independencia (Primer grito de Independencia, Batalla de Pichincha)",
+          "La creación de la República del Ecuador",
+          "Los poderes del Estado y noción de Democracia"
+        ]
+      }
+    },
+    "Básica Superior": {
+      "Unidad 1: Historia Universal": {
+        "objetivos": [
+          "Analizar la evolución de las sociedades desde la antigüedad hasta la modernidad."
+        ],
+        "temas": [
+          "Surgimiento de las primeras civilizaciones (Mesopotamia, Egipto)",
+          "Civilización Griega y el origen de la democracia",
+          "El Imperio Romano y su legado legal",
+          "La Edad Media, el feudalismo y las cruzadas",
+          "El Renacimiento y la revolución científica",
+          "La Revolución Francesa y la Independencia de Estados Unidos",
+          "La Revolución Industrial y la expansión del capitalismo"
+        ]
+      },
+      "Unidad 2: Geografía y Sociedad Moderna": {
+        "objetivos": [
+          "Comprender problemas ambientales y sociopolíticos del mundo contemporáneo."
+        ],
+        "temas": [
+          "Geografía mundial: continentes y océanos principales",
+          "Migración humana mundial: causas y consecuencias",
+          "Desarrollo sostenible y problemas medioambientales globales",
+          "Garantías y Derechos Constitucionales del Ecuador",
+          "El papel de la mujer a lo largo de la historia",
+          "Mecanismos de integración regional (Mercosur, CAN, OEA)"
+        ]
+      }
+    },
+    "Bachillerato": {
+      "Unidad 1: Historia del Siglo XX y Geopolítica": {
+        "objetivos": [
+          "Analizar los conflictos internacionales y económicos del siglo XX."
+        ],
+        "temas": [
+          "La Primera y Segunda Guerra Mundial",
+          "La Guerra Fría, la bipolaridad mundial y la caída del muro de Berlín",
+          "Globalización económica y cultural",
+          "Historia económica latinoamericana (Modelo Agroexportador, ISI)",
+          "Dictaduras militares latinoamericanas y la transición a la democracia",
+          "Historia reciente del Ecuador (crisis de 1999, dolarización)"
+        ]
+      },
+      "Unidad 2: Filosofía y Sociología": {
+        "objetivos": [
+          "Desarrollar pensamiento crítico sobre la sociedad, ética y economía."
+        ],
+        "temas": [
+          "Filosofía antigua (Sócrates, Platón, Aristóteles)",
+          "Racionalismo y Empirismo (Descartes, Kant)",
+          "Lógica aristotélica y falacias del razonamiento",
+          "Principios de bioética y ética contemporánea",
+          "Sociología: estratificación de clases y movimientos sociales",
+          "Macro y microeconomía: inflación, oferta y demanda",
+          "El rol de las Naciones Unidas (ONU) y organismos financieros (FMI)"
+        ]
+      }
+    }
+  }
+}

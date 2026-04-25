@@ -366,20 +366,18 @@ export function GenerationToolbar({
       ))}
 
       {/* ── Deep Interaction ── */}
-      {role === 'admin' && (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              onClick={() => onDeepInteractionChange(!deepInteraction)}
-              className={deepInteraction ? pillActive : pillMuted}
-            >
-              <Sparkles className={cn('size-3.5', deepInteraction && 'animate-pulse')} />
-              {deepInteraction && <span>Interacción Profunda</span>}
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>Generar diapositiva de simulación interactiva</TooltipContent>
-        </Tooltip>
-      )}
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            onClick={() => onDeepInteractionChange(!deepInteraction)}
+            className={deepInteraction ? pillActive : pillMuted}
+          >
+            <Sparkles className={cn('size-3.5', deepInteraction && 'animate-pulse')} />
+            {deepInteraction && <span>Interacción Profunda</span>}
+          </button>
+        </TooltipTrigger>
+        <TooltipContent>Generar diapositiva de simulación interactiva</TooltipContent>
+      </Tooltip>
 
       {/* ── Language pill ── */}
       <Tooltip>

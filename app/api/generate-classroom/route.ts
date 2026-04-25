@@ -5,11 +5,13 @@ import { type GenerateClassroomInput } from '@/lib/server/classroom-generation';
 import { runClassroomGenerationJob } from '@/lib/server/classroom-job-runner';
 import { createClassroomGenerationJob } from '@/lib/server/classroom-job-store';
 import { buildRequestOrigin } from '@/lib/server/classroom-storage';
+import { authenticateRequest } from '@/lib/server/auth';
 
 export const maxDuration = 30;
 
 export async function POST(req: NextRequest) {
   try {
+    const authUser = await authenticateRequest(req);
     const rawBody = (await req.json()) as Partial<GenerateClassroomInput>;
     const body: GenerateClassroomInput = {
       requirement: rawBody.requirement || '',
@@ -41,6 +43,9 @@ export async function POST(req: NextRequest) {
       202,
     );
   } catch (error) {
+    if (error instanceof Error && (error.message === 'Unauthorized' || error.message.includes('Authorization'))) {
+      return apiError('UNAUTHORIZED', 401, 'Unauthorized request');
+    }
     return apiError(
       'INTERNAL_ERROR',
       500,

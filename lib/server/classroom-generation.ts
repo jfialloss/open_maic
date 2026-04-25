@@ -155,7 +155,7 @@ export async function generateClassroom(
     throw new Error(outlinesResult.error || 'Failed to generate scene outlines');
   }
 
-  const outlines = outlinesResult.data;
+  const { outlines, languageDirective } = outlinesResult.data;
   log.info(`Generated ${outlines.length} scene outlines`);
 
   await options.onProgress?.({
@@ -195,13 +195,13 @@ export async function generateClassroom(
       totalScenes: outlines.length,
     });
 
-    const content = await generateSceneContent(safeOutline, aiCall);
+    const content = await generateSceneContent(safeOutline, aiCall, { languageDirective });
     if (!content) {
       log.warn(`Skipping scene "${safeOutline.title}" — content generation failed`);
       continue;
     }
 
-    const actions = await generateSceneActions(safeOutline, content, aiCall);
+    const actions = await generateSceneActions(safeOutline, content, aiCall, { languageDirective });
     log.info(`Scene "${safeOutline.title}": ${actions.length} actions`);
 
     const sceneId = createSceneWithActions(safeOutline, content, actions, api);

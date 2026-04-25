@@ -73,6 +73,7 @@ interface RoundtableProps {
   readonly onToggleChat?: () => void;
   readonly onPrevSlide?: () => void;
   readonly onNextSlide?: () => void;
+  readonly canAdvance?: boolean;
   readonly onWhiteboardClose?: () => void;
 }
 
@@ -130,6 +131,7 @@ export function Roundtable({
   onToggleChat,
   onPrevSlide,
   onNextSlide,
+  canAdvance = true,
   onWhiteboardClose,
 }: RoundtableProps) {
   const { t } = useI18n();
@@ -408,6 +410,7 @@ export function Roundtable({
         onToggleChat={onToggleChat}
         onPrevSlide={onPrevSlide ?? (() => {})}
         onNextSlide={onNextSlide ?? (() => {})}
+        canAdvance={canAdvance}
         onPlayPause={onPlayPause ?? (() => {})}
         onWhiteboardClose={onWhiteboardClose ?? (() => {})}
         showStopDiscussion={showStopButton}

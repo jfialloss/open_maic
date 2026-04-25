@@ -22,6 +22,7 @@ export {
 // Prompt IDs constant
 export const PROMPT_IDS = {
   REQUIREMENTS_TO_OUTLINES: 'requirements-to-outlines',
+  INTERACTIVE_OUTLINES: 'interactive-outlines',
   SLIDE_CONTENT: 'slide-content',
   QUIZ_CONTENT: 'quiz-content',
   SLIDE_ACTIONS: 'slide-actions',
@@ -30,4 +31,11 @@ export const PROMPT_IDS = {
   INTERACTIVE_HTML: 'interactive-html',
   INTERACTIVE_ACTIONS: 'interactive-actions',
   PBL_ACTIONS: 'pbl-actions',
+  // Deep Interactive Mode Prompts
+  SIMULATION_CONTENT: 'simulation-content',
+  DIAGRAM_CONTENT: 'diagram-content',
+  CODE_CONTENT: 'code-content',
+  GAME_CONTENT: 'game-content',
+  VISUALIZATION3D_CONTENT: 'visualization3d-content',
+  WIDGET_TEACHER_ACTIONS: 'widget-teacher-actions',
 } as const;

@@ -48,6 +48,9 @@ export interface StageRecord {
   style?: string;
   currentSceneId?: string;
   subject?: string;
+  grade?: string;
+  topic?: string;
+  isPublishedToCloud?: boolean;
 }
 
 /**
