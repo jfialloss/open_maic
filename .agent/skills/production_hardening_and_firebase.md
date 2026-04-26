@@ -88,3 +88,18 @@ Descubrimos que si el sistema usaba el prompt de "Interacción Profunda" (`inter
 **Solución aplicada:**
 1. A las plantillas especializadas **se les debe copiar explícitamente** la sección completa de directivas de medios (`## AI-Generated Media`) si se desea mantener paridad de funcionalidades.
 2. **Sintaxis Crítica del Loader**: El orquestador de variables (`lib/generation/prompts/loader.ts`) usa Regex para interceptar variables con llaves **dobles**. Es obligatorio escribir `{{variableName}}`. Si se utiliza una sola llave `{variableName}`, el inyector no la reconocerá y el modelo recibirá el string en crudo.
+
+---
+
+## 6. Access Control (Client-Side) y Race Conditions
+
+### Bloqueo de Acceso por Dominios y Lista Blanca
+Se estableció un mecanismo de **Acceso Controlado** a nivel del Frontend mediante Google OAuth (`signInWithPopup`).
+- **Dónde**: En `app/login/page.tsx` (después del popup) y en el middleware global de estado `lib/hooks/use-auth.tsx` (`onAuthStateChanged`).
+- **Condiciones**: El usuario debe pertenecer a uno de los dominios permitidos (`spearhead.global`, `newman.education`, `vitaprofamilia.org`), a la lista blanca de correos excepcionales (`spearhead.ec@gmail.com`), o ser el administrador configurado (`NEXT_PUBLIC_ADMIN_EMAIL`).
+- **Acción**: Si no cumple, se ejecuta inmediatamente `auth.signOut()` evitando cualquier redirección a `/` y se muestra un `toast.error` utilizando colores enriquecidos (`richColors` en `sonner`).
+
+### Prevención de "Race Conditions" de Hidratación en Firebase
+Los hooks de `useEffect` que lanzan consultas contra Firestore deben verificar SIEMPRE que `user` o `auth.currentUser` exista **antes** de ejecutarse. 
+- **Error Evitado**: `FirebaseError: Missing or insufficient permissions.`
+- **Caso**: En `app/page.tsx`, la función `validateCloud` consultaba `global_classrooms` (donde la regla de Firestore requiere `request.auth != null`) de inmediato. Al no verificar primero si `useAuth().user` ya estaba cargado, la consulta se disparaba en los milisegundos donde Firebase aún consideraba al usuario como anónimo, provocando un error de permisos en la consola.
