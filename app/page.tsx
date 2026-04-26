@@ -83,7 +83,7 @@ const initialFormState: FormState = {
   pdfFile: null,
   requirement: '',
   language: 'es-ES',
-  webSearch: false,
+  webSearch: true,
   deepInteraction: false,
   subject: 'none',
   topic: undefined,
@@ -157,7 +157,9 @@ function HomePage() {
       const savedWebSearch = localStorage.getItem(WEB_SEARCH_STORAGE_KEY);
       const savedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY);
       const updates: Partial<FormState> = {};
-      if (savedWebSearch === 'true') updates.webSearch = true;
+      if (savedWebSearch !== null) {
+        updates.webSearch = savedWebSearch === 'true';
+      }
       if (savedLanguage === 'en-US' || savedLanguage === 'es-ES') {
         updates.language = savedLanguage;
       } else {
@@ -230,7 +232,7 @@ function HomePage() {
 
   // Validate pending cloud courses to ensure they still exist in the cloud
   useEffect(() => {
-    if (!storeHydrated || !activeCourses) return;
+    if (!storeHydrated || !activeCourses || !user) return;
     
     const pendingCloud = Object.values(activeCourses).filter(
       (ac) => !classrooms.some((c) => c.id === ac.stageId) && !masteredTopics.includes(ac.topic)
@@ -256,7 +258,7 @@ function HomePage() {
     };
     
     validateCloud();
-  }, [storeHydrated, activeCourses, classrooms, masteredTopics]);
+  }, [storeHydrated, activeCourses, classrooms, masteredTopics, user]);
 
   const loadClassrooms = async () => {
     try {

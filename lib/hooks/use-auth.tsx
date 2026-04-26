@@ -5,6 +5,17 @@ import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { useRouter, usePathname } from 'next/navigation';
+import { toast } from 'sonner';
+
+const ALLOWED_DOMAINS = [
+  'spearhead.global',
+  'newman.education',
+  'vitaprofamilia.org'
+];
+
+const ALLOWED_EMAILS = [
+  'spearhead.ec@gmail.com'
+];
 
 export type UserRole = 'admin' | 'tutor' | 'student' | null;
 
@@ -32,6 +43,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
+        const userEmail = firebaseUser.email || '';
+        const domain = userEmail.split('@')[1];
+        const isAllowedDomain = domain && ALLOWED_DOMAINS.includes(domain);
+        const isAllowedEmail = ALLOWED_EMAILS.includes(userEmail);
+        const isAdmin = adminEmail && userEmail === adminEmail;
+
+        if (!isAdmin && !isAllowedDomain && !isAllowedEmail) {
+          console.warn(`Access denied for email: ${userEmail}`);
+          await auth.signOut();
+          return;
+        }
+
         setUser(firebaseUser);
         
         // Define Admin automatically based on environment variable

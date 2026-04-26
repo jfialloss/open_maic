@@ -11,6 +11,16 @@ import { toast } from 'sonner';
 
 const log = createLogger('Login');
 
+const ALLOWED_DOMAINS = [
+  'spearhead.global',
+  'newman.education',
+  'vitaprofamilia.org'
+];
+
+const ALLOWED_EMAILS = [
+  'spearhead.ec@gmail.com'
+];
+
 export default function LoginPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -19,6 +29,22 @@ export default function LoginPage() {
     try {
       setIsLoading(true);
       const result = await signInWithPopup(auth, googleProvider);
+      
+      const userEmail = result.user.email || '';
+      const domain = userEmail.split('@')[1];
+      const isAllowedEmail = ALLOWED_EMAILS.includes(userEmail);
+      const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+      const isAdmin = adminEmail && userEmail === adminEmail;
+
+      if (!isAdmin && !isAllowedEmail && (!domain || !ALLOWED_DOMAINS.includes(domain))) {
+        await auth.signOut();
+        toast.error('Acceso denegado', {
+          description: 'Tu correo no pertenece a una organización autorizada.'
+        });
+        setIsLoading(false);
+        return;
+      }
+
       log.info('User signed in', result.user.uid);
       // Let the useAuth listener handle the redirect to /, /onboarding or admin route
       toast.success('¡Sesión iniciada con éxito!');
