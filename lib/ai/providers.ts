@@ -959,14 +959,7 @@ export function getModel(config: ModelConfig): ModelWithInfo {
           }).then((r: unknown) => r as Response)) as typeof fetch;
       }
       const google = createGoogleGenerativeAI(googleOptions);
-      model = google(config.modelId, {
-        safetySettings: [
-          { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_LOW_AND_ABOVE' },
-          { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_LOW_AND_ABOVE' },
-          { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_LOW_AND_ABOVE' },
-          { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
-        ],
-      });
+      model = google(config.modelId);
       break;
     }
 
