@@ -97,6 +97,7 @@ export interface SceneOutline {
   estimatedDuration?: number; // seconds
   order: number;
   languageNote?: string; // LLM-inferred language note for this scene
+  languageDirective?: string; // High-level language directive
   // Suggested image IDs (from PDF-extracted images)
   suggestedImageIds?: string[]; // e.g., ["img_1", "img_3"]
   // AI-generated media requests (when PDF images are insufficient)
