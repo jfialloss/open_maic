@@ -77,7 +77,7 @@ export function UserProfileSync() {
          const cleanPayload = JSON.parse(JSON.stringify(payload));
          
          // Save to global Firestore config
-         setDoc(doc(db, 'users', user.uid, 'data', 'profile'), cleanPayload, { merge: true }).catch(err => {
+         setDoc(doc(db, 'users', user.uid, 'data', 'profile'), cleanPayload).catch(err => {
            console.error('Failed to sync user profile to Firestore:', err);
          });
       }

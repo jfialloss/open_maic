@@ -453,6 +453,32 @@
           "Escritura de notas de invitación y mensajes cortos",
           "Normas de cortesía y escucha activa"
         ]
+      },
+      "Unidad 3: Comprensión Lectora": {
+        "objetivos": [
+          "Comprender el mensaje y propósito de textos narrativos e informativos."
+        ],
+        "temas": [
+          "Idea principal y secundaria en párrafos cortos",
+          "Secuencia lógica de un cuento (inicio, nudo, desenlace)",
+          "Lectura de letreros, afiches y señales de tránsito",
+          "El poema: rima y ritmo básico",
+          "Diferencia entre cuentos imaginarios y textos reales",
+          "Creación de finales alternativos para historias"
+        ]
+      },
+      "Unidad 4: Escritura y Creatividad": {
+        "objetivos": [
+          "Producir textos propios expresando ideas y sentimientos."
+        ],
+        "temas": [
+          "Creación de cuentos cortos ilustrados",
+          "La descripción de personas, animales y lugares",
+          "Uso de sinónimos y antónimos simples",
+          "El diario personal: cómo expresar emociones",
+          "Elaboración de tarjetas y cartas para la familia",
+          "Juegos de palabras y trabalenguas"
+        ]
       }
     },
     "Básica Media": {
@@ -483,6 +509,32 @@
           "Uso del diccionario y sinónimos/antónimos",
           "La exposición oral (preparación y material visual)"
         ]
+      },
+      "Unidad 3: Comunicación Oral y Escrita": {
+        "objetivos": [
+          "Desarrollar habilidades para el debate y la redacción periodística."
+        ],
+        "temas": [
+          "La noticia periodística: estructura y redacción",
+          "La entrevista: formulación de preguntas abiertas y cerradas",
+          "El folleto turístico e informativo",
+          "El debate escolar: turnos de habla y respeto de ideas",
+          "El artículo de divulgación científica adaptado",
+          "Conectores lógicos de tiempo y causa-efecto"
+        ]
+      },
+      "Unidad 4: Lectura Crítica y Expresión": {
+        "objetivos": [
+          "Emitir juicios de valor sobre textos leídos y usar lenguaje figurado."
+        ],
+        "temas": [
+          "El poema: rima consonante, asonante y métrica básica",
+          "La fábula y sus moralejas",
+          "El cómic y la historieta: viñetas y onomatopeyas",
+          "Diferencia entre hecho y opinión",
+          "Elaboración de resúmenes y mapas conceptuales",
+          "El guión teatral corto y dramatización"
+        ]
       }
     },
     "Básica Superior": {
@@ -512,6 +564,32 @@
           "Uso de citas textuales y referencias bibliográficas",
           "La oratoria y técnicas de declamación poética"
         ]
+      },
+      "Unidad 3: Textos Periodísticos y Argumentativos": {
+        "objetivos": [
+          "Analizar e inferir la intención de diferentes textos argumentativos y periodísticos."
+        ],
+        "temas": [
+          "El artículo de opinión",
+          "La carta al director",
+          "Estructura del ensayo escolar",
+          "El reportaje periodístico",
+          "Publicidad y propaganda: persuasión y manipulación",
+          "El conversatorio y la mesa redonda"
+        ]
+      },
+      "Unidad 4: Variaciones Lingüísticas y Expresión": {
+        "objetivos": [
+          "Reconocer las variaciones de la lengua y redactar textos de ficción."
+        ],
+        "temas": [
+          "El indigenismo en la literatura ecuatoriana",
+          "Jerga, argot y modismos juveniles",
+          "Influencia de las redes sociales en el lenguaje escrito",
+          "El cuento de ciencia ficción",
+          "El cuento de terror y suspenso",
+          "Creación de un blog escolar"
+        ]
       }
     },
     "Bachillerato": {
@@ -540,6 +618,32 @@
           "Corrección de estilo y sintaxis avanzada",
           "Evolución e historia de la lengua española"
         ]
+      },
+      "Unidad 3: Literatura Contemporánea y Crítica": {
+        "objetivos": [
+          "Analizar y criticar obras de la literatura del siglo XX y XXI."
+        ],
+        "temas": [
+          "La poesía hispanoamericana del siglo XX",
+          "El teatro del absurdo y teatro contemporáneo",
+          "Novela gráfica y literatura digital",
+          "Crítica literaria y reseña de obras",
+          "El papel de la mujer en la literatura moderna",
+          "Intertextualidad en la literatura"
+        ]
+      },
+      "Unidad 4: Comunicación y Sociedad": {
+        "objetivos": [
+          "Comprender la influencia de los medios y la comunicación en la sociedad."
+        ],
+        "temas": [
+          "El discurso político y social",
+          "Análisis crítico de los medios masivos de comunicación",
+          "Lenguaje inclusivo y evolución del idioma",
+          "La monografía de grado: estructura y defensa",
+          "Elaboración de currículum vitae y entrevista de trabajo",
+          "Declamación y oratoria pública avanzada"
+        ]
       }
     }
   },
@@ -567,6 +671,30 @@
           "Ubicación espacial básica: puntos cardinales (N, S, E, O)",
           "Medios de transporte terrestres, aéreos y marítimos",
           "El paisaje natural vs. el paisaje construido por humanos"
+        ]
+      },
+      "Unidad 3: Mi Provincia": {
+        "objetivos": [
+          "Reconocer las características geográficas y culturales de la provincia."
+        ],
+        "temas": [
+          "Autoridades de mi provincia (Prefecto, Gobernador)",
+          "Relieve, clima y ríos de mi provincia",
+          "Actividades económicas de mi provincia",
+          "Historia y fundación de mi ciudad",
+          "Fiestas tradicionales y gastronomía local"
+        ]
+      },
+      "Unidad 4: Convivencia y Seguridad": {
+        "objetivos": [
+          "Aprender normas de seguridad ciudadana y prevención de riesgos."
+        ],
+        "temas": [
+          "Educación vial para peatones y ciclistas",
+          "Señales de tránsito y semáforos",
+          "Prevención de desastres naturales (sismos, erupciones)",
+          "Zonas seguras y rutas de evacuación en la escuela",
+          "Instituciones de ayuda comunitaria (Bomberos, Policía)"
         ]
       }
     },
@@ -597,6 +725,32 @@
           "La creación de la República del Ecuador",
           "Los poderes del Estado y noción de Democracia"
         ]
+      },
+      "Unidad 3: Cívica y Democracia": {
+        "objetivos": [
+          "Analizar la estructura del Estado Ecuatoriano y la participación ciudadana."
+        ],
+        "temas": [
+          "Los 5 poderes del Estado Ecuatoriano",
+          "Los símbolos patrios y el civismo",
+          "Derechos Humanos fundamentales",
+          "Obligaciones tributarias básicas de los ciudadanos",
+          "La democracia como forma de vida",
+          "Las elecciones y el derecho al voto"
+        ]
+      },
+      "Unidad 4: Economía Ecuatoriana y Global": {
+        "objetivos": [
+          "Comprender los principales motores de la economía nacional."
+        ],
+        "temas": [
+          "El petróleo y su importancia económica en Ecuador",
+          "Exportaciones principales: banano, cacao, camarón, flores",
+          "El trabajo informal y el desempleo",
+          "La moneda oficial (el dólar) y la historia del Sucre",
+          "Importancia de la educación para el desarrollo del país",
+          "Ecuador frente a la globalización"
+        ]
       }
     },
     "Básica Superior": {
@@ -625,6 +779,32 @@
           "Garantías y Derechos Constitucionales del Ecuador",
           "El papel de la mujer a lo largo de la historia",
           "Mecanismos de integración regional (Mercosur, CAN, OEA)"
+        ]
+      },
+      "Unidad 3: América Latina en el Mundo": {
+        "objetivos": [
+          "Identificar la realidad histórica y social de América Latina."
+        ],
+        "temas": [
+          "Geografía física de América del Sur y Central",
+          "Culturas precolombinas de América (Aztecas, Mayas)",
+          "El colonialismo en el resto de América",
+          "Movimientos independentistas de Simón Bolívar y San Martín",
+          "Desigualdad y pobreza en América Latina",
+          "Cultura, música y literatura latinoamericana"
+        ]
+      },
+      "Unidad 4: Ciudadanía Global y Ética": {
+        "objetivos": [
+          "Desarrollar una conciencia ciudadana global y de respeto."
+        ],
+        "temas": [
+          "La Organización de las Naciones Unidas (ONU)",
+          "Conflictos bélicos contemporáneos y refugiados",
+          "Diversidad religiosa en el mundo",
+          "Los Objetivos de Desarrollo Sostenible (ODS)",
+          "Uso responsable de las redes sociales e internet",
+          "Participación de los jóvenes en la política"
         ]
       }
     },
@@ -655,6 +835,142 @@
           "Macro y microeconomía: inflación, oferta y demanda",
           "El rol de las Naciones Unidas (ONU) y organismos financieros (FMI)"
         ]
+      },
+      "Unidad 3: Geopolítica del Siglo XXI": {
+        "objetivos": [
+          "Analizar el panorama político, tecnológico y económico actual."
+        ],
+        "temas": [
+          "Nuevas potencias mundiales (China, Rusia, India)",
+          "Conflictos geopolíticos contemporáneos en Medio Oriente",
+          "El terrorismo global y la seguridad internacional",
+          "Impacto de la Cuarta Revolución Industrial y la IA",
+          "Dependencia tecnológica y cibercrimen",
+          "Soberanía alimentaria y recursos hídricos en riesgo"
+        ]
+      },
+      "Unidad 4: Derechos, Cultura y Diversidad": {
+        "objetivos": [
+          "Reflexionar sobre los derechos de minorías y la interculturalidad."
+        ],
+        "temas": [
+          "Luchas sociales: feminismo, antirracismo y derechos LGBTQ+",
+          "El Sumak Kawsay (Buen Vivir) en la Constitución Ecuatoriana",
+          "Plurinacionalidad e interculturalidad en el Estado Ecuatoriano",
+          "Derechos de la Naturaleza (Pachamama)",
+          "Neocolonialismo cultural y pérdida de identidad",
+          "Medios de comunicación alternativos y libertad de expresión"
+        ]
+      }
+    }
+  },
+  "Inglés": {
+    "A1": {
+      "Unit 1: Introductions and Greetings": {
+        "objetivos": ["Introduce oneself and others.", "Use basic greetings and polite expressions."],
+        "temas": ["Greetings and Farewells (Hello, Good morning, Goodbye)", "Verb 'To Be' (Affirmative, Negative, Interrogative)", "Subject Pronouns and Possessive Adjectives", "Numbers 1-100 and Age", "Countries and Nationalities", "The Alphabet and Spelling"]
+      },
+      "Unit 2: Family and Friends": {
+        "objetivos": ["Describe family members and relationships.", "Talk about physical appearance and personality."],
+        "temas": ["Family Tree Vocabulary (Mother, Father, Sibling)", "Possessive 's (John's book)", "Demonstrative Pronouns (This, That, These, Those)", "Have got / Has got", "Adjectives for Physical Appearance", "Colors and Clothes"]
+      },
+      "Unit 3: Daily Routine and Time": {
+        "objetivos": ["Describe daily activities and tell the time."],
+        "temas": ["Telling the Time (O'clock, Half past, Quarter to)", "Present Simple (Routines and Habits)", "Adverbs of Frequency (Always, Usually, Never)", "Days of the Week and Months of the Year", "Daily Activities Vocabulary (Wake up, Have breakfast)", "Prepositions of Time (in, on, at)"]
+      },
+      "Unit 4: Places and Directions": {
+        "objetivos": ["Ask for and give basic directions.", "Describe a house and a city."],
+        "temas": ["Places in the City (Bank, Hospital, School)", "Prepositions of Place (In, On, Under, Next to)", "There is / There are (Affirmative, Negative, Questions)", "Rooms and Furniture in a House", "Basic Directions (Turn left, Go straight)", "Can / Can't for Ability"]
+      }
+    },
+    "A2": {
+      "Unit 1: Past Experiences": {
+        "objetivos": ["Talk about past events and holidays."],
+        "temas": ["Past Simple: Verb 'To Be' (Was / Were)", "Past Simple: Regular Verbs (-ed spelling rules)", "Past Simple: Irregular Verbs", "Time Expressions for the Past (Yesterday, Last week)", "Holiday and Travel Vocabulary", "Asking Questions in the Past (Did you...?)"]
+      },
+      "Unit 2: Food and Shopping": {
+        "objetivos": ["Order food in a restaurant and talk about quantities."],
+        "temas": ["Countable and Uncountable Nouns", "Quantifiers (Some, Any, Much, Many, A lot of)", "Food and Drink Vocabulary", "Ordering in a Restaurant (Roleplay phrases)", "Containers and Portions (A bottle of, A slice of)", "Shopping Vocabulary and Prices"]
+      },
+      "Unit 3: Plans and Predictions": {
+        "objetivos": ["Talk about future plans, intentions, and predictions."],
+        "temas": ["Be Going To (Plans and Intentions)", "Present Continuous for Future Arrangements", "Will / Won't (Predictions and Instant Decisions)", "Weather Vocabulary", "Life Events (Graduate, Get married)", "Making Offers and Promises"]
+      },
+      "Unit 4: Comparisons and Rules": {
+        "objetivos": ["Compare people and things.", "Talk about rules and obligations."],
+        "temas": ["Comparative Adjectives (Taller than, More beautiful)", "Superlative Adjectives (The tallest, The most expensive)", "Have to / Don't have to (Obligation)", "Must / Mustn't (Strong Obligation and Prohibition)", "Should / Shouldn't (Advice)", "Health and Illness Vocabulary"]
+      }
+    },
+    "B1": {
+      "Unit 1: Experiences and Achievements": {
+        "objetivos": ["Talk about life experiences and recent events."],
+        "temas": ["Present Perfect Simple (Have you ever...?)", "Present Perfect vs. Past Simple", "Just, Already, Yet, For, Since", "Vocabulary: Achievements and Challenges", "Phrasal Verbs (Basic concepts)", "Writing a Personal Email / Letter"]
+      },
+      "Unit 2: Stories and Interruptions": {
+        "objetivos": ["Narrate stories and describe ongoing actions in the past."],
+        "temas": ["Past Continuous (Was/Were + -ing)", "Past Simple vs. Past Continuous (When / While)", "Used to (Past Habits)", "Vocabulary: Emotions and Feelings", "Telling Anecdotes and Stories", "Linkers (Because, Although, So, However)"]
+      },
+      "Unit 3: The World Around Us": {
+        "objetivos": ["Discuss environmental issues and hypothetical situations."],
+        "temas": ["First Conditional (Real Possibility: If + Present, Will)", "Second Conditional (Unreal/Imaginary: If + Past, Would)", "Vocabulary: Environment and Nature", "Passive Voice (Present Simple and Past Simple)", "Relative Clauses (Who, Which, That, Where)", "Expressing Opinions (I think, In my opinion)"]
+      },
+      "Unit 4: Technology and Communication": {
+        "objetivos": ["Talk about technology, media, and report what others said."],
+        "temas": ["Reported Speech (Statements)", "Reported Speech (Questions and Commands)", "Vocabulary: Computers and the Internet", "Present Perfect Continuous (Have been doing)", "Question Tags", "Writing a Short Essay"]
+      }
+    },
+    "B2": {
+      "Unit 1: Society and Lifestyles": {
+        "objetivos": ["Discuss complex social issues and personal lifestyles.", "Express detailed opinions."],
+        "temas": ["Advanced Question Formation (Indirect questions)", "Present Perfect Simple vs. Continuous", "Vocabulary: Personality, Relationships, and Society", "Modals of Deduction (Must have, Might have, Can't have)", "Adjective Suffixes and Prefixes", "Writing an Opinion Essay (Structure and Linkers)"]
+      },
+      "Unit 2: Entertainment and Media": {
+        "objetivos": ["Analyze media, films, and books.", "Use narrative tenses effectively."],
+        "temas": ["Narrative Tenses (Past Simple, Past Continuous, Past Perfect)", "Past Perfect Continuous", "Vocabulary: Film, Literature, and Arts", "Advanced Passive Voice (Passive with Reporting Verbs: It is said that...)", "Participle Clauses (-ing and -ed clauses)", "Writing a Review"]
+      },
+      "Unit 3: Science and the Future": {
+        "objetivos": ["Speculate about the future and discuss scientific advancements."],
+        "temas": ["Future Continuous and Future Perfect", "Third Conditional (Unreal Past)", "Mixed Conditionals", "Vocabulary: Science, Space, and Technology", "Word Formation (Nouns from Verbs/Adjectives)", "Expressing Certainty and Probability"]
+      },
+      "Unit 4: Work and Education": {
+        "objetivos": ["Discuss career paths, education, and professional skills."],
+        "temas": ["Gerunds and Infinitives (Verbs followed by -ing or to)", "Causative Verbs (Have/Get something done)", "I wish / If only (Regrets and Desires)", "Vocabulary: Work, Education, and Qualifications", "Advanced Phrasal Verbs and Idioms", "Writing a Formal Letter / Cover Letter"]
+      }
+    },
+    "C1": {
+      "Unit 1: Global Issues and Nuance": {
+        "objetivos": ["Discuss global challenges with high fluency.", "Use advanced grammatical structures for emphasis."],
+        "temas": ["Inversion for Emphasis (Seldom have I..., Not only...)", "Cleft Sentences (What I need is..., It was John who...)", "Vocabulary: Globalization, Politics, and Economics", "Advanced Conditionals (Provided that, As long as, Unless)", "Nuanced Modals (May well have, Could have been)", "Writing an Advanced Proposal"]
+      },
+      "Unit 2: Culture and Language": {
+        "objetivos": ["Analyze cultural differences and linguistic nuances."],
+        "temas": ["Advanced Relative Clauses (Prepositions + Whom/Which)", "Participle Clauses in complex sentences", "Vocabulary: Idioms, Collocations, and Slang", "Subjunctive Mood in English (I suggest that he go...)", "Expressing hypothetical meaning without 'If'", "Writing an Academic Report"]
+      },
+      "Unit 3: Human Psychology and Behavior": {
+        "objetivos": ["Discuss abstract concepts related to the human mind."],
+        "temas": ["Advanced Passive Structures (To be supposed to, To be expected to)", "Gerunds vs Infinitives (Changes in meaning: stop to do / stop doing)", "Vocabulary: Psychology, Mind, and Behavior", "Phrasal Verbs with multiple meanings", "Discourse Markers for speaking and writing", "Writing an Article for a Magazine"]
+      },
+      "Unit 4: Arts and Aesthetics": {
+        "objetivos": ["Critique art and discuss aesthetic values with sophisticated vocabulary."],
+        "temas": ["Complex noun phrases and pre-modification", "Negative prefixes and suffixes", "Vocabulary: Fine Arts, Architecture, and Critique", "Adverbs of degree (utterly, profoundly, entirely)", "Advanced comparisons (nowhere near as... as, by far the...)", "Writing a Critical Review"]
+      }
+    },
+    "C2": {
+      "Unit 1: Mastery of Expression": {
+        "objetivos": ["Achieve near-native fluency and precision in expression.", "Understand implicit meanings."],
+        "temas": ["Subtle differences in modal verbs (would vs. used to in narratives)", "Advanced inversion and fronting", "Vocabulary: Highly specific and obscure terms, literary devices", "Idiomatic phrases and proverbs", "Understanding humor, irony, and sarcasm", "Writing a complex persuasive essay"]
+      },
+      "Unit 2: Complex Systems and Theories": {
+        "objetivos": ["Discuss complex scientific, philosophical, or technical theories."],
+        "temas": ["Hedging and tentative language (It would appear that, arguably)", "Complex sentence structures with multiple subordinate clauses", "Vocabulary: Philosophy, Advanced Sciences, and Abstract Theories", "Collocations with specialized vocabulary", "Syntactic flexibility and stylistic choices", "Presenting a formal academic paper"]
+      },
+      "Unit 3: Media and Information Literacy": {
+        "objetivos": ["Critically evaluate sources and rhetoric in media."],
+        "temas": ["Rhetorical devices in speech and writing", "Identifying bias and logical fallacies in text", "Vocabulary: Media analysis, Journalism, and Propaganda", "Advanced reporting verbs (urge, implore, assert)", "Paraphrasing and summarizing complex texts", "Writing an editorial piece"]
+      },
+      "Unit 4: Professional and Academic Excellence": {
+        "objetivos": ["Operate effectively in highly demanding academic or professional environments."],
+        "temas": ["Register and tone in different contexts (frozen, formal, consultative)", "Advanced cohesive devices and signposting", "Vocabulary: Corporate, Legal, and Academic jargon", "Negotiation and conflict resolution language", "Cultural fluency in communication", "Writing an executive summary"]
       }
     }
   }

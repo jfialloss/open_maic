@@ -5,6 +5,7 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import syllabusData from '@/lib/data/syllabus.json';
 
 /** Predefined avatar options */
 export const AVATAR_OPTIONS = [
@@ -23,6 +24,7 @@ export interface UserProfileState {
   nickname: string;
   bio: string;
   grade: string;
+  englishLevel: string;
   masteredTopics: string[];
   activeCourses: Record<string, {
     stageId: string;
@@ -38,6 +40,7 @@ export interface UserProfileState {
   setNickname: (nickname: string) => void;
   setBio: (bio: string) => void;
   setGrade: (grade: string) => void;
+  setEnglishLevel: (level: string) => void;
   addMasteredTopic: (topic: string) => void;
   updateActiveCourse: (stageId: string, data: any) => void;
   removeActiveCourse: (stageId: string) => void;
@@ -50,17 +53,51 @@ export const useUserProfileStore = create<UserProfileState>()(
       nickname: '',
       bio: '',
       grade: '5º Grado de EGB',
+      englishLevel: 'A1',
       masteredTopics: [],
       activeCourses: {},
       setAvatar: (avatar) => set({ avatar }),
       setNickname: (nickname) => set({ nickname }),
       setBio: (bio) => set({ bio }),
       setGrade: (grade) => set({ grade }),
-      addMasteredTopic: (topic) => set((state) => ({ 
-        masteredTopics: state.masteredTopics.includes(topic) 
-          ? state.masteredTopics 
-          : [...state.masteredTopics, topic] 
-      })),
+      setEnglishLevel: (englishLevel) => set({ englishLevel }),
+      addMasteredTopic: (topic) => set((state) => {
+        if (state.masteredTopics.includes(topic)) return state;
+        const newMastered = [...state.masteredTopics, topic];
+
+        let newEnglishLevel = state.englishLevel;
+        const ENGLISH_LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+
+        while (true) {
+          const currentLevelIndex = ENGLISH_LEVELS.indexOf(newEnglishLevel);
+          if (currentLevelIndex < 0 || currentLevelIndex >= ENGLISH_LEVELS.length - 1) break;
+
+          const currentLevelData = (syllabusData as any)['Inglés']?.[newEnglishLevel];
+          if (!currentLevelData) break;
+
+          let allMastered = true;
+          for (const unit of Object.values(currentLevelData)) {
+            for (const t of (unit as any).temas) {
+              if (!newMastered.includes(t)) {
+                allMastered = false;
+                break;
+              }
+            }
+            if (!allMastered) break;
+          }
+
+          if (allMastered) {
+            newEnglishLevel = ENGLISH_LEVELS[currentLevelIndex + 1];
+          } else {
+            break;
+          }
+        }
+
+        return { 
+          masteredTopics: newMastered,
+          englishLevel: newEnglishLevel
+        };
+      }),
       updateActiveCourse: (stageId, data) => set((state) => ({
         activeCourses: {
           ...state.activeCourses,

@@ -106,6 +106,7 @@ export async function generateSceneOutlinesFromRequirements(
   const prompts = buildPrompt(promptId, {
     // New simplified variables
     requirement: requirements.requirement,
+    language: requirements.language === 'en-US' ? 'English (MUST translate everything to English)' : 'Spanish / Español',
     pdfContent: pdfText ? pdfText.substring(0, MAX_PDF_CONTENT_CHARS) : 'None',
     availableImages: availableImagesText,
     userProfile: userProfileText,

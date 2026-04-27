@@ -421,6 +421,7 @@ export function GenerationToolbar({
                   { id: 'ciencias', label: 'Ciencias Naturales' },
                   { id: 'lengua', label: 'Lengua y Literatura' },
                   { id: 'sociales', label: 'Estudios Sociales' },
+                  { id: 'ingles', label: 'Inglés' },
                 ].map((item) => (
                   <button
                     key={item.id}

@@ -12,6 +12,7 @@ import { useStageStore } from '@/lib/store/stage';
 import { useSettingsStore } from '@/lib/store/settings';
 import { useAgentRegistry } from '@/lib/orchestration/registry/store';
 import { useI18n } from '@/lib/hooks/use-i18n';
+import { inferTeacherVoice } from '@/lib/hooks/use-scene-generator';
 import {
   loadImageMapping,
   loadPdfBlob,
@@ -701,7 +702,7 @@ function GenerationPreviewContent() {
                 text: action.text,
                 audioId,
                 ttsProviderId: settings.ttsProviderId,
-                ttsVoice: settings.ttsVoice,
+                ttsVoice: inferTeacherVoice(agents, settings.ttsProviderId, settings.ttsVoice, stage.language, outlines[0]?.languageDirective),
                 ttsSpeed: settings.ttsSpeed,
                 ttsApiKey: ttsProviderConfig?.apiKey || undefined,
                 ttsBaseUrl: ttsProviderConfig?.baseUrl || undefined,

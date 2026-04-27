@@ -27,11 +27,13 @@ import {
   FileText,
   Award,
   Lock,
+  ShieldAlert,
+  Users,
 } from 'lucide-react';
 import { signOut } from 'firebase/auth';
 import { useAuth } from '@/lib/hooks/use-auth';
 import { auth, db as firestoreDb } from '@/lib/firebase';
-import { collection, query, orderBy, limit, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { collection, query, orderBy, limit, getDocs, deleteDoc, doc, startAfter, where, QueryDocumentSnapshot, DocumentData } from 'firebase/firestore';
 import { useI18n } from '@/lib/hooks/use-i18n';
 import { createLogger } from '@/lib/logger';
 import { Button } from '@/components/ui/button';
@@ -99,10 +101,17 @@ function getSublevelFromGrade(grade: string): string | null {
   return null;
 }
 
-function getSyllabusContext(subject?: string, grade?: string, topic?: string) {
-  if (!subject || subject === 'none' || !grade || !topic || topic === 'LIBRE') return null;
-  const mappedSubject = subject === 'matematicas' ? 'Matemática' : subject === 'ciencias' ? 'Ciencias Naturales' : subject === 'lengua' ? 'Lengua y Literatura' : 'Ciencias Sociales';
-  const mappedSublevel = getSublevelFromGrade(grade);
+function getSyllabusContext(subject?: string, grade?: string, topic?: string, englishLevel?: string) {
+  if (!subject || subject === 'none' || !topic || topic === 'LIBRE') return null;
+  const mappedSubject = subject === 'matematicas' ? 'Matemática' : subject === 'ciencias' ? 'Ciencias Naturales' : subject === 'lengua' ? 'Lengua y Literatura' : subject === 'ingles' ? 'Inglés' : 'Ciencias Sociales';
+  
+  let mappedSublevel = null;
+  if (mappedSubject === 'Inglés') {
+    mappedSublevel = englishLevel || null;
+  } else {
+    mappedSublevel = grade ? getSublevelFromGrade(grade) : null;
+  }
+  
   if (!mappedSublevel) return null;
   
   const subjectData = syllabusData[mappedSubject]?.[mappedSublevel];
@@ -138,8 +147,10 @@ function HomePage() {
   const currentModelId = useSettingsStore((s) => s.modelId);
   const masteredTopics = useUserProfileStore((s) => s.masteredTopics);
   const activeCourses = useUserProfileStore((s) => s.activeCourses);
+  const removeActiveCourse = useUserProfileStore((s) => s.removeActiveCourse);
   const globalGrade = useUserProfileStore((s) => s.grade);
-  const mappedSublevel = getSublevelFromGrade(globalGrade);
+  const globalEnglishLevel = useUserProfileStore((s) => s.englishLevel);
+  const mappedSublevel = form.subject === 'ingles' ? globalEnglishLevel : getSublevelFromGrade(globalGrade);
   const [storeHydrated, setStoreHydrated] = useState(false);
   const [recentOpen, setRecentOpen] = useState(true);
 
@@ -196,6 +207,9 @@ function HomePage() {
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
   const [loadingGlobal, setLoadingGlobal] = useState(false);
+  const [localLimit, setLocalLimit] = useState(20);
+  const [lastGlobalDoc, setLastGlobalDoc] = useState<QueryDocumentSnapshot<DocumentData> | null>(null);
+  const [hasMoreGlobal, setHasMoreGlobal] = useState(true);
   const [thumbnails, setThumbnails] = useState<Record<string, Slide>>({});
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const [pendingDeleteGlobalId, setPendingDeleteGlobalId] = useState<string | null>(null);
@@ -215,20 +229,61 @@ function HomePage() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [languageOpen, themeOpen]);
 
-  useEffect(() => {
-    if (activeTab === 'global' && globalClassrooms.length === 0) {
+  const fetchGlobalClassrooms = async (isNextPage = false, filter = categoryFilter) => {
+    try {
       setLoadingGlobal(true);
-      const q = query(collection(firestoreDb, 'global_classrooms'), orderBy('createdAtTime', 'desc'), limit(50));
-      getDocs(q).then((snap) => {
-        const items = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
+      let q = query(
+        collection(firestoreDb, 'global_classrooms'),
+        orderBy('createdAtTime', 'desc'),
+        limit(20)
+      );
+
+      if (filter !== 'all') {
+        q = query(
+          collection(firestoreDb, 'global_classrooms'),
+          where('subject', '==', filter),
+          orderBy('createdAtTime', 'desc'),
+          limit(20)
+        );
+      }
+
+      if (isNextPage && lastGlobalDoc) {
+        q = query(q, startAfter(lastGlobalDoc));
+      }
+
+      const snap = await getDocs(q);
+      const items = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
+
+      if (snap.docs.length < 20) {
+        setHasMoreGlobal(false);
+      } else {
+        setHasMoreGlobal(true);
+        setLastGlobalDoc(snap.docs[snap.docs.length - 1]);
+      }
+
+      if (isNextPage) {
+        setGlobalClassrooms(prev => {
+          // Avoid duplicates
+          const existingIds = new Set(prev.map(i => i._id));
+          const newUnique = items.filter(i => !existingIds.has(i._id));
+          return [...prev, ...newUnique];
+        });
+      } else {
         setGlobalClassrooms(items);
-        setLoadingGlobal(false);
-      }).catch(e => {
-        log.error('Failed to load global classrooms:', e);
-        setLoadingGlobal(false);
-      });
+      }
+    } catch (e) {
+      log.error('Failed to load global classrooms:', e);
+    } finally {
+      setLoadingGlobal(false);
     }
-  }, [activeTab]);
+  };
+
+  useEffect(() => {
+    if (activeTab === 'global') {
+      // Reset state if not paginating
+      fetchGlobalClassrooms(false, categoryFilter);
+    }
+  }, [activeTab, categoryFilter]);
 
   // Validate pending cloud courses to ensure they still exist in the cloud
   useEffect(() => {
@@ -488,14 +543,18 @@ function HomePage() {
 
       let curriculumContext = '';
       if (form.subject && form.subject !== 'none') {
-        try {
-          const res = await fetch(`/curriculums/${form.subject}.txt`);
-          if (res.ok) {
-            const rawBody = await res.text();
-            curriculumContext = `\n\n[CONTEXTO NORMATIVO - CURRICULO DEL MINISTERIO DE EDUCACION]:\nLa asignatura de esta clase es "${form.subject.toUpperCase()}". A continuacion se anexa el documento del currículo oficial:\n\n${rawBody}\n\n[INSTRUCCION ESTRATEGICA]: Tienes la VENTAJA arquitectonica de poseer todo el curriculo insertado en el contexto. Debes asegurar obligatoriamente que la estructura de la clase y el contenido academico esten estrechamente alineados con las Destrezas con Criterio de Desempeno y objetivos mencionados en el curriculo adjunto.`;
+        if (form.subject === 'ingles') {
+          curriculumContext = `\n\n[CRITICAL INSTRUCTION]: The subject is English. YOU MUST IGNORE the UI language directive. ALL content, teacher dialogues, interactive elements, activities, text, and quizzes MUST be generated STRICTLY in English. Do NOT use Spanish or any other language. Make sure that the level of English and vocabulary aligns with the CEFR level ${globalEnglishLevel}.`;
+        } else {
+          try {
+            const res = await fetch(`/curriculums/${form.subject}.txt`);
+            if (res.ok) {
+              const rawBody = await res.text();
+              curriculumContext = `\n\n[CONTEXTO NORMATIVO - CURRICULO DEL MINISTERIO DE EDUCACION]:\nLa asignatura de esta clase es "${form.subject.toUpperCase()}". A continuacion se anexa el documento del currículo oficial:\n\n${rawBody}\n\n[INSTRUCCION ESTRATEGICA]: Tienes la VENTAJA arquitectonica de poseer todo el curriculo insertado en el contexto. Debes asegurar obligatoriamente que la estructura de la clase y el contenido academico esten estrechamente alineados con las Destrezas con Criterio de Desempeno y objetivos mencionados en el curriculo adjunto.`;
+            }
+          } catch (e) {
+            log.error('Failed to fetch curriculum context:', e);
           }
-        } catch (e) {
-          log.error('Failed to fetch curriculum context:', e);
         }
       }
 
@@ -690,6 +749,28 @@ function HomePage() {
             </div>
           )}
         </div>
+
+        {/* Auditoria Button */}
+        {role === 'admin' && (
+          <button
+            onClick={() => router.push('/admin/logs')}
+            className="p-2 rounded-full text-gray-400 dark:text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200 hover:shadow-sm transition-all"
+            title="Auditoría de Prompts"
+          >
+            <ShieldAlert className="w-4 h-4" />
+          </button>
+        )}
+
+        {/* Sessions Button */}
+        {role === 'admin' && (
+          <button
+            onClick={() => router.push('/admin/sessions')}
+            className="p-2 rounded-full text-gray-400 dark:text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200 hover:shadow-sm transition-all"
+            title="Monitoreo de Sesiones"
+          >
+            <Clock className="w-4 h-4" />
+          </button>
+        )}
 
         {role === 'admin' && <div className="w-[1px] h-4 bg-gray-200 dark:bg-gray-700" />}
 
@@ -895,7 +976,7 @@ function HomePage() {
             
             {/* ── Syllabus Topics ── */}
             <AnimatePresence>
-              {form.subject !== 'none' && syllabusData[form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : 'Ciencias Sociales'] && (
+              {form.subject !== 'none' && syllabusData[form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : form.subject === 'ingles' ? 'Inglés' : 'Ciencias Sociales'] && (
                 <motion.div 
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: "auto", opacity: 1 }}
@@ -906,11 +987,11 @@ function HomePage() {
                   <div className="px-3 pb-3 pt-2 border-t border-border/40 mt-1 bg-muted/20 rounded-b-2xl flex flex-col gap-2">
                 <div className="flex items-center justify-between">
                   <p className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
-                    <FileText className="size-3.5" /> Temario Oficial ({form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : 'Ciencias Sociales'} - {globalGrade})
+                    <FileText className="size-3.5" /> Temario Oficial ({form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : form.subject === 'ingles' ? 'Inglés' : 'Ciencias Sociales'} - {form.subject === 'ingles' ? globalEnglishLevel : globalGrade})
                   </p>
                 </div>
-                {mappedSublevel && syllabusData[form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : 'Ciencias Sociales']?.[mappedSublevel] && (() => {
-                  const subData = syllabusData[form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : 'Ciencias Sociales'][mappedSublevel];
+                {mappedSublevel && syllabusData[form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : form.subject === 'ingles' ? 'Inglés' : 'Ciencias Sociales']?.[mappedSublevel] && (() => {
+                  const subData = syllabusData[form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : form.subject === 'ingles' ? 'Inglés' : 'Ciencias Sociales'][mappedSublevel];
                   const lockedTopics = new Set<string>();
                   let firstUnmasteredFound = false;
                   Object.values(subData).forEach((uData: any) => {
@@ -958,7 +1039,12 @@ function HomePage() {
                                       return;
                                     }
                                     // Injecting topic and its objective to help the AI structure the class better
-                                    const humanPrompt = `Quiero que me des una clase sobre el tema: "${topic}".\nEl objetivo de aprendizaje principal debe ser: "${unitData.objetivos ? unitData.objetivos[0] : ''}".`;
+                                    const humanPrompt = form.subject === 'ingles'
+                                      ? `I want a class about the topic: "${topic}".\nThe main learning objective should be: "${unitData.objetivos ? unitData.objetivos[0] : ''}".`
+                                      : `Quiero que me des una clase sobre el tema: "${topic}".\nEl objetivo de aprendizaje principal debe ser: "${unitData.objetivos ? unitData.objetivos[0] : ''}".`;
+                                    if (form.subject === 'ingles') {
+                                      updateForm('language', 'en-US');
+                                    }
                                     updateForm('requirement', humanPrompt);
                                     updateForm('topic', topic);
                                   }}
@@ -1199,8 +1285,9 @@ function HomePage() {
                         </div>
                       </div>
 
-                      {mappedSublevel && ['Matemática', 'Ciencias Naturales', 'Lengua y Literatura', 'Ciencias Sociales'].map(subject => {
-                        const subjectData = syllabusData[subject]?.[mappedSublevel];
+                      {mappedSublevel && ['Matemática', 'Ciencias Naturales', 'Lengua y Literatura', 'Ciencias Sociales', 'Inglés'].map(subject => {
+                        const levelToUse = subject === 'Inglés' ? globalEnglishLevel : getSublevelFromGrade(globalGrade) || '';
+                        const subjectData = syllabusData[subject]?.[levelToUse];
                         if (!subjectData) return null;
                         
                         let totalTopics = 0;
@@ -1319,7 +1406,7 @@ function HomePage() {
                         return <div className="col-span-full py-8 text-center text-muted-foreground text-sm">No se encontraron cursos con este filtro.</div>;
                       }
 
-                      const localCourseCards = filtered.map((classroom, i) => (
+                      const localCourseCards = filtered.slice(0, localLimit).map((classroom, i) => (
                         <motion.div
                           key={classroom.id}
                           initial={{ opacity: 0, y: 16 }}
@@ -1396,6 +1483,17 @@ function HomePage() {
                                       <div className="absolute -top-2.5 -right-2.5 bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">
                                         Retomar
                                       </div>
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          removeActiveCourse(ac.stageId);
+                                          toast.success('Curso descartado');
+                                        }}
+                                        className="absolute top-2 left-2 p-1.5 bg-white/50 dark:bg-slate-900/50 hover:bg-red-100 dark:hover:bg-red-900/50 text-slate-400 hover:text-red-600 dark:text-slate-500 dark:hover:text-red-400 rounded-full transition-colors opacity-0 group-hover:opacity-100"
+                                        title="Descartar curso"
+                                      >
+                                        <Trash2 className="size-4" />
+                                      </button>
                                     </motion.div>
                                   );
                                 })}
@@ -1413,6 +1511,13 @@ function HomePage() {
                               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-8">
                                 {localCourseCards}
                               </div>
+                              {localLimit < classrooms.length && !searchQuery && categoryFilter === 'all' && (
+                                <div className="flex justify-center mt-4">
+                                  <Button variant="outline" size="sm" onClick={() => setLocalLimit(l => l + 20)}>
+                                    Cargar más
+                                  </Button>
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>
@@ -1473,77 +1578,119 @@ function HomePage() {
                       return <div className="col-span-full py-8 text-center text-muted-foreground text-sm">No se encontraron cursos con este filtro.</div>;
                     }
                     
-                    // Group by subject
-                    const grouped = filtered.reduce((acc, gc) => {
-                      const subject = (!gc.subject || gc.subject === 'none') ? 'Libre' : gc.subject;
-                      if (!acc[subject]) acc[subject] = [];
-                      acc[subject].push(gc);
-                      return acc;
-                    }, {} as Record<string, typeof filtered>);
-
-                    // Sort subjects alphabetically, but maybe put 'Libre' at the end
-                    const subjects = Object.keys(grouped).sort((a, b) => {
-                      if (a === 'Libre') return 1;
-                      if (b === 'Libre') return -1;
-                      return a.localeCompare(b);
-                    });
-
                     return (
-                      <div className="flex flex-col w-full gap-10">
-                        {subjects.map(subject => (
-                          <div key={subject} className="flex flex-col gap-4">
-                            <h3 className="text-lg font-semibold text-foreground/90 border-b border-border/40 pb-2">
-                              {subject.charAt(0).toUpperCase() + subject.slice(1)}
-                            </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              {grouped[subject].map((gc: any, i: number) => (
-                                <motion.div
-                                  key={gc._id}
-                                  initial={{ opacity: 0, y: 16 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  transition={{ delay: i * 0.04, duration: 0.35, ease: 'easeOut' }}
-                                >
-                                  <ClassroomListRow
-                                    classroom={{
-                                      id: gc._id,
-                                      name: gc.stage?.name || 'Untitled',
-                                      sceneCount: gc.scenes?.length || 0,
-                                      subject: gc.subject,
-                                      grade: gc.stage?.grade,
-                                      topic: gc.stage?.topic,
-                                      createdAt: gc.createdAtTime || 0,
-                                      updatedAt: gc.createdAtTime || 0,
-                                    }}
-                                    slide={gc.scenes?.find((s: any) => s.content?.type === 'slide')?.content?.canvas}
-                                    globalAuthor={gc.authorNickname}
-                                    globalStatus={gc.status}
-                                    isAdmin={role === 'admin'}
-                                    formatDate={formatDate}
-                                    onDelete={(id, e) => {
-                                      e.stopPropagation();
-                                      setPendingDeleteGlobalId(id);
-                                    }}
-                                    confirmingDelete={pendingDeleteGlobalId === gc._id}
-                                    onConfirmDelete={() => confirmDeleteGlobal(gc._id)}
-                                    onCancelDelete={() => setPendingDeleteGlobalId(null)}
-                                    onClick={async () => {
-                                      toast.loading('Clonando curso desde la nube...', { id: gc._id });
-                                      try {
-                                        const { processCloudDownload } = await import('@/lib/utils/cloud-sync');
-                                        await processCloudDownload(gc._id, gc);
-                                        toast.success('Clonación completa', { id: gc._id });
-                                        router.push(`/classroom/${gc._id}`);
-                                      } catch (e) {
-                                        log.error('Fallo al clonar curso', e);
-                                        toast.error('Fallo al clonar curso', { id: gc._id });
-                                      }
-                                    }}
-                                  />
-                                </motion.div>
-                              ))}
-                            </div>
+                      <div className="flex flex-col w-full gap-6">
+                        <div className="w-full overflow-x-auto rounded-xl border border-border/40 bg-white/40 dark:bg-slate-900/40 backdrop-blur-sm">
+                          <table className="w-full text-left text-sm whitespace-nowrap">
+                            <thead className="bg-slate-100/50 dark:bg-slate-800/50 border-b border-border/40 text-muted-foreground font-medium">
+                              <tr>
+                                <th className="px-4 py-3">Curso</th>
+                                <th className="px-4 py-3">Materia</th>
+                                <th className="px-4 py-3">Bloque / Tema</th>
+                                <th className="px-4 py-3">Autor</th>
+                                <th className="px-4 py-3 text-center">Diapositivas</th>
+                                <th className="px-4 py-3 text-center">Fecha</th>
+                                <th className="px-4 py-3 text-center">Acciones</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-border/30">
+                              {filtered.map((gc: any, i: number) => {
+                                const isDeleting = pendingDeleteGlobalId === gc._id;
+                                return (
+                                  <motion.tr
+                                    key={gc._id}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: i * 0.02, duration: 0.2 }}
+                                    className="group hover:bg-slate-50/80 dark:hover:bg-slate-800/80 transition-colors"
+                                  >
+                                    <td className="px-4 py-3 max-w-[200px] truncate font-medium text-slate-800 dark:text-slate-200" title={gc.stage?.name || 'Untitled'}>
+                                      {gc.stage?.name || 'Untitled'}
+                                    </td>
+                                    <td className="px-4 py-3">
+                                      <span className="inline-flex items-center rounded-sm bg-indigo-100 dark:bg-indigo-900/40 px-2 py-0.5 text-[11px] font-semibold text-indigo-700 dark:text-indigo-400">
+                                        {(!gc.subject || gc.subject === 'none') ? 'Libre' : gc.subject}
+                                      </span>
+                                    </td>
+                                    <td className="px-4 py-3 max-w-[200px] truncate text-muted-foreground" title={gc.stage?.topic || 'Libre'}>
+                                      {gc.stage?.topic || 'Libre'}
+                                    </td>
+                                    <td className="px-4 py-3">
+                                      <div className="flex items-center gap-1.5 text-muted-foreground">
+                                        <Users className="size-3.5" />
+                                        <span className="truncate max-w-[120px]" title={gc.authorNickname || 'Anónimo'}>
+                                          {gc.authorNickname || 'Anónimo'}
+                                        </span>
+                                      </div>
+                                    </td>
+                                    <td className="px-4 py-3 text-center text-muted-foreground">
+                                      {gc.scenes?.length || 0}
+                                    </td>
+                                    <td className="px-4 py-3 text-center text-muted-foreground text-[12px]">
+                                      {formatDate(gc.createdAtTime || 0)}
+                                    </td>
+                                    <td className="px-4 py-3 text-center">
+                                      {isDeleting ? (
+                                        <div className="flex items-center justify-center gap-2">
+                                          <span className="text-xs font-medium text-red-500">¿Eliminar?</span>
+                                          <button onClick={() => confirmDeleteGlobal(gc._id)} className="px-2 py-1 bg-red-100 text-red-600 rounded-md hover:bg-red-200 dark:bg-red-900/50 dark:text-red-400 dark:hover:bg-red-900">
+                                            Sí
+                                          </button>
+                                          <button onClick={() => setPendingDeleteGlobalId(null)} className="px-2 py-1 bg-slate-100 text-slate-600 rounded-md hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600">
+                                            No
+                                          </button>
+                                        </div>
+                                      ) : (
+                                        <div className="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                          <button
+                                            onClick={async () => {
+                                              toast.loading('Clonando curso...', { id: gc._id });
+                                              try {
+                                                const { processCloudDownload } = await import('@/lib/utils/cloud-sync');
+                                                await processCloudDownload(gc._id, gc);
+                                                toast.success('Clonación completa', { id: gc._id });
+                                                router.push(`/classroom/${gc._id}`);
+                                              } catch (e) {
+                                                log.error('Fallo al clonar', e);
+                                                toast.error('Fallo al clonar curso', { id: gc._id });
+                                              }
+                                            }}
+                                            className="p-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/50"
+                                            title="Descargar y continuar"
+                                          >
+                                            <Cloud className="size-4" />
+                                          </button>
+                                          {role === 'admin' && (
+                                            <button
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                setPendingDeleteGlobalId(gc._id);
+                                              }}
+                                              className="p-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50"
+                                              title="Eliminar curso global"
+                                            >
+                                              <Trash2 className="size-4" />
+                                            </button>
+                                          )}
+                                        </div>
+                                      )}
+                                    </td>
+                                  </motion.tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+                        {hasMoreGlobal && !searchQuery && categoryFilter === 'all' && (
+                          <div className="flex justify-center mt-4">
+                            <Button variant="outline" size="sm" onClick={() => fetchGlobalClassrooms(true)} disabled={loadingGlobal}>
+                              {loadingGlobal ? 'Cargando...' : 'Cargar más'}
+                            </Button>
                           </div>
-                        ))}
+                        )}
+                        {!hasMoreGlobal && filtered.length > 0 && (
+                          <div className="text-center text-xs text-muted-foreground mt-4">No hay más cursos para mostrar.</div>
+                        )}
                       </div>
                     );
                   })()}
@@ -1576,10 +1723,12 @@ function GreetingBar() {
   const nickname = useUserProfileStore((s) => s.nickname);
   const bio = useUserProfileStore((s) => s.bio);
   const grade = useUserProfileStore((s) => s.grade);
+  const englishLevel = useUserProfileStore((s) => s.englishLevel);
   const setAvatar = useUserProfileStore((s) => s.setAvatar);
   const setNickname = useUserProfileStore((s) => s.setNickname);
   const setBio = useUserProfileStore((s) => s.setBio);
   const setGrade = useUserProfileStore((s) => s.setGrade);
+  const setEnglishLevel = useUserProfileStore((s) => s.setEnglishLevel);
 
   const [open, setOpen] = useState(false);
   const [editingName, setEditingName] = useState(false);
@@ -1682,7 +1831,7 @@ function GreetingBar() {
                         {t('home.greeting')} {displayName}
                       </span>
                       <span className="text-[10px] font-medium text-sky-600 dark:text-sky-400 group-hover:text-sky-700 dark:group-hover:text-sky-300 transition-colors leading-none">
-                        {grade}
+                        {grade} • Nivel: {englishLevel}
                       </span>
                     </span>
                     <ChevronDown className="size-3 text-muted-foreground/30 group-hover:text-muted-foreground/60 transition-colors shrink-0" />
@@ -1851,43 +2000,64 @@ function GreetingBar() {
                 />
 
                 {/* Global Grade Settings */}
-                <div className="pt-2 border-t border-border/40 mt-1">
-                  <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
-                    Grado Académico Actual
-                  </label>
-                  <select
-                    className="w-full text-[13px] bg-slate-50 dark:bg-slate-900 border border-border/40 rounded-lg px-2 py-1.5 outline-none focus:ring-1 ring-sky-400"
-                    value={grade}
-                    onChange={(e) => setGrade(e.target.value)}
-                  >
-                    <optgroup label="Educación Inicial">
-                      <option value="Inicial 1">Inicial 1</option>
-                      <option value="Inicial 2">Inicial 2</option>
-                    </optgroup>
-                    <optgroup label="Preparatoria">
-                      <option value="1º Grado de EGB">1º Grado de EGB</option>
-                    </optgroup>
-                    <optgroup label="Básica Elemental">
-                      <option value="2º Grado de EGB">2º Grado de EGB</option>
-                      <option value="3º Grado de EGB">3º Grado de EGB</option>
-                      <option value="4º Grado de EGB">4º Grado de EGB</option>
-                    </optgroup>
-                    <optgroup label="Básica Media">
-                      <option value="5º Grado de EGB">5º Grado de EGB</option>
-                      <option value="6º Grado de EGB">6º Grado de EGB</option>
-                      <option value="7º Grado de EGB">7º Grado de EGB</option>
-                    </optgroup>
-                    <optgroup label="Básica Superior">
-                      <option value="8º Grado de EGB">8º Grado de EGB</option>
-                      <option value="9º Grado de EGB">9º Grado de EGB</option>
-                      <option value="10º Grado de EGB">10º Grado de EGB</option>
-                    </optgroup>
-                    <optgroup label="Bachillerato">
-                      <option value="1º de Bachillerato">1º de Bachillerato</option>
-                      <option value="2º de Bachillerato">2º de Bachillerato</option>
-                      <option value="3º de Bachillerato">3º de Bachillerato</option>
-                    </optgroup>
-                  </select>
+                <div className="pt-2 border-t border-border/40 mt-1 flex gap-2">
+                  <div className="flex-1">
+                    <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
+                      Grado Actual
+                    </label>
+                    <select
+                      className="w-full text-[13px] bg-slate-50 dark:bg-slate-900 border border-border/40 rounded-lg px-2 py-1.5 outline-none focus:ring-1 ring-sky-400"
+                      value={grade}
+                      onChange={(e) => setGrade(e.target.value)}
+                    >
+                      <optgroup label="Educación Inicial">
+                        <option value="Inicial 1">Inicial 1</option>
+                        <option value="Inicial 2">Inicial 2</option>
+                      </optgroup>
+                      <optgroup label="Preparatoria">
+                        <option value="1º Grado de EGB">1º Grado de EGB</option>
+                      </optgroup>
+                      <optgroup label="Básica Elemental">
+                        <option value="2º Grado de EGB">2º Grado de EGB</option>
+                        <option value="3º Grado de EGB">3º Grado de EGB</option>
+                        <option value="4º Grado de EGB">4º Grado de EGB</option>
+                      </optgroup>
+                      <optgroup label="Básica Media">
+                        <option value="5º Grado de EGB">5º Grado de EGB</option>
+                        <option value="6º Grado de EGB">6º Grado de EGB</option>
+                        <option value="7º Grado de EGB">7º Grado de EGB</option>
+                      </optgroup>
+                      <optgroup label="Básica Superior">
+                        <option value="8º Grado de EGB">8º Grado de EGB</option>
+                        <option value="9º Grado de EGB">9º Grado de EGB</option>
+                        <option value="10º Grado de EGB">10º Grado de EGB</option>
+                      </optgroup>
+                      <optgroup label="Bachillerato">
+                        <option value="1º de Bachillerato">1º de Bachillerato</option>
+                        <option value="2º de Bachillerato">2º de Bachillerato</option>
+                        <option value="3º de Bachillerato">3º de Bachillerato</option>
+                      </optgroup>
+                    </select>
+                  </div>
+                  <div className="flex-1">
+                    <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
+                      Nivel de Inglés
+                    </label>
+                    <select
+                      className="w-full text-[13px] bg-slate-50 dark:bg-slate-900 border border-border/40 rounded-lg px-2 py-1.5 outline-none focus:ring-1 ring-sky-400 disabled:opacity-60 disabled:cursor-not-allowed"
+                      value={englishLevel}
+                      onChange={(e) => setEnglishLevel(e.target.value)}
+                      disabled
+                      title="El nivel de inglés avanza automáticamente según tu progreso."
+                    >
+                      <option value="A1">A1 Beginner</option>
+                      <option value="A2">A2 Elementary</option>
+                      <option value="B1">B1 Intermediate</option>
+                      <option value="B2">B2 Upper Interm.</option>
+                      <option value="C1">C1 Advanced</option>
+                      <option value="C2">C2 Mastery</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>

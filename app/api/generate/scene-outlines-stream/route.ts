@@ -33,6 +33,10 @@ import type {
 import { apiError } from '@/lib/server/api-response';
 import { createLogger } from '@/lib/logger';
 import { resolveModelFromHeaders } from '@/lib/server/resolve-model';
+import { validatePromptSafety } from '@/lib/server/safety-guard';
+import { authenticateRequest } from '@/lib/server/auth';
+import { logUserPrompt } from '@/lib/server/prompt-logger';
+
 const log = createLogger('Outlines Stream');
 
 export const maxDuration = 300;
@@ -98,6 +102,7 @@ function extractNewOutlines(buffer: string, alreadyParsed: number): SceneOutline
 
 export async function POST(req: NextRequest) {
   try {
+    const authUser = await authenticateRequest(req).catch(() => null);
     const body = await req.json();
 
     // Get API configuration from request headers
@@ -115,6 +120,31 @@ export async function POST(req: NextRequest) {
       researchContext?: string;
       agents?: AgentInfo[];
     };
+
+    // Extraer solo la solicitud original del usuario para validación y auditoría
+    let pureUserPrompt = requirements.requirement.split('\n\n[System Note:')[0];
+    pureUserPrompt = pureUserPrompt.split('\n\n[CONTEXTO NORMATIVO')[0];
+    pureUserPrompt = pureUserPrompt.trim();
+
+    // --- Safety Guardrail ---
+    const safetyCheck = await validatePromptSafety(pureUserPrompt, languageModel);
+    
+    if (authUser) {
+      logUserPrompt({
+        uid: authUser.uid,
+        email: authUser.email,
+        prompt: pureUserPrompt,
+        isSafe: safetyCheck.isSafe,
+        reason: safetyCheck.reason,
+        modelString: modelString,
+      }).catch(console.error);
+    }
+
+    if (!safetyCheck.isSafe) {
+      log.warn(`Safety Guard rejected request: ${safetyCheck.reason}`);
+      return apiError('CONTENT_POLICY_VIOLATION', 400, 'Tu solicitud no cumple con nuestras normas comunitarias y ha sido bloqueada. Por favor, mantén un lenguaje apropiado para un entorno educativo.');
+    }
+    // ------------------------
 
     // Detect vision capability
     const hasVision = !!modelInfo?.capabilities?.vision;

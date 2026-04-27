@@ -13,6 +13,7 @@ import { ServerProvidersInit } from '@/components/server-providers-init';
 import { GlobalSettingsSync } from '@/components/global-settings-sync';
 import { UserProfileSync } from '@/components/user-profile-sync';
 import { SyncWidget } from '@/components/sync-widget';
+import { SessionTracker } from '@/components/session-tracker';
 
 const inter = localFont({
   src: '../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2',
@@ -43,6 +44,7 @@ export default function RootLayout({
               <ServerProvidersInit />
               <GlobalSettingsSync />
               <UserProfileSync />
+              <SessionTracker />
               {children}
               <SyncWidget />
               <Toaster position="top-center" />

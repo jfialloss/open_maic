@@ -32,6 +32,30 @@ service cloud.firestore {
       );
     }
 
+    // Función de validación de admin global
+    function isAdmin() {
+      return request.auth != null && 
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Auditoría de Prompts
+    match /prompt_logs/{document=**} {
+      allow read: if isAdmin();
+      allow write: if false; // Solo el backend (Admin SDK) escribe aquí
+    }
+
+    // Rastreo de Sesiones de Usuario
+    match /user_sessions/{sessionId} {
+      // El dueño de la sesión puede crearla y actualizarla
+      allow create, update: if request.auth != null && request.auth.uid == request.resource.data.uid;
+      
+      // Solo el dueño o los administradores pueden leer las sesiones
+      allow read: if request.auth != null && (
+        isAdmin() || request.auth.uid == resource.data.uid
+      );
+    }
+
     // Por defecto, denegar todo lo demás
     match /{document=**} {
       allow read, write: if false;

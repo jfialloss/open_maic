@@ -12,6 +12,7 @@ import type { Action, SpeechAction } from '@/lib/types/action';
 import type { TTSProviderId } from '@/lib/audio/types';
 import { generateMediaForOutlines } from '@/lib/media/media-orchestrator';
 import { createLogger } from '@/lib/logger';
+import { TTS_PROVIDERS } from '@/lib/audio/constants';
 
 const log = createLogger('SceneGenerator');
 const TTS_MAX_TEXT_LENGTH: Partial<Record<TTSProviderId, number>> = {
@@ -112,6 +113,105 @@ function splitLongSpeechActions(actions: Action[], providerId: TTSProviderId): A
     }));
   });
   return didSplit ? nextActions : actions;
+}
+
+export function inferTeacherVoice(
+  agents: AgentInfo[] | undefined,
+  providerId: TTSProviderId,
+  defaultVoice: string,
+  language?: string,
+  languageDirective?: string,
+): string {
+  if (!agents || agents.length === 0) return defaultVoice;
+
+  const teacher = agents.find((a) => a.role === 'teacher');
+  if (!teacher || !teacher.persona) return defaultVoice;
+
+  const persona = teacher.persona.toLowerCase();
+  const name = teacher.name.toLowerCase();
+  
+  // Common indicators
+  const femaleRegex = /\b(female|mujer|femenina|femenino|chica|profesora|maestra|ella|she|her|hers|mrs|miss|ms|lady|dama|madam|ada|ana|maria|sofia|laura|carmen|rosa|marta|julia|sara|paula|elena|lucia|silvia|clara|emma|mia|olivia|ava|isabella|sophia|charlotte|amelia|evelyn|abigail|harper|emily|elizabeth|avery|ella|madison|scarlett|victoria|aria|grace|chloe|camila|penelope|riley|layla|lillian|nora|zoey|mila|aubrey|hannah|lily|addison|eleanor|natalie|luna|savannah|brooklyn|leah|zoe|stella|hazel|ellie|paisley|audrey|skylar|violet|claire|bella|aurora|lucy|anna|samantha|caroline|genesis|aaliyah|kennedy|kinsley|allison|maya|sarah|madalyn|adeline|alexa|ariana|gabriella|naomi|alice|sadie|hailey|eva|emilia|autumn|quinn|nevaeh|piper|ruby|serenity|willow|everly|cora|kaylee|lydia|aubree|arianna|eliana|peyton|melanie|gianna|isabelle|valentina|nova|vivian|reagan|mackenzie|madeline|brielle|delilah|isla|rylee|katherine|sophie|josephine|ivy|liliana|jade|taylor|hadley|kylie|emery|adalynn|natalia|annabelle|faith|alexandra)\b/i;
+  
+  const maleRegex = /\b(male|hombre|masculino|chico|profesor|maestro|él|he|him|his|mr|sir|caballero|mister|don|arthur|john|michael|david|james|robert|william|richard|joseph|thomas|charles|christopher|daniel|matthew|anthony|mark|donald|steven|paul|andrew|joshua|kenneth|kevin|brian|george|edward|ronald|timothy|jason|jeffrey|ryan|jacob|gary|nicholas|eric|jonathan|stephen|larry|justin|scott|brandon|benjamin|samuel|gregory|frank|alexander|raymond|patrick|jack|dennis|jerry|tyler|aaron|jose|adam|henry|nathan|douglas|zachary|peter|kyle|walter|ethan|jeremy|christian|keith|roger|terry|gerald|harold|sean|austin|carl|arthur|lawrence|dylan|jesse|jordan|bryan|ralph|albert|roy|alex|wayne|eugene|juan|gabriel|louis|russell|noah|logan|luis)\b/i;
+
+  let targetGender: 'male' | 'female' | 'neutral' | null = null;
+  
+  // Detect female
+  if (femaleRegex.test(persona) || femaleRegex.test(name)) {
+    targetGender = 'female';
+  } 
+  // Detect male
+  else if (maleRegex.test(persona) && !persona.includes('profesora') || maleRegex.test(name)) {
+    targetGender = 'male';
+  }
+
+  if (!targetGender) return defaultVoice;
+
+  const provider = TTS_PROVIDERS[providerId];
+  if (!provider || !provider.voices) return defaultVoice;
+
+  // Determine language priorities based on user input or language directive
+  let targetCodes: string[] = [];
+  let langPrefix = '';
+  
+  // Combine both signals, prioritizing the directive since it's the actual output language
+  const combinedSignal = `${languageDirective || ''} ${language || ''}`.toLowerCase();
+  
+  if (combinedSignal) {
+    if (combinedSignal.includes('español') || combinedSignal.includes('spanish') || combinedSignal.includes('es')) {
+      targetCodes = ['es-us', 'es-419', 'es-mx', 'es-es', 'es'];
+      langPrefix = 'es';
+    } else if (combinedSignal.includes('inglés') || combinedSignal.includes('ingles') || combinedSignal.includes('english') || combinedSignal.includes('en')) {
+      targetCodes = ['en-us', 'en-gb', 'en'];
+      langPrefix = 'en';
+    } else if (combinedSignal.includes('portugués') || combinedSignal.includes('portugues') || combinedSignal.includes('pt')) {
+      targetCodes = ['pt-br', 'pt-pt', 'pt'];
+      langPrefix = 'pt';
+    } else if (combinedSignal.includes('chino') || combinedSignal.includes('chinese') || combinedSignal.includes('zh')) {
+      targetCodes = ['zh-cn', 'zh-tw', 'zh-hk', 'zh'];
+      langPrefix = 'zh';
+    } else if (combinedSignal.includes('francés') || combinedSignal.includes('frances') || combinedSignal.includes('french') || combinedSignal.includes('fr')) {
+      targetCodes = ['fr-fr', 'fr-ca', 'fr'];
+      langPrefix = 'fr';
+    } else {
+      langPrefix = combinedSignal.slice(0, 2);
+      targetCodes = [langPrefix];
+    }
+  }
+
+  // Check if the default voice already matches BOTH gender and language
+  const currentVoiceDetails = provider.voices.find(v => v.id === defaultVoice);
+  if (currentVoiceDetails && currentVoiceDetails.gender === targetGender) {
+    if (!langPrefix || currentVoiceDetails.language.toLowerCase().startsWith(langPrefix)) {
+      return defaultVoice; // Safe to keep using the default
+    }
+  }
+
+  // Filter candidates by gender
+  let candidates = provider.voices.filter((v) => v.gender === targetGender);
+
+  // If a language was specified, prioritize voices of that language and region
+  if (langPrefix && candidates.length > 0) {
+    // 1. Try to find the best exact regional match (e.g. es-us over es-es)
+    for (const code of targetCodes) {
+      const bestMatch = candidates.find(v => v.language.toLowerCase() === code || v.language.toLowerCase().startsWith(code));
+      if (bestMatch) return bestMatch.id;
+    }
+    
+    // 2. If no regional match, fallback to broad prefix match
+    const langMatches = candidates.filter((v) => v.language.toLowerCase().startsWith(langPrefix));
+    if (langMatches.length > 0) {
+      return langMatches[0].id;
+    }
+  }
+
+  // If no language specified or no language match, return the first voice of matching gender
+  if (candidates.length > 0) {
+    return candidates[0].id;
+  }
+
+  return defaultVoice;
 }
 
 import { auth } from '@/lib/firebase';
@@ -217,6 +317,7 @@ export async function generateAndStoreTTS(
   audioId: string,
   text: string,
   signal?: AbortSignal,
+  overrideVoice?: string,
 ): Promise<void> {
   const settings = useSettingsStore.getState();
   if (settings.ttsProviderId === 'browser-native-tts') return;
@@ -233,7 +334,7 @@ export async function generateAndStoreTTS(
       text,
       audioId,
       ttsProviderId: settings.ttsProviderId,
-      ttsVoice: settings.ttsVoice,
+      ttsVoice: overrideVoice || settings.ttsVoice,
       ttsSpeed: settings.ttsSpeed,
       ttsApiKey: ttsProviderConfig?.apiKey || undefined,
       ttsBaseUrl: ttsProviderConfig?.baseUrl || undefined,
@@ -266,12 +367,18 @@ export async function generateAndStoreTTS(
   });
 }
 
-/** Generate TTS for all speech actions in a scene. Returns result. */
 async function generateTTSForScene(
   scene: Scene,
+  agents: AgentInfo[] | undefined,
+  language: string | undefined,
+  languageDirective: string | undefined,
   signal?: AbortSignal,
 ): Promise<{ success: boolean; failedCount: number; error?: string }> {
   const providerId = useSettingsStore.getState().ttsProviderId;
+  const defaultVoice = useSettingsStore.getState().ttsVoice;
+  
+  const dynamicVoice = inferTeacherVoice(agents, providerId, defaultVoice, language, languageDirective);
+
   scene.actions = splitLongSpeechActions(scene.actions || [], providerId);
   const speechActions = scene.actions.filter(
     (a): a is SpeechAction => a.type === 'speech' && !!a.text,
@@ -285,7 +392,7 @@ async function generateTTSForScene(
     const audioId = `tts_${action.id}`;
     action.audioId = audioId;
     try {
-      await generateAndStoreTTS(audioId, action.text, signal);
+      await generateAndStoreTTS(audioId, action.text, signal, dynamicVoice);
     } catch (error) {
       failedCount++;
       lastError = error instanceof Error ? error.message : `TTS failed for action ${action.id}`;
@@ -459,7 +566,8 @@ export function useSceneGenerator(options: UseSceneGeneratorOptions = {}) {
 
             // TTS generation — failure means the whole scene fails
             if (settings.ttsEnabled && settings.ttsProviderId !== 'browser-native-tts') {
-              const ttsResult = await generateTTSForScene(scene, signal);
+              const language = params.stageInfo.language;
+              const ttsResult = await generateTTSForScene(scene, params.agents, language, outline.languageDirective, signal);
               if (!ttsResult.success) {
                 if (abortRef.current || store.getState().generationEpoch !== startEpoch) {
                   pausedByFailureOrAbort = true;
@@ -604,7 +712,8 @@ export function useSceneGenerator(options: UseSceneGeneratorOptions = {}) {
         // Step 3: TTS
         const settings = useSettingsStore.getState();
         if (settings.ttsEnabled && settings.ttsProviderId !== 'browser-native-tts') {
-          const ttsResult = await generateTTSForScene(actionsResult.scene, signal);
+          const language = params.stageInfo.language;
+          const ttsResult = await generateTTSForScene(actionsResult.scene, params.agents, language, outline.languageDirective, signal);
           if (!ttsResult.success) {
             store.getState().addFailedOutline(outline);
             return;
