@@ -39,6 +39,8 @@ const LASER_STYLE =
   'bg-red-50 dark:bg-red-500/15 border-red-300/40 dark:border-red-500/30 text-red-600 dark:text-red-300';
 const DISCUSS_STYLE =
   'bg-amber-50 dark:bg-amber-500/15 border-amber-300/40 dark:border-amber-500/30 text-amber-700 dark:text-amber-300';
+const WIDGET_STYLE =
+  'bg-emerald-50 dark:bg-emerald-500/15 border-emerald-300/40 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-300';
 const DEFAULT_STYLE =
   'bg-gray-50 dark:bg-gray-500/15 border-gray-300/40 dark:border-gray-500/30 text-gray-600 dark:text-gray-300';
 
@@ -74,6 +76,12 @@ const ACTION_CONFIG: Record<string, ActionCfg> = {
 
   // Social
   discussion: { label: 'Discuss', Icon: MessageSquare, style: DISCUSS_STYLE },
+
+  // Widgets
+  widget_highlight: { label: 'Highlight', Icon: Flashlight, style: WIDGET_STYLE },
+  widget_setState: { label: 'Interact', Icon: MousePointer2, style: WIDGET_STYLE },
+  widget_annotation: { label: 'Annotate', Icon: Type, style: WIDGET_STYLE },
+  widget_reveal: { label: 'Reveal', Icon: Zap, style: WIDGET_STYLE },
 };
 
 // ── Component ─────────────────────────────────────────────────

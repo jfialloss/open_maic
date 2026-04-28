@@ -45,9 +45,10 @@ export function BaseWidgetElement({ elementInfo, target }: BaseWidgetElementProp
             outline={elementInfo.outline}
           />
           <iframe
+            id={`widget-iframe-${elementInfo.id}`}
             title="Widget Simulation"
             srcDoc={elementInfo.html}
-            sandbox={elementInfo.sandbox || 'allow-scripts'}
+            sandbox={elementInfo.sandbox || 'allow-scripts allow-same-origin'}
             className="w-full h-full border-0"
             style={{ width: '100%', height: '100%' }}
           />

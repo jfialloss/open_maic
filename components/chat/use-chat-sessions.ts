@@ -1355,7 +1355,8 @@ export function useChatSessions(options: UseChatSessionsOptions = {}) {
       } else if (
         action.type === 'spotlight' ||
         action.type === 'laser' ||
-        action.type === 'discussion'
+        action.type === 'discussion' ||
+        action.type.startsWith('widget_')
       ) {
         const now = Date.now();
         buffer.pushAction({
@@ -1370,10 +1371,20 @@ export function useChatSessions(options: UseChatSessionsOptions = {}) {
                 }
               : action.type === 'laser'
                 ? { elementId: action.elementId }
-                : {
-                    topic: (action as DiscussionAction).topic,
-                    prompt: (action as DiscussionAction).prompt,
-                  },
+                : action.type === 'discussion'
+                  ? {
+                      topic: (action as DiscussionAction).topic,
+                      prompt: (action as DiscussionAction).prompt,
+                    }
+                  : action.type === 'widget_highlight'
+                    ? { target: (action as any).target }
+                    : action.type === 'widget_setState'
+                      ? { state: (action as any).state }
+                      : action.type === 'widget_annotation'
+                        ? { target: (action as any).target }
+                        : action.type === 'widget_reveal'
+                          ? { target: (action as any).target }
+                          : {},
           agentId: 'default-1',
         });
       }

@@ -137,13 +137,26 @@ export function inferTeacherVoice(
 
   let targetGender: 'male' | 'female' | 'neutral' | null = null;
   
-  // Detect female
-  if (femaleRegex.test(persona) || femaleRegex.test(name)) {
-    targetGender = 'female';
-  } 
-  // Detect male
-  else if (maleRegex.test(persona) && !persona.includes('profesora') || maleRegex.test(name)) {
-    targetGender = 'male';
+  // 1. Strongest signal: Avatar filename (OpenMAIC convention: -2.png is female)
+  if (teacher.avatar) {
+    const avatarStr = teacher.avatar.toLowerCase();
+    if (avatarStr.includes('-2.png') || avatarStr.includes('-female')) {
+      targetGender = 'female';
+    } else if (avatarStr.includes('.png')) {
+      targetGender = 'male';
+    }
+  }
+  
+  // 2. Fallback to text detection if avatar didn't give a clue
+  if (!targetGender) {
+    // Detect female
+    if (femaleRegex.test(persona) || femaleRegex.test(name)) {
+      targetGender = 'female';
+    } 
+    // Detect male
+    else if (maleRegex.test(persona) && !persona.includes('profesora') || maleRegex.test(name)) {
+      targetGender = 'male';
+    }
   }
 
   if (!targetGender) return defaultVoice;

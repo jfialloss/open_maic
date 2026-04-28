@@ -63,7 +63,11 @@ export class AudioPlayer {
       // Re-apply after play() — some browsers reset during load
       this.audio.playbackRate = this.playbackRate;
       return true;
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.name === 'AbortError' || error?.message?.includes('interrupted')) {
+        // Harmless error caused by rapid skipping or unmounting before play() resolves
+        throw error;
+      }
       log.error('Failed to play audio:', error);
       throw error;
     }

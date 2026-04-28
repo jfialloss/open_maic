@@ -19,15 +19,26 @@ Courses generated with the subject `"none"` (or "Libre" in UI) are strictly priv
 - **Rule**: Never publish `subject: 'none'` courses to `global_classrooms`. The system deliberately skips the `publishBuildingStageToCloud` and final cloud sync for these courses.
 
 ## 4. Firestore Security Setup
-The `global_classrooms` collection is dynamically generated. 
-- The project's raw Firestore schema does not pre-define it. It is explicitly protected by:
-```javascript
-  match /global_classrooms/{document=**} {
-    allow read, write: if request.auth != null;
-  }
-```
-- If you encounter `net::ERR_QUIC_PROTOCOL_ERROR.QUIC_TOO_MANY_RTOS` or `net::ERR_NETWORK_CHANGED` during `setDoc`, it means the client's socket connection temporarily died. Firestore Web SDK masks this by caching the write indefinitely (hanging). Inform the user to restart their browser.
+The `global_classrooms` collection is explicitly protected to prevent unauthorized deletions and maintain data ownership.
+- **Rule**: Deletion of `global_classrooms` is restricted to the original author or global administrators via an `isAdmin()` helper function.
+- **Rule**: Admins must have global read access to the `users` collection to audit platform usage.
 
-## 5. TTS Identity Injection
-The `agent-profiles` API relies on `[System Note: The TTS voice selected for the AI teacher is "<Voice_ID>"]` injected into the initial `requirement` string to assign the correct gender/persona to the teacher avatar.
-- **Rule**: When modifying generation pipelines or API routes (`/api/generate/agent-profiles`), YOU MUST ALWAYS pass down the full `requirement` payload intact. Do not skip it, or the AI will assign female names/personas to male TTS voices and vice versa.
+## 5. Anti-Corruption & Safe Deletion (Admin Check)
+To prevent administrators from deleting courses that are currently being actively studied:
+- **Root Sync**: The `components/user-profile-sync.tsx` automatically flattens and pushes the user's active course IDs into an `activeCourseIds` array at the root of their `users/{userId}` document.
+- **Usage Validation**: Before an admin deletes a course from the Global Library, the system performs an `array-contains` query on the `users` collection. If the course ID is found in any student's `activeCourseIds`, the deletion is blocked.
+- **Firebase Rules Syntax Trap**: To allow students to write this array to their root document while maintaining security for subcollections, the `firestore.rules` MUST use nested matching:
+  ```javascript
+  match /users/{userId} {
+    allow read, write: ...
+    match /{document=**} {
+      allow read, write: ...
+    }
+  }
+  ```
+  **Do NOT** use `match /users/{userId}/{document=**}` as this matches subcollections but explicitly denies writes to the root `userId` document itself.
+
+## 6. TTS Avatar & Gender Synchronization
+To ensure the AI teacher's appearance perfectly matches their generated text-to-speech voice gender:
+- **Deterministic Prompting**: LLMs have a strong bias toward generating male teachers. To enforce a 50/50 gender balance, the teacher avatar (`teacher.png` or `teacher-2.png`) is randomly chosen on the Next.js backend (`app/generation-preview/page.tsx`) and passed as the *only* option to the LLM.
+- **Voice Inference**: The audio engine (`inferTeacherVoice` in `use-scene-generator.ts`) determines the TTS voice gender directly from the avatar filename assigned by the LLM (`-2.png` = female). It no longer attempts to guess the gender by running regex on the persona text, eliminating mismatches caused by ambiguous language.

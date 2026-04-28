@@ -598,10 +598,12 @@ function ScoreBanner({
   score,
   total,
   results,
+  courseAttempts,
 }: {
   score: number;
   total: number;
   results: QuestionResult[];
+  courseAttempts: number;
 }) {
   const { t } = useI18n();
   const pct = total > 0 ? Math.round((score / total) * 100) : 0;
@@ -652,6 +654,18 @@ function ScoreBanner({
               <XCircle className="w-3.5 h-3.5" /> {incorrectCount} {t('quiz.incorrect')}
             </span>
           </div>
+          
+          {/* Strict Mastery Feedback */}
+          {pct >= 80 && courseAttempts > 1 && (
+            <div className="mt-3 text-xs bg-white/20 p-2 rounded-lg leading-relaxed">
+              <strong>Nota:</strong> Has aprobado la prueba, pero al ser tu intento #{courseAttempts}, este tema no se registrará como Superado en tu currículo oficial.
+            </div>
+          )}
+          {pct < 80 && courseAttempts === 1 && (
+            <div className="mt-3 text-xs bg-white/20 p-2 rounded-lg leading-relaxed">
+              <strong>Nota:</strong> Puedes volver a intentarlo para repasar, pero para marcar el tema como Superado deberás generar un nuevo curso y aprobarlo a la primera.
+            </div>
+          )}
         </div>
 
         {/* Percentage ring */}
@@ -776,15 +790,25 @@ export function QuizView({ questions, sceneId }: QuizViewProps) {
       // Check mastery
       const earned = ordered.reduce((sum, r) => sum + r.earned, 0);
       const total = questions.reduce((sum, q) => sum + (q.points ?? 1), 0);
+      
+      const stageStore = useStageStore.getState();
+      const stageTopic = stageStore.stage?.topic;
+      const stageName = stageStore.stage?.name;
+      const stageId = sceneId; // Use sceneId as a proxy or get actual stageId if available. Wait, sceneId is passed to QuizView but it's the scene ID, not the stage ID. We can use sceneId as it's unique enough for this course session.
+      const actualStageId = stageStore.stage?.id;
+      
+      const userStore = useUserProfileStore.getState();
+      const currentAttempts = userStore.courseAttempts[sceneId] || 0;
+      
       if (total > 0 && earned / total >= 0.8) {
-        const stageTopic = useStageStore.getState().stage?.topic;
-        
-        if (stageTopic && stageTopic !== 'LIBRE') {
-          useUserProfileStore.getState().addMasteredTopic(stageTopic);
-        } else {
-          // Legacy fallback for old courses generated before topic metadata
-          const stageName = useStageStore.getState().stage?.name;
-          if (stageName) {
+        if (actualStageId) {
+          userStore.addPassedCourse(actualStageId);
+        }
+        if (currentAttempts === 0) { // Only award on FIRST attempt
+          if (stageTopic && stageTopic !== 'LIBRE') {
+            userStore.addMasteredTopic(stageTopic);
+          } else if (stageName) {
+            // Legacy fallback for old courses generated before topic metadata
             let matchedTopic: string | null = null;
             for (const subjectGrades of Object.values(syllabusData)) {
               for (const units of Object.values(subjectGrades)) {
@@ -802,11 +826,14 @@ export function QuizView({ questions, sceneId }: QuizViewProps) {
               if (matchedTopic) break;
             }
             if (matchedTopic) {
-              useUserProfileStore.getState().addMasteredTopic(matchedTopic);
+              userStore.addMasteredTopic(matchedTopic);
             }
           }
         }
       }
+      
+      // Always record that an attempt was made
+      userStore.incrementCourseAttempt(sceneId);
 
       setPhase('reviewing');
     })();
@@ -994,7 +1021,12 @@ export function QuizView({ questions, sceneId }: QuizViewProps) {
 
             {/* Results */}
             <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
-              <ScoreBanner score={earnedScore} total={totalPoints} results={results} />
+              <ScoreBanner 
+              score={earnedScore} 
+              total={totalPoints} 
+              results={results} 
+              courseAttempts={useUserProfileStore.getState().courseAttempts[sceneId] || 1}
+            />
 
               {questions.map((q, i) => {
                 const r = resultMap[q.id];

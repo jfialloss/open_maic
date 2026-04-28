@@ -509,6 +509,10 @@ export class PlaybackEngine {
             }
           })
           .catch((err) => {
+            if (err?.name === 'AbortError' || err?.message?.includes('interrupted')) {
+              // Harmless interruption when user pauses/skips quickly
+              return;
+            }
             log.error('TTS error:', err);
             scheduleReadingTimer();
           });

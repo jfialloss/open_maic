@@ -29,6 +29,7 @@ import {
   Lock,
   ShieldAlert,
   Users,
+  Library,
 } from 'lucide-react';
 import { signOut } from 'firebase/auth';
 import { useAuth } from '@/lib/hooks/use-auth';
@@ -146,6 +147,7 @@ function HomePage() {
   // Model setup state
   const currentModelId = useSettingsStore((s) => s.modelId);
   const masteredTopics = useUserProfileStore((s) => s.masteredTopics);
+  const passedCourses = useUserProfileStore((s) => s.passedCourses) || [];
   const activeCourses = useUserProfileStore((s) => s.activeCourses);
   const removeActiveCourse = useUserProfileStore((s) => s.removeActiveCourse);
   const globalGrade = useUserProfileStore((s) => s.grade);
@@ -200,19 +202,13 @@ function HomePage() {
   const [themeOpen, setThemeOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [classrooms, setClassrooms] = useState<StageListItem[]>([]);
-  const [globalClassrooms, setGlobalClassrooms] = useState<any[]>([]);
-  const [activeTab, setActiveTab] = useState<'local' | 'global' | 'progress'>('local');
-  const [globalFilter, setGlobalFilter] = useState<'all' | 'mine' | 'community'>('all');
+  const [activeTab, setActiveTab] = useState<'local' | 'progress'>('local');
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
-  const [loadingGlobal, setLoadingGlobal] = useState(false);
   const [localLimit, setLocalLimit] = useState(20);
-  const [lastGlobalDoc, setLastGlobalDoc] = useState<QueryDocumentSnapshot<DocumentData> | null>(null);
-  const [hasMoreGlobal, setHasMoreGlobal] = useState(true);
   const [thumbnails, setThumbnails] = useState<Record<string, Slide>>({});
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
-  const [pendingDeleteGlobalId, setPendingDeleteGlobalId] = useState<string | null>(null);
   const toolbarRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -229,68 +225,12 @@ function HomePage() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [languageOpen, themeOpen]);
 
-  const fetchGlobalClassrooms = async (isNextPage = false, filter = categoryFilter) => {
-    try {
-      setLoadingGlobal(true);
-      let q = query(
-        collection(firestoreDb, 'global_classrooms'),
-        orderBy('createdAtTime', 'desc'),
-        limit(20)
-      );
-
-      if (filter !== 'all') {
-        q = query(
-          collection(firestoreDb, 'global_classrooms'),
-          where('subject', '==', filter),
-          orderBy('createdAtTime', 'desc'),
-          limit(20)
-        );
-      }
-
-      if (isNextPage && lastGlobalDoc) {
-        q = query(q, startAfter(lastGlobalDoc));
-      }
-
-      const snap = await getDocs(q);
-      const items = snap.docs.map(d => ({ _id: d.id, ...d.data() }));
-
-      if (snap.docs.length < 20) {
-        setHasMoreGlobal(false);
-      } else {
-        setHasMoreGlobal(true);
-        setLastGlobalDoc(snap.docs[snap.docs.length - 1]);
-      }
-
-      if (isNextPage) {
-        setGlobalClassrooms(prev => {
-          // Avoid duplicates
-          const existingIds = new Set(prev.map(i => i._id));
-          const newUnique = items.filter(i => !existingIds.has(i._id));
-          return [...prev, ...newUnique];
-        });
-      } else {
-        setGlobalClassrooms(items);
-      }
-    } catch (e) {
-      log.error('Failed to load global classrooms:', e);
-    } finally {
-      setLoadingGlobal(false);
-    }
-  };
-
-  useEffect(() => {
-    if (activeTab === 'global') {
-      // Reset state if not paginating
-      fetchGlobalClassrooms(false, categoryFilter);
-    }
-  }, [activeTab, categoryFilter]);
-
   // Validate pending cloud courses to ensure they still exist in the cloud
   useEffect(() => {
     if (!storeHydrated || !activeCourses || !user) return;
     
     const pendingCloud = Object.values(activeCourses).filter(
-      (ac) => !classrooms.some((c) => c.id === ac.stageId) && !masteredTopics.includes(ac.topic)
+      (ac) => !classrooms.some((c) => c.id === ac.stageId) && !masteredTopics.includes(ac.topic) && !passedCourses.includes(ac.stageId)
     );
     
     if (pendingCloud.length === 0) return;
@@ -317,7 +257,7 @@ function HomePage() {
     };
     
     validateCloud();
-  }, [storeHydrated, activeCourses, classrooms, masteredTopics, user]);
+  }, [storeHydrated, activeCourses, classrooms, masteredTopics, passedCourses, user]);
 
   const loadClassrooms = async () => {
     try {
@@ -422,7 +362,15 @@ function HomePage() {
       
       // Garbage Collection Global: Eliminar el cascarón huérfano si existe
       try {
-        await deleteDoc(doc(firestoreDb, 'global_classrooms', id));
+        const { getDoc } = await import('firebase/firestore');
+        const docRef = doc(firestoreDb, 'global_classrooms', id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data.status === 'building' && data.createdBy === auth.currentUser?.uid) {
+            await deleteDoc(docRef);
+          }
+        }
       } catch (e) {}
 
       // Limpiar del estado activo para que no salga en Cursos Pendientes o Mi Progreso
@@ -435,18 +383,7 @@ function HomePage() {
     }
   };
 
-  const confirmDeleteGlobal = async (id: string) => {
-    setPendingDeleteGlobalId(null);
-    try {
-      await deleteDoc(doc(firestoreDb, 'global_classrooms', id));
-      setGlobalClassrooms((prev) => prev.filter((gc) => gc._id !== id));
-      useUserProfileStore.getState().removeActiveCourse(id);
-      toast.success('Curso global eliminado');
-    } catch (err) {
-      log.error('Failed to delete global classroom:', err);
-      toast.error('Error al eliminar curso de la nube');
-    }
-  };
+
 
   const updateForm = <K extends keyof FormState>(field: K, value: FormState[K]) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -765,6 +702,17 @@ function HomePage() {
           </button>
         )}
 
+        {/* Biblioteca Global Button */}
+        {role === 'admin' && (
+          <button
+            onClick={() => router.push('/admin/library')}
+            className="p-2 rounded-full text-gray-400 dark:text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200 hover:shadow-sm transition-all"
+            title="Biblioteca Global"
+          >
+            <Library className="w-4 h-4" />
+          </button>
+        )}
+
         {/* Sessions Button */}
         {role === 'admin' && (
           <button
@@ -856,7 +804,7 @@ function HomePage() {
         transition={{ duration: 0.6, ease: 'easeOut' }}
         className={cn(
           'relative z-20 w-full max-w-[800px] flex flex-col items-center [overflow-anchor:none]',
-          classrooms.length === 0 ? 'justify-center min-h-[calc(100dvh-8rem)]' : 'mt-[10vh]',
+          'mt-[8vh] md:mt-[12vh]',
         )}
       >
         {/* ── Logo ── */}
@@ -1029,7 +977,7 @@ function HomePage() {
                               const isMastered = masteredTopics?.includes(topic) || false;
                               const isLocked = lockedTopics.has(topic);
                               const prefix = `${unitIndex + 1}.${i + 1}`;
-                              const inProgressClassroom = !isMastered && !isLocked ? classrooms.find((c) => c.topic === topic || c.name === topic) : null;
+                              const inProgressClassroom = !isMastered && !isLocked ? classrooms.find((c) => (c.topic === topic || c.name === topic) && !passedCourses.includes(c.id)) : null;
                               return (
                                 <button
                                   key={topic}
@@ -1134,7 +1082,7 @@ function HomePage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="relative z-10 mt-6 w-full max-w-6xl flex flex-col items-center"
+          className="relative z-10 mt-10 w-full max-w-6xl flex flex-col items-center"
         >
           {/* Trigger — divider-line with centered text */}
           <div
@@ -1158,12 +1106,6 @@ function HomePage() {
                   onClick={() => setActiveTab('local')}
                 >
                   Mis Cursos Locales
-                </button>
-                <button
-                  className={cn("px-2 py-0.5 rounded-sm transition-colors cursor-pointer flex items-center gap-1", activeTab === 'global' ? "bg-white dark:bg-slate-800 shadow-sm text-sky-600 dark:text-sky-400" : "text-muted-foreground")}
-                  onClick={() => setActiveTab('global')}
-                >
-                  Biblioteca Global
                 </button>
                 <button
                   className={cn("px-2 py-0.5 rounded-sm transition-colors cursor-pointer flex items-center gap-1", activeTab === 'progress' ? "bg-white dark:bg-slate-800 shadow-sm text-emerald-600 dark:text-emerald-400" : "text-muted-foreground")}
@@ -1195,31 +1137,8 @@ function HomePage() {
                 className="w-full overflow-hidden"
               >
                 <div className="pt-4 pb-2 flex flex-col sm:flex-row items-center justify-between gap-4">
-                  {/* Left Side: Tabs if global, empty if local to keep right side aligned */}
-                  {activeTab === 'global' ? (
-                    <div className="flex bg-muted/40 p-1 rounded-lg border border-border/40 gap-1 shrink-0">
-                      <button
-                        className={cn("px-4 py-1.5 rounded-md text-[13px] font-medium transition-colors cursor-pointer", globalFilter === 'all' ? "bg-white dark:bg-slate-800 shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
-                        onClick={() => setGlobalFilter('all')}
-                      >
-                        Todos
-                      </button>
-                      <button
-                        className={cn("px-4 py-1.5 rounded-md text-[13px] font-medium transition-colors cursor-pointer", globalFilter === 'mine' ? "bg-white dark:bg-slate-800 shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
-                        onClick={() => setGlobalFilter('mine')}
-                      >
-                        Míos
-                      </button>
-                      <button
-                        className={cn("px-4 py-1.5 rounded-md text-[13px] font-medium transition-colors cursor-pointer", globalFilter === 'community' ? "bg-white dark:bg-slate-800 shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground")}
-                        onClick={() => setGlobalFilter('community')}
-                      >
-                        De la Comunidad
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="hidden sm:block" />
-                  )}
+                  {/* Left Side: empty to keep right side aligned */}
+                  <div className="hidden sm:block" />
 
                   {/* Right Side: Search and Filters (Visible for both) */}
                   <div className="flex items-center gap-2 w-full sm:w-auto bg-white/60 dark:bg-gray-800/60 backdrop-blur-md px-2 py-1.5 rounded-xl border border-gray-100/50 dark:border-gray-700/50 shadow-sm">
@@ -1248,15 +1167,9 @@ function HomePage() {
                         <option value="all" className="bg-white dark:bg-slate-800 text-foreground">Todas las materias</option>
                         {(() => {
                           const subjects = new Set<string>();
-                          if (activeTab === 'global') {
-                            globalClassrooms.forEach(gc => {
-                              subjects.add((!gc.subject || gc.subject === 'none') ? 'Libre' : gc.subject);
-                            });
-                          } else {
-                            classrooms.forEach(c => {
-                              subjects.add((!c.subject || c.subject === 'none') ? 'Libre' : c.subject);
-                            });
-                          }
+                          classrooms.forEach(c => {
+                            subjects.add((!c.subject || c.subject === 'none') ? 'Libre' : c.subject);
+                          });
                           return Array.from(subjects).sort().map(s => (
                             <option key={s} value={s} className="bg-white dark:bg-slate-800 text-foreground">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
                           ));
@@ -1276,7 +1189,7 @@ function HomePage() {
                     </button>
                   </div>
                 </div>
-                <div className={activeTab === 'local' ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-8 pt-8" : activeTab === 'progress' ? "w-full pt-6" : "flex flex-col w-full gap-8 pt-4"}>
+                <div className={activeTab === 'local' ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-8 pt-8" : "w-full pt-6"}>
                   {activeTab === 'progress' ? (
                     <div className="flex flex-col gap-6">
                       <div className="flex items-center gap-3 mb-4">
@@ -1337,7 +1250,7 @@ function HomePage() {
                                     {uData.temas.map((t: string, tIdx: number) => {
                                       const isMastered = masteredTopics?.includes(t);
                                       const isLocked = lockedTopics.has(t);
-                                      const inProgressClassroom = !isMastered && !isLocked ? classrooms.find((c) => (c.topic === t || c.name === t) && (c.sceneCount && c.sceneCount > 0)) : null;
+                                      const inProgressClassroom = !isMastered && !isLocked ? classrooms.find((c) => (c.topic === t || c.name === t) && (c.sceneCount && c.sceneCount > 0) && !passedCourses.includes(c.id)) : null;
                                       return (
                                         <div 
                                           key={t} 
@@ -1431,7 +1344,7 @@ function HomePage() {
                       ));
 
                       const pendingCloud = Object.values(activeCourses || {}).filter(
-                        (ac) => !classrooms.some((c) => c.id === ac.stageId) && !masteredTopics.includes(ac.topic)
+                        (ac) => !classrooms.some((c) => c.id === ac.stageId) && !masteredTopics.includes(ac.topic) && !passedCourses.includes(ac.stageId)
                       );
 
                       return (
@@ -1527,177 +1440,7 @@ function HomePage() {
                         </div>
                       );
                     })()
-                  ) : loadingGlobal ? (
-                    <div className="col-span-full py-8 text-center text-muted-foreground text-sm">Cargando biblioteca global...</div>
-                  ) : globalClassrooms.length === 0 ? (
-                    <div className="col-span-full py-8 text-center text-muted-foreground text-sm">No hay cursos en la biblioteca global aún.</div>
-                  ) : (() => {
-                    const now = Date.now();
-                    const TWO_HOURS = 2 * 60 * 60 * 1000;
-
-                    let filtered = globalClassrooms.filter((gc) => {
-                      // Ocultar cascarones a los no-administradores
-                      if (gc.status === 'building' && role !== 'admin') {
-                        return false;
-                      }
-
-                      // Limpieza Global (Garbage Collection Visual)
-                      // Ocultar cursos "Construyendo" que lleven más de 2 horas
-                      if (gc.status === 'building' && (now - (gc.createdAtTime || 0)) > TWO_HOURS) {
-                        return false;
-                      }
-
-                      
-                      if (globalFilter === 'mine') return gc.createdBy === user?.uid;
-                      if (globalFilter === 'community') return gc.createdBy !== user?.uid;
-                      return true;
-                    });
-
-                    // Búsqueda
-                    if (searchQuery.trim()) {
-                      const q = searchQuery.toLowerCase();
-                      filtered = filtered.filter(gc => {
-                        const name = (gc.stage?.name || 'Untitled').toLowerCase();
-                        const author = (gc.authorNickname || '').toLowerCase();
-                        return name.includes(q) || author.includes(q);
-                      });
-                    }
-
-                    // Filtro de Categoría
-                    if (categoryFilter !== 'all') {
-                      filtered = filtered.filter(gc => {
-                        const subj = (!gc.subject || gc.subject === 'none') ? 'Libre' : gc.subject;
-                        return subj === categoryFilter;
-                      });
-                    }
-
-                    // Ordenamiento (Global Classrooms ya vienen ordenados DESC desde Firebase, pero podemos reordenarlos)
-                    filtered = [...filtered].sort((a, b) => {
-                      const timeA = a.createdAtTime || 0;
-                      const timeB = b.createdAtTime || 0;
-                      return sortOrder === 'desc' ? timeB - timeA : timeA - timeB;
-                    });
-
-                    if (filtered.length === 0) {
-                      return <div className="col-span-full py-8 text-center text-muted-foreground text-sm">No se encontraron cursos con este filtro.</div>;
-                    }
-                    
-                    return (
-                      <div className="flex flex-col w-full gap-6">
-                        <div className="w-full overflow-x-auto rounded-xl border border-border/40 bg-white/40 dark:bg-slate-900/40 backdrop-blur-sm">
-                          <table className="w-full text-left text-sm whitespace-nowrap">
-                            <thead className="bg-slate-100/50 dark:bg-slate-800/50 border-b border-border/40 text-muted-foreground font-medium">
-                              <tr>
-                                <th className="px-4 py-3">Curso</th>
-                                <th className="px-4 py-3">Materia</th>
-                                <th className="px-4 py-3">Bloque / Tema</th>
-                                <th className="px-4 py-3">Autor</th>
-                                <th className="px-4 py-3 text-center">Diapositivas</th>
-                                <th className="px-4 py-3 text-center">Fecha</th>
-                                <th className="px-4 py-3 text-center">Acciones</th>
-                              </tr>
-                            </thead>
-                            <tbody className="divide-y divide-border/30">
-                              {filtered.map((gc: any, i: number) => {
-                                const isDeleting = pendingDeleteGlobalId === gc._id;
-                                return (
-                                  <motion.tr
-                                    key={gc._id}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: i * 0.02, duration: 0.2 }}
-                                    className="group hover:bg-slate-50/80 dark:hover:bg-slate-800/80 transition-colors"
-                                  >
-                                    <td className="px-4 py-3 max-w-[200px] truncate font-medium text-slate-800 dark:text-slate-200" title={gc.stage?.name || 'Untitled'}>
-                                      {gc.stage?.name || 'Untitled'}
-                                    </td>
-                                    <td className="px-4 py-3">
-                                      <span className="inline-flex items-center rounded-sm bg-indigo-100 dark:bg-indigo-900/40 px-2 py-0.5 text-[11px] font-semibold text-indigo-700 dark:text-indigo-400">
-                                        {(!gc.subject || gc.subject === 'none') ? 'Libre' : gc.subject}
-                                      </span>
-                                    </td>
-                                    <td className="px-4 py-3 max-w-[200px] truncate text-muted-foreground" title={gc.stage?.topic || 'Libre'}>
-                                      {gc.stage?.topic || 'Libre'}
-                                    </td>
-                                    <td className="px-4 py-3">
-                                      <div className="flex items-center gap-1.5 text-muted-foreground">
-                                        <Users className="size-3.5" />
-                                        <span className="truncate max-w-[120px]" title={gc.authorNickname || 'Anónimo'}>
-                                          {gc.authorNickname || 'Anónimo'}
-                                        </span>
-                                      </div>
-                                    </td>
-                                    <td className="px-4 py-3 text-center text-muted-foreground">
-                                      {gc.scenes?.length || 0}
-                                    </td>
-                                    <td className="px-4 py-3 text-center text-muted-foreground text-[12px]">
-                                      {formatDate(gc.createdAtTime || 0)}
-                                    </td>
-                                    <td className="px-4 py-3 text-center">
-                                      {isDeleting ? (
-                                        <div className="flex items-center justify-center gap-2">
-                                          <span className="text-xs font-medium text-red-500">¿Eliminar?</span>
-                                          <button onClick={() => confirmDeleteGlobal(gc._id)} className="px-2 py-1 bg-red-100 text-red-600 rounded-md hover:bg-red-200 dark:bg-red-900/50 dark:text-red-400 dark:hover:bg-red-900">
-                                            Sí
-                                          </button>
-                                          <button onClick={() => setPendingDeleteGlobalId(null)} className="px-2 py-1 bg-slate-100 text-slate-600 rounded-md hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600">
-                                            No
-                                          </button>
-                                        </div>
-                                      ) : (
-                                        <div className="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                          <button
-                                            onClick={async () => {
-                                              toast.loading('Clonando curso...', { id: gc._id });
-                                              try {
-                                                const { processCloudDownload } = await import('@/lib/utils/cloud-sync');
-                                                await processCloudDownload(gc._id, gc);
-                                                toast.success('Clonación completa', { id: gc._id });
-                                                router.push(`/classroom/${gc._id}`);
-                                              } catch (e) {
-                                                log.error('Fallo al clonar', e);
-                                                toast.error('Fallo al clonar curso', { id: gc._id });
-                                              }
-                                            }}
-                                            className="p-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/50"
-                                            title="Descargar y continuar"
-                                          >
-                                            <Cloud className="size-4" />
-                                          </button>
-                                          {role === 'admin' && (
-                                            <button
-                                              onClick={(e) => {
-                                                e.stopPropagation();
-                                                setPendingDeleteGlobalId(gc._id);
-                                              }}
-                                              className="p-1.5 bg-red-50 text-red-600 rounded-md hover:bg-red-100 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50"
-                                              title="Eliminar curso global"
-                                            >
-                                              <Trash2 className="size-4" />
-                                            </button>
-                                          )}
-                                        </div>
-                                      )}
-                                    </td>
-                                  </motion.tr>
-                                );
-                              })}
-                            </tbody>
-                          </table>
-                        </div>
-                        {hasMoreGlobal && !searchQuery && categoryFilter === 'all' && (
-                          <div className="flex justify-center mt-4">
-                            <Button variant="outline" size="sm" onClick={() => fetchGlobalClassrooms(true)} disabled={loadingGlobal}>
-                              {loadingGlobal ? 'Cargando...' : 'Cargar más'}
-                            </Button>
-                          </div>
-                        )}
-                        {!hasMoreGlobal && filtered.length > 0 && (
-                          <div className="text-center text-xs text-muted-foreground mt-4">No hay más cursos para mostrar.</div>
-                        )}
-                      </div>
-                    );
-                  })()}
+                  ) : null}
                 </div>
               </motion.div>
             )}
@@ -1743,7 +1486,14 @@ function GreetingBar() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const displayName = nickname || user?.displayName?.split(' ')[0] || user?.email?.split('@')[0] || t('profile.defaultNickname');
-  const displayAvatar = (avatar === AVATAR_OPTIONS[0] && user?.photoURL) ? user.photoURL : avatar;
+  
+  const displayAvatar = avatar 
+    ? (avatar === AVATAR_OPTIONS[0] && user?.photoURL && !isCustomAvatar(avatar) ? user.photoURL : avatar)
+    : (user?.photoURL || AVATAR_OPTIONS[0]);
+
+  const pickerOptions = user?.photoURL && !AVATAR_OPTIONS.includes(user.photoURL as any)
+    ? [user.photoURL, ...AVATAR_OPTIONS]
+    : AVATAR_OPTIONS;
 
   // Click-outside to collapse
   useEffect(() => {
@@ -1820,7 +1570,7 @@ function GreetingBar() {
           >
             <div className="shrink-0 relative">
               <div className="size-8 rounded-full overflow-hidden ring-[1.5px] ring-border/30 group-hover:ring-sky-400/60 dark:group-hover:ring-sky-400/40 transition-all duration-300">
-                <img src={displayAvatar} alt="" className="size-full object-cover" />
+                <img src={displayAvatar} alt="" referrerPolicy="no-referrer" className="size-full object-cover" />
               </div>
               <div className="absolute -bottom-0.5 -right-0.5 size-3.5 rounded-full bg-white dark:bg-slate-800 border border-border/40 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity">
                 <Pencil className="size-[7px] text-muted-foreground/70" />
@@ -1879,7 +1629,7 @@ function GreetingBar() {
                   }}
                 >
                   <div className="size-8 rounded-full overflow-hidden ring-[1.5px] ring-sky-300/70 dark:ring-sky-500/40 transition-all duration-300">
-                    <img src={displayAvatar} alt="" className="size-full object-cover" />
+                    <img src={displayAvatar} alt="" referrerPolicy="no-referrer" className="size-full object-cover" />
                   </div>
                   <motion.div
                     initial={{ scale: 0 }}
@@ -1960,19 +1710,19 @@ function GreetingBar() {
                       className="overflow-hidden"
                     >
                       <div className="p-1 pb-2.5 flex items-center gap-1.5 flex-wrap">
-                        {AVATAR_OPTIONS.map((url) => (
+                        {pickerOptions.map((url) => (
                           <button
                             key={url}
                             onClick={() => setAvatar(url)}
                             className={cn(
                               'size-7 rounded-full overflow-hidden bg-gray-50 dark:bg-gray-800 cursor-pointer transition-all duration-150',
                               'hover:scale-110 active:scale-95',
-                              avatar === url
+                              displayAvatar === url
                                 ? 'ring-2 ring-sky-400 dark:ring-sky-500 ring-offset-0'
                                 : 'hover:ring-1 hover:ring-muted-foreground/30',
                             )}
                           >
-                            <img src={url} alt="" className="size-full" />
+                            <img src={url} alt="" referrerPolicy="no-referrer" className="size-full object-cover" />
                           </button>
                         ))}
                         <label

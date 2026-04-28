@@ -46,7 +46,17 @@ export function UserProfileCard() {
   }, [editingName]);
 
   const displayName = nickname || user?.displayName?.split(' ')[0] || user?.email?.split('@')[0] || t('profile.defaultNickname');
-  const displayAvatar = (avatar === AVATAR_OPTIONS[0] && user?.photoURL) ? user.photoURL : avatar;
+  
+  // Si no hay avatar explícito, usamos el de Google o el genérico por defecto
+  // Si el usuario tenía el genérico antiguo (AVATAR_OPTIONS[0]) por defecto y ahora tiene Google, lo migramos sutilmente.
+  const displayAvatar = avatar 
+    ? (avatar === AVATAR_OPTIONS[0] && user?.photoURL && !isCustomAvatar(avatar) ? user.photoURL : avatar)
+    : (user?.photoURL || AVATAR_OPTIONS[0]);
+
+  // Lista combinada de opciones
+  const pickerOptions = user?.photoURL && !AVATAR_OPTIONS.includes(user.photoURL as any)
+    ? [user.photoURL, ...AVATAR_OPTIONS]
+    : AVATAR_OPTIONS;
 
   const startEditName = () => {
     setNameDraft(nickname);
@@ -123,7 +133,7 @@ export function UserProfileCard() {
           className="shrink-0 group/avatar relative cursor-pointer"
         >
           <div className="size-11 rounded-full bg-gray-50 dark:bg-gray-800 overflow-hidden ring-2 ring-sky-300/50 dark:ring-sky-600/40 group-hover/avatar:ring-sky-400 dark:group-hover/avatar:ring-sky-500 transition-all">
-            <img src={displayAvatar} alt="" className="size-full object-cover" />
+            <img src={displayAvatar} alt="" referrerPolicy="no-referrer" className="size-full object-cover" />
           </div>
           <div className="absolute -bottom-0.5 -right-0.5 size-4 rounded-full bg-white dark:bg-slate-800 border border-muted/60 flex items-center justify-center">
             <ChevronDown
@@ -184,19 +194,19 @@ export function UserProfileCard() {
           >
             {/* p-1 gives breathing room so ring-offset / hover-scale aren't clipped */}
             <div className="pt-3 pb-1 px-1 flex items-center gap-1.5 flex-wrap">
-              {AVATAR_OPTIONS.map((url) => (
+              {pickerOptions.map((url) => (
                 <button
                   key={url}
                   onClick={() => setAvatar(url)}
                   className={cn(
                     'size-8 rounded-full overflow-hidden bg-gray-50 dark:bg-gray-800 cursor-pointer transition-all duration-150',
                     'hover:scale-110 active:scale-95',
-                    avatar === url
+                    displayAvatar === url
                       ? 'ring-2 ring-sky-400 dark:ring-sky-500 ring-offset-1 ring-offset-white dark:ring-offset-slate-900'
                       : 'hover:ring-1 hover:ring-muted-foreground/30',
                   )}
                 >
-                  <img src={url} alt="" className="size-full" />
+                  <img src={url} alt="" referrerPolicy="no-referrer" className="size-full object-cover" />
                 </button>
               ))}
 

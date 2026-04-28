@@ -45,6 +45,32 @@ export function UserProfileSync() {
   useEffect(() => {
     if (loading || !user) return;
 
+    const syncToFirebase = (currentState: any) => {
+       const payload = { ...currentState };
+       
+       LOCAL_KEYS.forEach(k => delete payload[k as keyof typeof payload]);
+       
+       // Remove functions
+       Object.keys(payload).forEach(key => {
+         if (typeof payload[key as keyof typeof payload] === 'function') {
+           delete payload[key as keyof typeof payload];
+         }
+       });
+       
+       const cleanPayload = JSON.parse(JSON.stringify(payload));
+       
+       // Save to global Firestore config
+       setDoc(doc(db, 'users', user.uid, 'data', 'profile'), cleanPayload).catch(err => {
+         console.error('Failed to sync user profile to Firestore:', err);
+       });
+       
+       // Guarda el arreglo plano de IDs en la raíz del usuario para consultas rápidas
+       const activeCourseIds = Object.keys(cleanPayload.activeCourses || {});
+       setDoc(doc(db, 'users', user.uid), { activeCourseIds }, { merge: true }).catch(err => {
+         console.error('Failed to sync activeCourseIds to root:', err);
+       });
+    };
+
     const unsubStore = useUserProfileStore.subscribe((state, prevState) => {
       if (isUpdatingFromFirebase.current) return;
 
@@ -63,25 +89,12 @@ export function UserProfileSync() {
       });
 
       if (changed) {
-         const payload = { ...state };
-         
-         LOCAL_KEYS.forEach(k => delete payload[k as keyof typeof payload]);
-         
-         // Remove functions
-         Object.keys(payload).forEach(key => {
-           if (typeof payload[key as keyof typeof payload] === 'function') {
-             delete payload[key as keyof typeof payload];
-           }
-         });
-         
-         const cleanPayload = JSON.parse(JSON.stringify(payload));
-         
-         // Save to global Firestore config
-         setDoc(doc(db, 'users', user.uid, 'data', 'profile'), cleanPayload).catch(err => {
-           console.error('Failed to sync user profile to Firestore:', err);
-         });
+         syncToFirebase(state);
       }
     });
+
+    // Force an initial sync on mount to ensure new fields like activeCourseIds are populated
+    syncToFirebase(useUserProfileStore.getState());
 
     return () => unsubStore();
   }, [user, loading]);

@@ -412,6 +412,10 @@ function GenerationPreviewContent() {
         if (agentStepIdx >= 0) setCurrentStepIndex(agentStepIdx);
 
         try {
+          // Forzamos un balance 50/50 desde el código, ya que el LLM no tiene memoria.
+          const isFemaleTeacher = Math.random() > 0.5;
+          const teacherAvatar = isFemaleTeacher ? '/avatars/teacher-2.png' : '/avatars/teacher.png';
+          
           const allAvatars = [
             '/avatars/assist.png',
             '/avatars/assist-2.png',
@@ -421,8 +425,7 @@ function GenerationPreviewContent() {
             '/avatars/curious-2.png',
             '/avatars/note-taker.png',
             '/avatars/note-taker-2.png',
-            '/avatars/teacher.png',
-            '/avatars/teacher-2.png',
+            teacherAvatar, // Solo enviamos UNA opción de profesor al LLM
             '/avatars/thinker.png',
             '/avatars/thinker-2.png',
           ];

@@ -7,6 +7,7 @@ import {
   ellipsis,
   InputRule,
 } from 'prosemirror-inputrules';
+import { makeInlineMathInputRule, makeBlockMathInputRule } from '@benrbray/prosemirror-math';
 
 const blockQuoteRule = (nodeType: NodeType) => wrappingInputRule(/^\s*>\s$/, nodeType);
 
@@ -53,6 +54,12 @@ export const buildInputRules = (schema: Schema) => {
   rules.push(bulletListRule(schema.nodes.bullet_list));
   rules.push(codeRule());
   rules.push(linkRule());
+  if (schema.nodes.math_inline) {
+    rules.push(makeInlineMathInputRule(/(?:\$)(.+)(?:\$)$/, schema.nodes.math_inline));
+  }
+  if (schema.nodes.math_display) {
+    rules.push(makeBlockMathInputRule(/^\$\$\s+$/, schema.nodes.math_display));
+  }
 
   return inputRules({ rules });
 };

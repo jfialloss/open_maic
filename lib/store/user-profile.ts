@@ -26,6 +26,7 @@ export interface UserProfileState {
   grade: string;
   englishLevel: string;
   masteredTopics: string[];
+  passedCourses: string[];
   activeCourses: Record<string, {
     stageId: string;
     topic: string;
@@ -36,12 +37,15 @@ export interface UserProfileState {
     actionIndex: number;
     lastPlayedAt: number;
   }>;
+  courseAttempts: Record<string, number>;
   setAvatar: (avatar: string) => void;
   setNickname: (nickname: string) => void;
   setBio: (bio: string) => void;
   setGrade: (grade: string) => void;
   setEnglishLevel: (level: string) => void;
   addMasteredTopic: (topic: string) => void;
+  addPassedCourse: (stageId: string) => void;
+  incrementCourseAttempt: (stageId: string) => void;
   updateActiveCourse: (stageId: string, data: any) => void;
   removeActiveCourse: (stageId: string) => void;
 }
@@ -49,18 +53,30 @@ export interface UserProfileState {
 export const useUserProfileStore = create<UserProfileState>()(
   persist(
     (set) => ({
-      avatar: AVATAR_OPTIONS[0],
+      avatar: '',
       nickname: '',
       bio: '',
       grade: '5º Grado de EGB',
       englishLevel: 'A1',
       masteredTopics: [],
+      passedCourses: [],
       activeCourses: {},
+      courseAttempts: {},
       setAvatar: (avatar) => set({ avatar }),
       setNickname: (nickname) => set({ nickname }),
       setBio: (bio) => set({ bio }),
       setGrade: (grade) => set({ grade }),
       setEnglishLevel: (englishLevel) => set({ englishLevel }),
+      incrementCourseAttempt: (stageId) => set((state) => ({
+        courseAttempts: {
+          ...state.courseAttempts,
+          [stageId]: (state.courseAttempts[stageId] || 0) + 1
+        }
+      })),
+      addPassedCourse: (stageId) => set((state) => {
+        if (state.passedCourses?.includes(stageId)) return state;
+        return { passedCourses: [...(state.passedCourses || []), stageId] };
+      }),
       addMasteredTopic: (topic) => set((state) => {
         if (state.masteredTopics.includes(topic)) return state;
         const newMastered = [...state.masteredTopics, topic];

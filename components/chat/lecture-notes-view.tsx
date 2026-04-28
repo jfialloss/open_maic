@@ -22,6 +22,26 @@ const ACTION_ICON_ONLY: Record<string, { Icon: typeof Flashlight; style: string 
     style:
       'bg-yellow-50 dark:bg-yellow-500/15 border-yellow-300/40 dark:border-yellow-500/30 text-yellow-700 dark:text-yellow-300',
   },
+  widget_highlight: {
+    Icon: Flashlight,
+    style:
+      'bg-emerald-50 dark:bg-emerald-500/15 border-emerald-300/40 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-300',
+  },
+  widget_setState: {
+    Icon: MousePointer2,
+    style:
+      'bg-emerald-50 dark:bg-emerald-500/15 border-emerald-300/40 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-300',
+  },
+  widget_annotation: {
+    Icon: BookOpen,
+    style:
+      'bg-emerald-50 dark:bg-emerald-500/15 border-emerald-300/40 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-300',
+  },
+  widget_reveal: {
+    Icon: Flashlight,
+    style:
+      'bg-emerald-50 dark:bg-emerald-500/15 border-emerald-300/40 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-300',
+  },
 };
 
 interface LectureNotesViewProps {

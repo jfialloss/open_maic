@@ -4,6 +4,7 @@ import { history } from 'prosemirror-history';
 import { baseKeymap } from 'prosemirror-commands';
 import { dropCursor } from 'prosemirror-dropcursor';
 import { gapCursor } from 'prosemirror-gapcursor';
+import { mathPlugin } from '@benrbray/prosemirror-math';
 
 import { buildKeymap } from './keymap';
 import { buildInputRules } from './inputrules';
@@ -23,6 +24,7 @@ export const buildPlugins = (schema: Schema, options?: PluginOptions) => {
     dropCursor(),
     gapCursor(),
     history(),
+    mathPlugin,
   ];
 
   if (placeholder) plugins.push(placeholderPlugin(placeholder));

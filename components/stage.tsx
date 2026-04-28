@@ -286,7 +286,17 @@ export function Stage({
       audioPlayerRef.current,
       (type, payload) => {
         const sendMsg = useWidgetIframeStore.getState().getSendMessage();
-        if (sendMsg) sendMsg(type, payload);
+        if (sendMsg) {
+          sendMsg(type, payload);
+        } else {
+          // Broadcast to all widget iframes
+          const iframes = document.querySelectorAll('iframe[id^="widget-iframe-"]');
+          iframes.forEach((iframe) => {
+            try {
+              (iframe as HTMLIFrameElement).contentWindow?.postMessage({ type, ...payload }, '*');
+            } catch (e) {}
+          });
+        }
       }
     );
 

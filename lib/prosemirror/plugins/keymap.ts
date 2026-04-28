@@ -14,6 +14,7 @@ import {
   liftEmptyBlock,
   splitBlockKeepMarks,
 } from 'prosemirror-commands';
+import { mathBackspaceCmd } from '@benrbray/prosemirror-math';
 
 export const buildKeymap = (schema: Schema) => {
   const keys: Record<string, Command> = {};
@@ -23,7 +24,7 @@ export const buildKeymap = (schema: Schema) => {
   bind('Alt-ArrowDown', joinDown);
   bind('Mod-z', undo);
   bind('Mod-y', redo);
-  bind('Backspace', undoInputRule);
+  bind('Backspace', chainCommands(undoInputRule, mathBackspaceCmd));
   bind('Escape', selectParentNode);
   bind('Mod-b', toggleMark(schema.marks.strong));
   bind('Mod-i', toggleMark(schema.marks.em));

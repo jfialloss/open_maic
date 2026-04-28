@@ -23,6 +23,9 @@ importers:
       '@base-ui/react':
         specifier: ^1.1.0
         version: 1.2.0(@types/react@19.2.14)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      '@benrbray/prosemirror-math':
+        specifier: ^1.0.0
+        version: 1.0.0(katex@0.16.38)(prosemirror-commands@1.7.1)(prosemirror-history@1.5.0)(prosemirror-inputrules@1.5.1)(prosemirror-keymap@1.2.3)(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-transform@1.11.0)(prosemirror-view@1.41.6)
       '@copilotkit/backend':
         specifier: ^0.37.0
         version: 0.37.0(@google-cloud/storage@7.19.0)(axios@1.13.6)(fast-xml-parser@5.7.2)(firebase-admin@13.8.0)(ignore@5.3.2)(jsonwebtoken@9.0.3)(lodash@4.17.23)(ws@8.19.0)
@@ -734,6 +737,19 @@ packages:
 
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
+
+  '@benrbray/prosemirror-math@1.0.0':
+    resolution: {integrity: sha512-5fPeOKP6SJJ3usXhhf6vnLXGJnfPHPzv0OdsOJlGkCdZvNfCuC6f8fZqgpmnP8vxDKjB8fvSVSmAHTMsaiXc6w==}
+    peerDependencies:
+      katex: ^0.16.10
+      prosemirror-commands: ^1.5.2
+      prosemirror-history: ^1.4.0
+      prosemirror-inputrules: ^1.4.0
+      prosemirror-keymap: ^1.2.2
+      prosemirror-model: ^1.20.0
+      prosemirror-state: ^1.4.3
+      prosemirror-transform: ^1.8.0
+      prosemirror-view: ^1.33.4
 
   '@biomejs/biome@1.9.4':
     resolution: {integrity: sha512-1rkd7G70+o9KkTn5KLmDYXihGoTaIGO9PIIN2ZB7UJxFrWw04CZHPYiMRjYsaDvVV7hP1dYNRLxSANLaBFGpog==}
@@ -9842,6 +9858,18 @@ snapshots:
       '@types/react': 19.2.14
 
   '@bcoe/v8-coverage@0.2.3': {}
+
+  '@benrbray/prosemirror-math@1.0.0(katex@0.16.38)(prosemirror-commands@1.7.1)(prosemirror-history@1.5.0)(prosemirror-inputrules@1.5.1)(prosemirror-keymap@1.2.3)(prosemirror-model@1.25.4)(prosemirror-state@1.4.4)(prosemirror-transform@1.11.0)(prosemirror-view@1.41.6)':
+    dependencies:
+      katex: 0.16.38
+      prosemirror-commands: 1.7.1
+      prosemirror-history: 1.5.0
+      prosemirror-inputrules: 1.5.1
+      prosemirror-keymap: 1.2.3
+      prosemirror-model: 1.25.4
+      prosemirror-state: 1.4.4
+      prosemirror-transform: 1.11.0
+      prosemirror-view: 1.41.6
 
   '@biomejs/biome@1.9.4':
     optionalDependencies:
