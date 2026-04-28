@@ -307,7 +307,11 @@ function HomePage() {
             useUserProfileStore.getState().removeActiveCourse(ac.stageId);
           }
         }
-      } catch (e) {
+      } catch (e: any) {
+        if (e?.code === 'permission-denied') {
+          // Silently ignore if auth is still synchronizing
+          return;
+        }
         log.error('Failed to validate pending cloud courses:', e);
       }
     };
