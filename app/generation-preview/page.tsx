@@ -467,6 +467,7 @@ function GenerationPreviewContent() {
               name: a!.name,
               role: a!.role,
               persona: a!.persona,
+              avatar: a!.avatar,
             }));
         } catch (err: unknown) {
           log.warn('[Generation] Agent generation failed, falling back to presets:', err);
@@ -492,6 +493,7 @@ function GenerationPreviewContent() {
             name: a!.name,
             role: a!.role,
             persona: a!.persona,
+            avatar: a!.avatar,
           }));
       }
 
