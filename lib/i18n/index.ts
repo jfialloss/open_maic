@@ -5,6 +5,7 @@ import { stageZhCN, stageEnUS, stageEsES } from './stage';
 import { chatZhCN, chatEnUS, chatEsES } from './chat';
 import { generationZhCN, generationEnUS, generationEsES } from './generation';
 import { settingsZhCN, settingsEnUS, settingsEsES } from './settings';
+import { peaasZhCN, peaasEnUS, peaasEsES } from './peaas';
 
 export const translations = {
   'zh-CN': {
@@ -13,6 +14,7 @@ export const translations = {
     ...chatZhCN,
     ...generationZhCN,
     ...settingsZhCN,
+    ...peaasZhCN,
   },
   'en-US': {
     ...commonEnUS,
@@ -20,6 +22,7 @@ export const translations = {
     ...chatEnUS,
     ...generationEnUS,
     ...settingsEnUS,
+    ...peaasEnUS,
   },
   'es-ES': {
     ...commonEsES,
@@ -27,6 +30,7 @@ export const translations = {
     ...chatEsES,
     ...generationEsES,
     ...settingsEsES,
+    ...peaasEsES,
   },
 } as const;
 

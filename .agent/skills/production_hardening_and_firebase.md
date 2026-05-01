@@ -103,3 +103,14 @@ Se estableció un mecanismo de **Acceso Controlado** a nivel del Frontend median
 Los hooks de `useEffect` que lanzan consultas contra Firestore deben verificar SIEMPRE que `user` o `auth.currentUser` exista **antes** de ejecutarse. 
 - **Error Evitado**: `FirebaseError: Missing or insufficient permissions.`
 - **Caso**: En `app/page.tsx`, la función `validateCloud` consultaba `global_classrooms` (donde la regla de Firestore requiere `request.auth != null`) de inmediato. Al no verificar primero si `useAuth().user` ya estaba cargado, la consulta se disparaba en los milisegundos donde Firebase aún consideraba al usuario como anónimo, provocando un error de permisos en la consola.
+
+---
+
+## 7. Next.js Error Overlay y Falsos Positivos de "Missing Permissions"
+
+Durante la sincronización de configuraciones globales (`components/global-settings-sync.tsx`), descubrimos un falso positivo donde una generación exitosa terminaba lanzando una pantalla roja en Next.js con el error `FirebaseError: Missing or insufficient permissions.`.
+
+**Causa y Lecciones Aprendidas:**
+1. **Next.js intercepta `console.error`**: En Next.js 14+ (con Turbopack), si un componente cliente usa `console.error` para registrar un fallo de fondo (como un error de `setDoc` capturado en un `.catch()`), Next.js puede capturarlo y mostrar el invasivo "Error Overlay" en entorno de desarrollo, dando la impresión de un fallo crítico (Crash) cuando en realidad era una operación controlada.
+2. **Diferencia entre `auth.token.role` y `isAdmin()`**: Las reglas de Firestore fallaban al evaluar `/system/{document=**}` porque usaban `request.auth.token.role == 'admin'`, exigiendo *Custom Claims* nativos en el token de Firebase. Sin embargo, en esta plataforma el rol del administrador está almacenado en el documento de base de datos (`users/{uid}`). La regla se corrigió para usar la función auxiliar `isAdmin()` que realiza el `get()` contra la base de datos de manera autoritativa.
+3. **Sincronización Selectiva (LOCAL_KEYS)**: Variables dinámicas o de sesión asignadas en tiempo de generación (como `selectedAgentIds` o preferencias locales de modelos `modelId`, `ttsProviderId`) NUNCA deben sincronizarse globalmente hacia todos los usuarios en la colección `system/settings`. Se expandió el arreglo `LOCAL_KEYS` para actuar como lista negra y excluir estos datos efímeros, evitando mutaciones no deseadas a nivel global.

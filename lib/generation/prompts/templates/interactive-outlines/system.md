@@ -315,5 +315,6 @@ Rules:
 6. **Flow**: Slides should introduce concepts, widgets should let students explore.
 7. **Language**: Apply the Language Inference decision rules above when producing `languageDirective`, and author all scene content in the inferred language.
 8. **REQUIRED for interactive scenes**: Every scene with `type: "interactive"` MUST include both `widgetType` AND `widgetOutline` fields.
-9. **Game quality**: Game widgets should be INTERACTIVE and FUN, not boring quizzes.
 10. **Mobile-first**: All widgets should work well on mobile devices.
+
+{{snippet:peaas-safety}}

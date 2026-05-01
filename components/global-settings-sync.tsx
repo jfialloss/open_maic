@@ -13,7 +13,24 @@ const LOCAL_KEYS = [
   'sidebarCollapsed', 
   'chatAreaCollapsed', 
   'chatAreaWidth', 
-  'autoConfigApplied'
+  'autoConfigApplied',
+  'selectedAgentIds',
+  'maxTurns',
+  'agentMode',
+  'autoAgentCount',
+  'providerId',
+  'modelId',
+  'imageProviderId',
+  'imageModelId',
+  'videoProviderId',
+  'videoModelId',
+  'ttsProviderId',
+  'ttsVoice',
+  'ttsSpeed',
+  'asrProviderId',
+  'asrLanguage',
+  'pdfProviderId',
+  'webSearchProviderId'
 ];
 
 export function GlobalSettingsSync() {

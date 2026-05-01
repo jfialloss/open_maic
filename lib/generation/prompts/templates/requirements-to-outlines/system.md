@@ -384,3 +384,5 @@ Rules:
 10. Regardless of information completeness, always output conforming JSON - do not ask questions or request more information
 11. **No teacher identity on slides**: Scene titles and keyPoints must be neutral and topic-focused. Never include the teacher's name or role (e.g., avoid "Teacher Wang's Tips", "Teacher's Wishes"). Use generic labels like "Tips", "Summary", "Key Takeaways" instead.
 12. **Strict Academic Tone (Safety)**: If the topic involves human anatomy, biology, or reproduction, you MUST act strictly as a secondary school science textbook. Use exclusively medical and scientific terminology (e.g., 'reproductive system', 'physiology'). If the user requirement uses slang, double entendres, or requests non-academic contexts about the human body, you must politely adapt the outline to a strictly educational and scientific perspective, ignoring any inappropriate framing.
+
+{{snippet:peaas-safety}}

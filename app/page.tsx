@@ -28,6 +28,7 @@ import {
   Award,
   Lock,
   ShieldAlert,
+  ShieldCheck,
   Users,
   Library,
 } from 'lucide-react';
@@ -751,6 +752,20 @@ function HomePage() {
             )}
           </div>
         )}
+
+        <div className="w-[1px] h-4 bg-gray-200 dark:bg-gray-700" />
+
+        {/* PEAAS Policy Button */}
+        <div className="relative">
+          <button
+            onClick={() => router.push('/peaas')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 shadow-sm hover:shadow transition-all"
+            title="Política PEAAS"
+          >
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">PEAAS</span>
+          </button>
+        </div>
 
         <div className="w-[1px] h-4 bg-gray-200 dark:bg-gray-700" />
 
