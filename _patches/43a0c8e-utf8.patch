@@ -1,0 +1,709 @@
+﻿commit 43a0c8e39e5e9140f1da6f60988272f693190614
+Author: Yizuki_Ame <104178195+YizukiAme@users.noreply.github.com>
+Date:   Wed Mar 18 23:56:11 2026 +0800
+
+    feat: whiteboard history and auto-save (#40)
+    
+    * feat: add whiteboard history and auto-save (closes #32)
+    
+    - New whiteboard-history.tsx: browseable history panel UI
+    - New whiteboard-history.ts: Zustand store with snapshot stack,
+      fingerprint-based deduplication, and restoredKey one-shot guard
+    - New element-fingerprint.ts: shared fingerprint utility (id+position+size)
+    - whiteboard-canvas.tsx: auto-snapshot effect that saves the current stable
+      state after 2s debounce; unified fingerprint import; useMemo for elements
+    - index.tsx: pushSnapshot before UI clear; history panel trigger button
+    - stage.ts: i18n keys for history UI (zh/en)
+    
+    * fix: address audit findings for whiteboard history
+    
+    - engine.ts: AI wb_clear now saves snapshot before clearing (audit #3)
+    - page.tsx: clear whiteboard history on classroom switch (audit #4)
+    
+    * fix: address review round 2 (P1/P2a/P2b/P3)
+    
+    - P1: Block restore during clear animation (race condition)
+    - P2a: Skip no-op restores to avoid stale restoredKey
+    - P2b: clearHistory() now also resets restoredKey
+    - P3: Dedicated restoreError i18n key
+    
+    * fix: fingerprint includes semantic content per element type (P2c)
+    
+    * fix: address reviewer feedback (fingerprint cache, AI clear label, exhaustive check)
+
+diff --git a/app/classroom/[id]/page.tsx b/app/classroom/[id]/page.tsx
+index dc9fef7..523e232 100644
+--- a/app/classroom/[id]/page.tsx
++++ b/app/classroom/[id]/page.tsx
+@@ -8,6 +8,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
+ import { useParams } from 'next/navigation';
+ import { useSceneGenerator } from '@/lib/hooks/use-scene-generator';
+ import { useMediaGenerationStore } from '@/lib/store/media-generation';
++import { useWhiteboardHistoryStore } from '@/lib/store/whiteboard-history';
+ import { createLogger } from '@/lib/logger';
+ import { MediaStageProvider } from '@/lib/contexts/media-stage-context';
+ import { generateMediaForOutlines } from '@/lib/media/media-orchestrator';
+@@ -88,6 +89,9 @@ export default function ClassroomDetailPage() {
+     mediaStore.revokeObjectUrls();
+     useMediaGenerationStore.setState({ tasks: {} });
+ 
++    // Clear whiteboard history to prevent snapshots from a previous course leaking in.
++    useWhiteboardHistoryStore.getState().clearHistory();
++
+     loadClassroom();
+ 
+     // Cancel ongoing generation when classroomId changes or component unmounts
+diff --git a/components/whiteboard/index.tsx b/components/whiteboard/index.tsx
+index e862493..efdd894 100644
+--- a/components/whiteboard/index.tsx
++++ b/components/whiteboard/index.tsx
+@@ -1,11 +1,13 @@
+ 'use client';
+ 
+-import { useRef } from 'react';
++import { useRef, useState } from 'react';
+ import { motion, AnimatePresence } from 'motion/react';
+-import { Eraser, Minimize2, PencilLine } from 'lucide-react';
++import { Eraser, History, Minimize2, PencilLine } from 'lucide-react';
+ import { WhiteboardCanvas } from './whiteboard-canvas';
++import { WhiteboardHistory } from './whiteboard-history';
+ import { useStageStore } from '@/lib/store';
+ import { useCanvasStore } from '@/lib/store/canvas';
++import { useWhiteboardHistoryStore } from '@/lib/store/whiteboard-history';
+ import { createStageAPI } from '@/lib/api/stage-api';
+ import { toast } from 'sonner';
+ import { useI18n } from '@/lib/hooks/use-i18n';
+@@ -23,6 +25,8 @@ export function Whiteboard({ isOpen, onClose }: WhiteboardProps) {
+   const stage = useStageStore.use.stage();
+   const isClearing = useCanvasStore.use.whiteboardClearing();
+   const clearingRef = useRef(false);
++  const [historyOpen, setHistoryOpen] = useState(false);
++  const snapshotCount = useWhiteboardHistoryStore((s) => s.snapshots.length);
+ 
+   // Get element count for indicator
+   const whiteboard = stage?.whiteboard?.[0];
+@@ -34,6 +38,13 @@ export function Whiteboard({ isOpen, onClose }: WhiteboardProps) {
+     if (!whiteboard || elementCount === 0 || clearingRef.current) return;
+     clearingRef.current = true;
+ 
++    // Save snapshot before clearing
++    if (whiteboard.elements && whiteboard.elements.length > 0) {
++      useWhiteboardHistoryStore
++        .getState()
++        .pushSnapshot(whiteboard.elements, t('whiteboard.beforeClear'));
++    }
++
+     // Trigger cascade exit animation
+     useCanvasStore.getState().setWhiteboardClearing(true);
+ 
+@@ -108,6 +119,20 @@ export function Whiteboard({ isOpen, onClose }: WhiteboardProps) {
+                     <Eraser className="w-4 h-4" />
+                   </motion.div>
+                 </motion.button>
++                <motion.button
++                  type="button"
++                  onClick={() => setHistoryOpen(!historyOpen)}
++                  whileTap={{ scale: 0.9 }}
++                  className="relative p-2 text-gray-400 dark:text-gray-500 hover:text-purple-500 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-lg transition-colors"
++                  title={t('whiteboard.history')}
++                >
++                  <History className="w-4 h-4" />
++                  {snapshotCount > 0 && (
++                    <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-purple-500 text-white text-[10px] font-bold flex items-center justify-center">
++                      {snapshotCount}
++                    </span>
++                  )}
++                </motion.button>
+                 <div className="w-px h-4 bg-gray-200 dark:bg-gray-700 mx-1" />
+                 <button
+                   type="button"
+@@ -124,6 +149,9 @@ export function Whiteboard({ isOpen, onClose }: WhiteboardProps) {
+             <div className="flex-1 relative bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] dark:bg-[radial-gradient(#374151_1px,transparent_1px)] [background-size:24px_24px] overflow-hidden">
+               <WhiteboardCanvas />
+ 
++              {/* History panel */}
++              <WhiteboardHistory isOpen={historyOpen} onClose={() => setHistoryOpen(false)} />
++
+               {/* Test panel */}
+               {/* <WhiteboardTestPanel /> */}
+             </div>
+diff --git a/components/whiteboard/whiteboard-canvas.tsx b/components/whiteboard/whiteboard-canvas.tsx
+index 72a32dc..8bdc138 100644
+--- a/components/whiteboard/whiteboard-canvas.tsx
++++ b/components/whiteboard/whiteboard-canvas.tsx
+@@ -1,10 +1,12 @@
+ 'use client';
+ 
+-import { useRef, useState, useEffect, useCallback } from 'react';
++import { useRef, useState, useEffect, useCallback, useMemo } from 'react';
+ import { motion, AnimatePresence } from 'motion/react';
+ import { useStageStore } from '@/lib/store';
+ import { useCanvasStore } from '@/lib/store/canvas';
++import { useWhiteboardHistoryStore } from '@/lib/store/whiteboard-history';
+ import { ScreenElement } from '@/components/slide-renderer/Editor/ScreenElement';
++import { elementFingerprint } from '@/lib/utils/element-fingerprint';
+ import type { PPTElement } from '@/lib/types/slides';
+ import { useI18n } from '@/lib/hooks/use-i18n';
+ 
+@@ -74,7 +76,14 @@ function AnimatedElement({
+ }
+ 
+ /**
+- * Whiteboard canvas
++ * Whiteboard canvas — renders the current whiteboard elements and handles
++ * auto-snapshotting so the user can browse/restore previous states.
++ *
++ * The auto-snapshot logic watches for "content replacement" events —
++ * i.e. when AI replaces the whiteboard content with new elements.  It
++ * debounces by 2 seconds so that one-by-one element additions don't
++ * spam the history store.  The `restoredKey` one-shot guard prevents a
++ * restore action from itself triggering a new snapshot.
+  */
+ export function WhiteboardCanvas() {
+   const { t } = useI18n();
+@@ -85,13 +94,59 @@ export function WhiteboardCanvas() {
+ 
+   // Get whiteboard elements
+   const whiteboard = stage?.whiteboard?.[0];
+-  const elements = whiteboard?.elements || [];
++  const rawElements = whiteboard?.elements;
++  const elements = useMemo(() => rawElements ?? [], [rawElements]);
+ 
+-  // Whiteboard fixed size: 1000 x 562.5 (16:9)
++  // ── Auto-snapshot logic ──────────────────────────────────────────
++  // Saves a snapshot of the CURRENT state after elements have been stable
++  // (unchanged) for 2 seconds.  This ensures the complete "finished" result
++  // appears in history, not just intermediate build-up states.
++  const elementsKey = useMemo(() => elementFingerprint(elements), [elements]);
++  const elementsRef = useRef(elements);
++  useEffect(() => {
++    elementsRef.current = elements;
++  }, [elements]);
++  const snapshotTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
++
++  useEffect(() => {
++    // Cancel any pending timer whenever elements change
++    if (snapshotTimerRef.current) {
++      clearTimeout(snapshotTimerRef.current);
++      snapshotTimerRef.current = null;
++    }
++
++    // Don't snapshot empty states or during clearing animation
++    if (elements.length === 0 || isClearing) return;
++
++    // If this state matches a just-restored snapshot, skip and clear the flag.
++    // This check uses fingerprint comparison (reviewer point #5) rather than
++    // a fragile boolean flag, eliminating timing dependencies entirely.
++    const { restoredKey } = useWhiteboardHistoryStore.getState();
++    if (restoredKey && elementsKey === restoredKey) {
++      useWhiteboardHistoryStore.getState().setRestoredKey(null);
++      return;
++    }
++
++    snapshotTimerRef.current = setTimeout(() => {
++      // Save the CURRENT stable state (not the previous one)
++      const current = elementsRef.current;
++      if (current.length > 0) {
++        useWhiteboardHistoryStore.getState().pushSnapshot(current);
++      }
++    }, 2000);
++
++    return () => {
++      if (snapshotTimerRef.current) {
++        clearTimeout(snapshotTimerRef.current);
++      }
++    };
++    // eslint-disable-next-line react-hooks/exhaustive-deps
++  }, [elementsKey, isClearing]);
++
++  // ── Layout: whiteboard fixed size 1000 x 562.5 (16:9) ─────────
+   const canvasWidth = 1000;
+   const canvasHeight = 562.5;
+ 
+-  // Responsive scaling: scale canvas proportionally to fill container
+   const updateScale = useCallback(() => {
+     const container = containerRef.current;
+     if (!container) return;
+@@ -110,6 +165,7 @@ export function WhiteboardCanvas() {
+     return () => observer.disconnect();
+   }, [updateScale]);
+ 
++  // ── Render ──────────────────────────────────────────────────────
+   return (
+     <div
+       ref={containerRef}
+diff --git a/components/whiteboard/whiteboard-history.tsx b/components/whiteboard/whiteboard-history.tsx
+new file mode 100644
+index 0000000..ef92593
+--- /dev/null
++++ b/components/whiteboard/whiteboard-history.tsx
+@@ -0,0 +1,170 @@
++'use client';
++
++import { useRef, useEffect } from 'react';
++import { motion, AnimatePresence } from 'motion/react';
++import { RotateCcw } from 'lucide-react';
++import { useWhiteboardHistoryStore } from '@/lib/store/whiteboard-history';
++import { useStageStore } from '@/lib/store';
++import { useCanvasStore } from '@/lib/store/canvas';
++import { createStageAPI } from '@/lib/api/stage-api';
++import { elementFingerprint } from '@/lib/utils/element-fingerprint';
++import { toast } from 'sonner';
++import { useI18n } from '@/lib/hooks/use-i18n';
++
++interface WhiteboardHistoryProps {
++  readonly isOpen: boolean;
++  readonly onClose: () => void;
++}
++
++/**
++ * Whiteboard history dropdown panel.
++ * Shows a list of saved whiteboard snapshots with timestamps and element counts.
++ * Clicking "Restore" replaces the current whiteboard content with the snapshot.
++ */
++export function WhiteboardHistory({ isOpen, onClose }: WhiteboardHistoryProps) {
++  const { t } = useI18n();
++  const snapshots = useWhiteboardHistoryStore((s) => s.snapshots);
++  const isClearing = useCanvasStore.use.whiteboardClearing();
++  const panelRef = useRef<HTMLDivElement>(null);
++
++  // Close on outside click
++  useEffect(() => {
++    if (!isOpen) return;
++    const handler = (e: MouseEvent) => {
++      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
++        onClose();
++      }
++    };
++    // Delay listener so the click that opens the panel doesn't immediately close it
++    const id = setTimeout(() => document.addEventListener('mousedown', handler), 0);
++    return () => {
++      clearTimeout(id);
++      document.removeEventListener('mousedown', handler);
++    };
++  }, [isOpen, onClose]);
++
++  const handleRestore = (index: number) => {
++    // P1: Block restore while a clear animation is in flight — the pending
++    // delete/update would overwrite the restored content moments later.
++    if (isClearing) {
++      toast.error(t('whiteboard.restoreError'));
++      return;
++    }
++
++    const snapshot = useWhiteboardHistoryStore.getState().getSnapshot(index);
++    if (!snapshot) return;
++
++    const stageStore = useStageStore;
++    const stageAPI = createStageAPI(stageStore);
++
++    // Get or create whiteboard
++    const wbResult = stageAPI.whiteboard.get();
++    if (!wbResult.success || !wbResult.data) {
++      return;
++    }
++    const whiteboardId = wbResult.data.id;
++
++    // P2a: Skip no-op restores — if the snapshot matches what's already
++    // on screen, applying it would not change elementsKey, leaving
++    // restoredKey armed indefinitely and suppressing a future snapshot.
++    const restoredElementsKey = snapshot.fingerprint;
++    const currentKey = elementFingerprint(wbResult.data.elements ?? []);
++    if (restoredElementsKey === currentKey) {
++      toast.success(t('whiteboard.restored'));
++      onClose();
++      return;
++    }
++
++    // Set restoredKey so auto-snapshot skips the incoming change
++    useWhiteboardHistoryStore.getState().setRestoredKey(restoredElementsKey);
++
++    // Transactional restore: replace all elements in one update() call
++    // instead of looping delete/add which produces intermediate states.
++    const result = stageAPI.whiteboard.update({ elements: snapshot.elements }, whiteboardId);
++
++    if (!result.success) {
++      // Restore failed — clear restoredKey so auto-snapshot isn't stuck
++      useWhiteboardHistoryStore.getState().setRestoredKey(null);
++      console.error('Failed to restore whiteboard snapshot:', result.error);
++      // P3: Dedicated restoreError key (not clearError)
++      toast.error(t('whiteboard.restoreError') + (result.error ?? ''));
++      return;
++    }
++
++    toast.success(t('whiteboard.restored'));
++    onClose();
++  };
++
++  const formatTime = (ts: number) => {
++    const d = new Date(ts);
++    return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}:${d.getSeconds().toString().padStart(2, '0')}`;
++  };
++
++  return (
++    <AnimatePresence>
++      {isOpen && (
++        <motion.div
++          ref={panelRef}
++          initial={{ opacity: 0, y: -8, scale: 0.95 }}
++          animate={{ opacity: 1, y: 0, scale: 1 }}
++          exit={{ opacity: 0, y: -8, scale: 0.95 }}
++          transition={{ duration: 0.15 }}
++          className="absolute top-14 right-4 z-[130] w-72 max-h-80 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col"
++        >
++          {/* Header */}
++          <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
++            <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">
++              {t('whiteboard.history')}
++            </span>
++            <span className="text-xs text-gray-400">
++              {snapshots.length > 0 ? `${snapshots.length}` : ''}
++            </span>
++          </div>
++
++          {/* Snapshot list */}
++          <div className="flex-1 overflow-y-auto">
++            {snapshots.length === 0 ? (
++              <div className="px-4 py-8 text-center text-sm text-gray-400 dark:text-gray-500">
++                {t('whiteboard.noHistory')}
++              </div>
++            ) : (
++              <div className="py-1">
++                {[...snapshots].reverse().map((snap, reverseIdx) => {
++                  const realIdx = snapshots.length - 1 - reverseIdx;
++                  return (
++                    <div
++                      key={`${snap.timestamp}-${realIdx}`}
++                      className="px-4 py-2.5 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group"
++                    >
++                      <div className="flex-1 min-w-0">
++                        <div className="text-sm font-medium text-gray-700 dark:text-gray-200 truncate">
++                          {snap.label || `#${realIdx + 1}`}
++                        </div>
++                        <div className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
++                          {formatTime(snap.timestamp)} ·{' '}
++                          {t('whiteboard.elementCount').replace(
++                            '{count}',
++                            String(snap.elements.length),
++                          )}
++                        </div>
++                      </div>
++                      <button
++                        type="button"
++                        onClick={() => handleRestore(realIdx)}
++                        disabled={isClearing}
++                        className="ml-2 px-2 py-1 text-xs text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-md opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
++                      >
++                        <RotateCcw className="w-3 h-3" />
++                        {t('whiteboard.restore')}
++                      </button>
++                    </div>
++                  );
++                })}
++              </div>
++            )}
++          </div>
++        </motion.div>
++      )}
++    </AnimatePresence>
++  );
++}
+diff --git a/lib/action/engine.ts b/lib/action/engine.ts
+index 620f2f9..44a7e45 100644
+--- a/lib/action/engine.ts
++++ b/lib/action/engine.ts
+@@ -12,7 +12,9 @@
+ import type { StageStore } from '@/lib/api/stage-api';
+ import { createStageAPI } from '@/lib/api/stage-api';
+ import { useCanvasStore } from '@/lib/store/canvas';
++import { useWhiteboardHistoryStore } from '@/lib/store/whiteboard-history';
+ import { useMediaGenerationStore, isMediaPlaceholder } from '@/lib/store/media-generation';
++import { getClientTranslation } from '@/lib/i18n';
+ import type { AudioPlayer } from '@/lib/utils/audio-player';
+ import type {
+   Action,
+@@ -498,6 +500,11 @@ export class ActionEngine {
+     const elementCount = wb.data.elements?.length || 0;
+     if (elementCount === 0) return;
+ 
++    // Save snapshot before AI clear (mirrors UI handleClear in index.tsx)
++    useWhiteboardHistoryStore
++      .getState()
++      .pushSnapshot(wb.data.elements!, getClientTranslation('whiteboard.beforeAIClear'));
++
+     // Trigger cascade exit animation
+     useCanvasStore.getState().setWhiteboardClearing(true);
+ 
+diff --git a/lib/hooks/use-i18n.tsx b/lib/hooks/use-i18n.tsx
+index 5eadd80..4e642f4 100644
+--- a/lib/hooks/use-i18n.tsx
++++ b/lib/hooks/use-i18n.tsx
+@@ -1,7 +1,7 @@
+ 'use client';
+ 
+ import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+-import { Locale, translations, defaultLocale } from '@/lib/i18n';
++import { Locale, translate, defaultLocale } from '@/lib/i18n';
+ 
+ type I18nContextType = {
+   locale: Locale;
+@@ -40,14 +40,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
+     localStorage.setItem(LOCALE_STORAGE_KEY, newLocale);
+   };
+ 
+-  const t = (key: string): string => {
+-    const keys = key.split('.');
+-    let value: unknown = translations[locale];
+-    for (const k of keys) {
+-      value = (value as Record<string, unknown>)?.[k];
+-    }
+-    return (typeof value === 'string' ? value : undefined) ?? key;
+-  };
++  const t = (key: string): string => translate(locale, key);
+ 
+   return <I18nContext.Provider value={{ locale, setLocale, t }}>{children}</I18nContext.Provider>;
+ }
+diff --git a/lib/i18n/index.ts b/lib/i18n/index.ts
+index b6c9882..5fd70da 100644
+--- a/lib/i18n/index.ts
++++ b/lib/i18n/index.ts
+@@ -1,4 +1,4 @@
+-import { defaultLocale } from './types';
++import { defaultLocale, type Locale } from './types';
+ export { type Locale, defaultLocale } from './types';
+ import { commonZhCN, commonEnUS } from './common';
+ import { stageZhCN, stageEnUS } from './stage';
+@@ -24,3 +24,29 @@ export const translations = {
+ } as const;
+ 
+ export type TranslationKey = keyof (typeof translations)[typeof defaultLocale];
++
++export function translate(locale: Locale, key: string): string {
++  const keys = key.split('.');
++  let value: unknown = translations[locale];
++  for (const k of keys) {
++    value = (value as Record<string, unknown>)?.[k];
++  }
++  return (typeof value === 'string' ? value : undefined) ?? key;
++}
++
++export function getClientTranslation(key: string): string {
++  let locale: Locale = defaultLocale;
++
++  if (typeof window !== 'undefined') {
++    try {
++      const storedLocale = localStorage.getItem('locale');
++      if (storedLocale === 'zh-CN' || storedLocale === 'en-US') {
++        locale = storedLocale;
++      }
++    } catch {
++      // localStorage unavailable, keep default locale
++    }
++  }
++
++  return translate(locale, key);
++}
+diff --git a/lib/i18n/stage.ts b/lib/i18n/stage.ts
+index 9490061..5603cbc 100644
+--- a/lib/i18n/stage.ts
++++ b/lib/i18n/stage.ts
+@@ -17,6 +17,14 @@ export const stageZhCN = {
+     readyHint: 'AI 添加元素后将在此显示',
+     clearSuccess: '白板已清空',
+     clearError: '清空白板失败：',
++    restoreError: '恢复白板失败：',
++    history: '历史记录',
++    restore: '恢复',
++    beforeClear: '清除前',
++    beforeAIClear: 'AI 清除前',
++    noHistory: '暂无历史记录',
++    restored: '已恢复白板内容',
++    elementCount: '{count} 个元素',
+   },
+   quiz: {
+     title: '随堂测验',
+@@ -153,6 +161,14 @@ export const stageEnUS = {
+     readyHint: 'Elements will appear here when added by AI',
+     clearSuccess: 'Whiteboard cleared successfully',
+     clearError: 'Failed to clear whiteboard: ',
++    restoreError: 'Failed to restore whiteboard: ',
++    history: 'History',
++    restore: 'Restore',
++    beforeClear: 'Before clear',
++    beforeAIClear: 'Before AI clear',
++    noHistory: 'No history yet',
++    restored: 'Whiteboard restored',
++    elementCount: '{count} elements',
+   },
+   quiz: {
+     title: 'Quiz',
+diff --git a/lib/store/whiteboard-history.ts b/lib/store/whiteboard-history.ts
+new file mode 100644
+index 0000000..a144570
+--- /dev/null
++++ b/lib/store/whiteboard-history.ts
+@@ -0,0 +1,84 @@
++/**
++ * Whiteboard History Store
++ *
++ * Lightweight in-memory store that saves snapshots of whiteboard elements
++ * before destructive operations (clear, replace). Allows users to browse
++ * and restore previous whiteboard states.
++ *
++ * History is per-session (not persisted to IndexedDB) to keep things simple.
++ */
++
++import { create } from 'zustand';
++import type { PPTElement } from '@/lib/types/slides';
++import { elementFingerprint } from '@/lib/utils/element-fingerprint';
++
++export interface WhiteboardSnapshot {
++  /** Deep copy of whiteboard elements at the time of capture */
++  elements: PPTElement[];
++  /** Timestamp when the snapshot was taken */
++  timestamp: number;
++  /** Human-readable label shown in the history panel */
++  label?: string;
++  /** Cached fingerprint used for deduplication and no-op restore checks */
++  fingerprint: string;
++}
++
++interface WhiteboardHistoryState {
++  /** Stack of snapshots, newest last */
++  snapshots: WhiteboardSnapshot[];
++  /** Maximum number of snapshots to keep */
++  maxSnapshots: number;
++  /** elementsKey of a just-restored snapshot; used to skip auto-snapshot once */
++  restoredKey: string | null;
++
++  // Actions
++  /** Save a snapshot of the current whiteboard elements */
++  pushSnapshot: (elements: PPTElement[], label?: string) => void;
++  /** Get a snapshot by index */
++  getSnapshot: (index: number) => WhiteboardSnapshot | null;
++  /** Clear all history */
++  clearHistory: () => void;
++  /** Set the restored key (elementsKey of the snapshot being restored) */
++  setRestoredKey: (key: string | null) => void;
++}
++
++export const useWhiteboardHistoryStore = create<WhiteboardHistoryState>((set, get) => ({
++  snapshots: [],
++  maxSnapshots: 20,
++  restoredKey: null,
++
++  pushSnapshot: (elements, label) => {
++    // Don't save empty snapshots
++    if (!elements || elements.length === 0) return;
++
++    const { snapshots } = get();
++    const newFingerprint = elementFingerprint(elements);
++    if (snapshots.length > 0 && snapshots[snapshots.length - 1].fingerprint === newFingerprint) {
++      return;
++    }
++
++    const snapshot: WhiteboardSnapshot = {
++      elements: JSON.parse(JSON.stringify(elements)), // Deep copy
++      timestamp: Date.now(),
++      label,
++      fingerprint: newFingerprint,
++    };
++
++    set((state) => {
++      const newSnapshots = [...state.snapshots, snapshot];
++      // Enforce limit: drop oldest snapshots first.
++      if (newSnapshots.length > state.maxSnapshots) {
++        return { snapshots: newSnapshots.slice(-state.maxSnapshots) };
++      }
++      return { snapshots: newSnapshots };
++    });
++  },
++
++  getSnapshot: (index) => {
++    const { snapshots } = get();
++    return snapshots[index] ?? null;
++  },
++
++  clearHistory: () => set({ snapshots: [], restoredKey: null }),
++  setRestoredKey: (key) => set({ restoredKey: key }),
++}));
+diff --git a/lib/utils/element-fingerprint.ts b/lib/utils/element-fingerprint.ts
+new file mode 100644
+index 0000000..832f33e
+--- /dev/null
++++ b/lib/utils/element-fingerprint.ts
+@@ -0,0 +1,74 @@
++import type { PPTElement } from '@/lib/types/slides';
++
++/**
++ * Extract the semantic payload for each element type.
++ * Used by elementFingerprint to detect content-only changes
++ * (same id/position but different text, chart data, media src, etc.).
++ */
++function semanticPart(e: PPTElement): unknown {
++  switch (e.type) {
++    case 'text':
++      return { content: e.content };
++    case 'image':
++      return { src: e.src };
++    case 'shape':
++      return {
++        path: e.path,
++        fill: e.fill,
++        text: e.text?.content ?? '',
++        gradient: e.gradient ?? null,
++        pattern: e.pattern ?? null,
++      };
++    case 'line':
++      return {
++        start: e.start,
++        end: e.end,
++        color: e.color,
++        style: e.style,
++        points: e.points,
++      };
++    case 'chart':
++      return {
++        chartType: e.chartType,
++        data: e.data,
++        themeColors: e.themeColors,
++      };
++    case 'table':
++      return {
++        data: e.data.map((row) => row.map((c) => c.text)),
++        colWidths: e.colWidths,
++        theme: e.theme ?? null,
++      };
++    case 'latex':
++      return { latex: e.latex };
++    case 'video':
++      return { src: e.src, poster: e.poster ?? '' };
++    case 'audio':
++      return { src: e.src };
++    default: {
++      const exhaustiveCheck: never = e;
++      return exhaustiveCheck;
++    }
++  }
++}
++
++/**
++ * Generate a fingerprint string for a list of whiteboard elements.
++ * Used for change detection and deduplication in history snapshots.
++ *
++ * Covers both geometry (id, position, size) AND semantic content
++ * via structured JSON.stringify — avoids delimiter-collision issues
++ * that hand-concatenated strings would have with rich-text HTML content.
++ */
++export function elementFingerprint(els: PPTElement[]): string {
++  return JSON.stringify(
++    els.map((e) => ({
++      id: e.id,
++      left: e.left ?? 0,
++      top: e.top ?? 0,
++      width: 'width' in e ? e.width : 0,
++      height: 'height' in e && e.height != null ? e.height : 0,
++      sem: semanticPart(e),
++    })),
++  );
++}

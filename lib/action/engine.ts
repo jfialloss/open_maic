@@ -13,6 +13,8 @@ import type { StageStore } from '@/lib/api/stage-api';
 import { createStageAPI } from '@/lib/api/stage-api';
 import { useCanvasStore } from '@/lib/store/canvas';
 import { useMediaGenerationStore, isMediaPlaceholder } from '@/lib/store/media-generation';
+import { useWhiteboardHistoryStore } from '@/lib/store/whiteboard-history';
+import { getClientTranslation } from '@/lib/i18n';
 import type { AudioPlayer } from '@/lib/utils/audio-player';
 import type {
   Action,
@@ -649,7 +651,10 @@ export class ActionEngine {
     const elementCount = wb.data.elements?.length || 0;
     if (elementCount === 0) return;
 
-    // Save snapshot before AI clear (omitted since we don't have the history store here)
+    // Save snapshot before AI clear
+    useWhiteboardHistoryStore
+      .getState()
+      .pushSnapshot(wb.data.elements, getClientTranslation('whiteboard.beforeAIClear'));
 
     // Trigger cascade exit animation
     useCanvasStore.getState().setWhiteboardClearing(true);
