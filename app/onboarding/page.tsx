@@ -42,6 +42,7 @@ export default function OnboardingPage() {
       await setDoc(doc(db, 'users', user.uid), {
         role: selectedRole,
         email: user.email,
+        displayName: user.displayName,
         createdAt: serverTimestamp()
       });
       toast.success('¡Perfil configurado con éxito!');

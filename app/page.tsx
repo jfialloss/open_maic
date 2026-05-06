@@ -31,6 +31,7 @@ import {
   ShieldCheck,
   Users,
   Library,
+  TrendingUp,
 } from 'lucide-react';
 import { signOut } from 'firebase/auth';
 import { useAuth } from '@/lib/hooks/use-auth';
@@ -697,7 +698,7 @@ function HomePage() {
           <button
             onClick={() => router.push('/admin/logs')}
             className="p-2 rounded-full text-gray-400 dark:text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200 hover:shadow-sm transition-all"
-            title="Auditoría de Prompts"
+            title={t('adminToolbar.prompts')}
           >
             <ShieldAlert className="w-4 h-4" />
           </button>
@@ -708,7 +709,7 @@ function HomePage() {
           <button
             onClick={() => router.push('/admin/library')}
             className="p-2 rounded-full text-gray-400 dark:text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200 hover:shadow-sm transition-all"
-            title="Biblioteca Global"
+            title={t('adminToolbar.library')}
           >
             <Library className="w-4 h-4" />
           </button>
@@ -719,9 +720,20 @@ function HomePage() {
           <button
             onClick={() => router.push('/admin/sessions')}
             className="p-2 rounded-full text-gray-400 dark:text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200 hover:shadow-sm transition-all"
-            title="Monitoreo de Sesiones"
+            title={t('adminToolbar.sessions')}
           >
             <Clock className="w-4 h-4" />
+          </button>
+        )}
+
+        {/* Progress Button */}
+        {role === 'admin' && (
+          <button
+            onClick={() => router.push('/admin/progress')}
+            className="p-2 rounded-full text-gray-400 dark:text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200 hover:shadow-sm transition-all"
+            title={t('adminToolbar.progress')}
+          >
+            <TrendingUp className="w-4 h-4" />
           </button>
         )}
 

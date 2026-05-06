@@ -65,7 +65,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           try {
             await setDoc(doc(db, 'users', firebaseUser.uid), {
               role: 'admin',
-              email: firebaseUser.email
+              email: firebaseUser.email,
+              displayName: firebaseUser.displayName || 'Admin'
             }, { merge: true });
           } catch (e) {
             console.error('Failed to sync admin to Firestore DB:', e);
@@ -81,6 +82,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             if (userDoc.exists()) {
               const data = userDoc.data();
               setRole(data.role as UserRole);
+              
+              if (data.displayName !== firebaseUser.displayName && firebaseUser.displayName) {
+                try {
+                  await setDoc(doc(db, 'users', firebaseUser.uid), {
+                    displayName: firebaseUser.displayName
+                  }, { merge: true });
+                } catch(e) {
+                  console.error('Failed to sync displayName', e);
+                }
+              }
               if (pathname === '/login' || pathname === '/onboarding') {
                 router.push('/');
               }

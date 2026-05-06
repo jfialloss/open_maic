@@ -12,6 +12,7 @@ const LOCAL_KEYS: string[] = [];
 export function UserProfileSync() {
   const { user, loading } = useAuth();
   const isUpdatingFromFirebase = useRef(false);
+  const hasHydratedFromCloud = useRef(false);
 
   // 1. Subscribe to Firebase changes (For the current user's profile)
   useEffect(() => {
@@ -36,6 +37,10 @@ export function UserProfileSync() {
           isUpdatingFromFirebase.current = false;
         }, 100);
       }
+      
+      // Mark as hydrated whether the document existed or not.
+      // This unlocks the ability to upload local changes back to the cloud.
+      hasHydratedFromCloud.current = true;
     });
 
     return () => unsubscribe();
@@ -72,7 +77,12 @@ export function UserProfileSync() {
     };
 
     const unsubStore = useUserProfileStore.subscribe((state, prevState) => {
+      // Do not upload if we are currently receiving a cloud update
       if (isUpdatingFromFirebase.current) return;
+      
+      // CRITICAL FIX: Do not upload anything until we have successfully downloaded the cloud state.
+      // This prevents the empty local state from overwriting the cloud state on a new session/browser.
+      if (!hasHydratedFromCloud.current) return;
 
       const changed = Object.keys(state).some(key => {
          if (LOCAL_KEYS.includes(key)) return false;
@@ -93,8 +103,8 @@ export function UserProfileSync() {
       }
     });
 
-    // Force an initial sync on mount to ensure new fields like activeCourseIds are populated
-    syncToFirebase(useUserProfileStore.getState());
+    // We removed the forced synchronous syncToFirebase(useUserProfileStore.getState()) on mount
+    // to prevent race conditions that wiped the database.
 
     return () => unsubStore();
   }, [user, loading]);

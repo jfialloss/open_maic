@@ -114,3 +114,49 @@ Durante la sincronización de configuraciones globales (`components/global-setti
 1. **Next.js intercepta `console.error`**: En Next.js 14+ (con Turbopack), si un componente cliente usa `console.error` para registrar un fallo de fondo (como un error de `setDoc` capturado en un `.catch()`), Next.js puede capturarlo y mostrar el invasivo "Error Overlay" en entorno de desarrollo, dando la impresión de un fallo crítico (Crash) cuando en realidad era una operación controlada.
 2. **Diferencia entre `auth.token.role` y `isAdmin()`**: Las reglas de Firestore fallaban al evaluar `/system/{document=**}` porque usaban `request.auth.token.role == 'admin'`, exigiendo *Custom Claims* nativos en el token de Firebase. Sin embargo, en esta plataforma el rol del administrador está almacenado en el documento de base de datos (`users/{uid}`). La regla se corrigió para usar la función auxiliar `isAdmin()` que realiza el `get()` contra la base de datos de manera autoritativa.
 3. **Sincronización Selectiva (LOCAL_KEYS)**: Variables dinámicas o de sesión asignadas en tiempo de generación (como `selectedAgentIds` o preferencias locales de modelos `modelId`, `ttsProviderId`) NUNCA deben sincronizarse globalmente hacia todos los usuarios en la colección `system/settings`. Se expandió el arreglo `LOCAL_KEYS` para actuar como lista negra y excluir estos datos efímeros, evitando mutaciones no deseadas a nivel global.
+
+---
+
+## 8. Race Conditions de Sincronización Bidireccional (Zustand + Firestore)
+
+Un riesgo severo de pérdida de datos ocurre al implementar sincronización automática entre un gestor de estado local persistente (como Zustand con `persist` en `localStorage`) y una base de datos en la nube (Firestore) usando componentes puente o hooks como `UserProfileSync`.
+
+**El Escenario de Falla (Wipe Bug):**
+Si un usuario ingresa desde un dispositivo nuevo, su estado local estará vacío. Si el componente de sincronización ejecuta un `syncToFirebase(useStore.getState())` de forma síncrona al momento de montarse, subirá inmediatamente ese estado "vacío" a Firestore, **sobrescribiendo y borrando el progreso real en la nube** antes de que el listener asíncrono de Firebase (`onSnapshot`) logre descargar la información del servidor.
+
+**El Patrón Seguro (Hydration Flag):**
+Para evitar que el estado local en blanco destruya los datos remotos, se debe implementar una bandera de hidratación (`hasHydratedFromCloud` usando `useRef`):
+
+1. **Bloquear la Subida Inicial**: Nunca forzar un `syncToFirebase` síncrono en la inicialización (el `useEffect` de montaje).
+2. **Desbloquear al Recibir Datos**: En el callback del listener de lectura de Firestore (`onSnapshot`), sin importar si el documento existe o no (`docSnap.exists()`), se debe establecer la bandera `hasHydratedFromCloud.current = true`. Esto certifica que hemos hecho contacto con la nube y que el estado local ha sido poblado o validado.
+3. **Gatekeeper en el Listener Local**: La suscripción que escucha cambios en el estado de Zustand (`store.subscribe`) debe evaluar esta bandera antes de disparar la subida:
+   ```typescript
+   // CRITICAL FIX: Prohibido subir datos si no se ha hidratado de la nube
+   if (!hasHydratedFromCloud.current) return;
+   // ... continuar con validación de cambios (Deep Compare) y subir a Firebase
+   ```
+Este patrón garantiza que el origen de la verdad (la nube) prime sobre clientes nuevos y que las acciones locales solo se sincronicen cuando el sistema esté seguro de tener la base completa de los datos del alumno.
+
+---
+
+## 9. Sincronización Transparente de Propiedades de Firebase Auth a Firestore
+
+Para que los paneles de administración (que se renderizan en el cliente o que usan lecturas directas a Firestore) puedan acceder a propiedades nativas de Google/Firebase Auth de otros usuarios (como el `displayName` o la foto de perfil), es indispensable replicar estos datos en Firestore. El SDK cliente de Firebase Auth *solo* expone las propiedades del usuario autenticado actualmente (`auth.currentUser`), impidiendo consultar los nombres de otros usuarios sin el Admin SDK.
+
+**El Patrón de Sincronización "On-Login":**
+En el hook principal de autenticación (`useAuth`), dentro del listener `onAuthStateChanged`, se debe implementar una comprobación silenciosa que verifique si el documento del usuario en Firestore (ej. `users/{uid}`) tiene el `displayName` actualizado.
+
+1. **Lectura y Comparación**: Tras autenticar al usuario, se descarga su documento y se compara la propiedad local con `firebaseUser.displayName`.
+2. **Actualización Silenciosa (`merge: true`)**: Si las propiedades difieren (o no existen en Firestore), se ejecuta un `setDoc` silencioso fusionando el dato nuevo:
+   ```typescript
+   if (data.displayName !== firebaseUser.displayName && firebaseUser.displayName) {
+     try {
+       await setDoc(doc(db, 'users', firebaseUser.uid), {
+         displayName: firebaseUser.displayName
+       }, { merge: true });
+     } catch(e) { /* silent catch */ }
+   }
+   ```
+3. **Registro Inicial**: Al momento de crear el usuario por primera vez (Onboarding), siempre se debe inyectar el `displayName` nativo en el payload de creación del documento en Firestore.
+
+Este método descentralizado asegura que la base de datos de roles y perfiles se mantenga rica en metadatos y evita la necesidad de consultas costosas a Cloud Functions o scripts de backfill recurrentes, permitiendo al Admin Dashboard mostrar nombres y apellidos reales en lugar de tener que hacer fallbacks a la dirección de correo electrónico truncada.

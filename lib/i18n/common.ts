@@ -77,6 +77,24 @@ export const commonZhCN = {
     noRecords: '未找到 Prompt 记录。',
     loadMore: '加载更多'
   },
+  adminProgress: {
+    title: '学术进展',
+    description: '根据课程大纲按学生统计的进度指标。',
+    searchPlaceholder: '搜索学生...',
+    student: '学生',
+    gradeLevel: '年级 / 级别',
+    noStudents: '未找到学生。',
+    detailsTitle: '学术全景：',
+    englishLevel: '英语水平：',
+    currentProgress: '当前进度：',
+    na: '无',
+  },
+  adminToolbar: {
+    prompts: 'Prompt 审计',
+    library: '全局资源库',
+    sessions: '会话监控',
+    progress: '学生进度',
+  },
 } as const;
 
 export const commonEnUS = {
@@ -158,6 +176,24 @@ export const commonEnUS = {
     noRecords: 'No prompt records found.',
     loadMore: 'Load more'
   },
+  adminProgress: {
+    title: 'Academic Progress',
+    description: 'Student progress metrics based on the official syllabus.',
+    searchPlaceholder: 'Search student...',
+    student: 'Student',
+    gradeLevel: 'Grade / Level',
+    noStudents: 'No students found.',
+    detailsTitle: 'Academic Overview:',
+    englishLevel: 'English Level:',
+    currentProgress: 'Current Progress:',
+    na: 'N/A',
+  },
+  adminToolbar: {
+    prompts: 'Prompt Audit',
+    library: 'Global Library',
+    sessions: 'Session Monitoring',
+    progress: 'Student Progress',
+  },
 } as const;
 
 export const commonEsES = {
@@ -238,5 +274,23 @@ export const commonEsES = {
     blocked: 'Bloqueado',
     noRecords: 'No se encontraron registros de prompts.',
     loadMore: 'Cargar más'
+  },
+  adminProgress: {
+    title: 'Evolución Académica',
+    description: 'Métricas de progreso por estudiante en base a la malla curricular.',
+    searchPlaceholder: 'Buscar alumno...',
+    student: 'Alumno',
+    gradeLevel: 'Grado / Nivel',
+    noStudents: 'No se encontraron estudiantes.',
+    detailsTitle: 'Radiografía Académica:',
+    englishLevel: 'Nivel Inglés:',
+    currentProgress: 'En Progreso Actual:',
+    na: 'N/A',
+  },
+  adminToolbar: {
+    prompts: 'Auditoría de Prompts',
+    library: 'Biblioteca Global',
+    sessions: 'Monitoreo de Sesiones',
+    progress: 'Progreso de Alumnos',
   },
 } as const;
