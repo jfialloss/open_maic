@@ -98,7 +98,7 @@ export async function publishStageToCloud(
     for (const scene of stageData.scenes) {
       if (scene.actions) {
         for (const action of scene.actions) {
-          if (action.audioId) audioIds.add(action.audioId);
+          if ('audioId' in action && typeof action.audioId === 'string') audioIds.add(action.audioId);
         }
       }
     }

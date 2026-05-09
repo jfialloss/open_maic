@@ -42,7 +42,7 @@ export interface UserProfileState {
     name: string;
     subject: string;
     assignedAt: number;
-    status: 'pending' | 'passed';
+    status: 'pending' | 'passed' | 'failed';
   }>;
   courseAttempts: Record<string, number>;
   setAvatar: (avatar: string) => void;
