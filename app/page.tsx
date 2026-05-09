@@ -2044,10 +2044,10 @@ function ClassroomCard({
   classroom: StageListItem;
   slide?: Slide;
   formatDate: (ts: number) => string;
-  onDelete: (id: string, e: React.MouseEvent) => void;
-  confirmingDelete: boolean;
-  onConfirmDelete: () => void;
-  onCancelDelete: () => void;
+  onDelete?: (id: string, e: React.MouseEvent) => void;
+  confirmingDelete?: boolean;
+  onConfirmDelete?: () => void;
+  onCancelDelete?: () => void;
   onClick: () => void;
   isGlobal?: boolean;
   isAdmin?: boolean;

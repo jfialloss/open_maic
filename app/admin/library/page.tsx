@@ -75,7 +75,7 @@ export default function AdminLibraryPage() {
   }, [role]);
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm('¿Estás seguro de que deseas eliminar este curso de la biblioteca global?')) return;
+    if (!window.confirm(t('adminLibrary.confirmDelete'))) return;
     try {
       setDeletingId(id);
       
@@ -88,31 +88,31 @@ export default function AdminLibraryPage() {
       const activeUsersSnap = await getDocs(usersQuery);
       
       if (!activeUsersSnap.empty) {
-        toast.error('No se puede borrar: Este curso está siendo utilizado por uno o más alumnos en progreso.');
+        toast.error(t('adminLibrary.inUseError'));
         return;
       }
 
       await deleteDoc(doc(firestoreDb, 'global_classrooms', id));
       setClassrooms(prev => prev.filter(c => c._id !== id));
-      toast.success('Curso eliminado de la biblioteca global');
+      toast.success(t('adminLibrary.deleteSuccess'));
     } catch (e) {
       console.error(e);
-      toast.error('Error al eliminar el curso');
+      toast.error(t('adminLibrary.deleteError'));
     } finally {
       setDeletingId(null);
     }
   };
 
   const handleDownload = async (id: string, classroomData: any) => {
-    toast.loading('Descargando clase para continuar...', { id });
+    toast.loading(t('adminLibrary.downloading'), { id });
     try {
       const { processCloudDownload } = await import('@/lib/utils/cloud-sync');
       await processCloudDownload(id, classroomData);
-      toast.success('Clonación completa', { id });
+      toast.success(t('adminLibrary.cloneSuccess'), { id });
       router.push(`/classroom/${id}`);
     } catch (e) {
       console.error(e);
-      toast.error('Fallo al descargar curso', { id });
+      toast.error(t('adminLibrary.cloneError'), { id });
     }
   };
 
@@ -157,10 +157,10 @@ export default function AdminLibraryPage() {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-              Biblioteca Global
+              {t('adminLibrary.title')}
             </h1>
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              Explora y audita los cursos generados por la comunidad.
+              {t('adminLibrary.description')}
             </p>
           </div>
         </div>
@@ -172,7 +172,7 @@ export default function AdminLibraryPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
               <input 
                 type="text" 
-                placeholder="Buscar cursos o autores..."
+                placeholder={t('adminLibrary.searchPlaceholder')}
                 className="w-full pl-9 pr-4 py-2 text-sm bg-slate-50 dark:bg-slate-900 border-none rounded-lg outline-none focus:ring-2 focus:ring-sky-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -184,19 +184,19 @@ export default function AdminLibraryPage() {
                 onClick={() => setFilter('all')}
                 className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${filter === 'all' ? 'bg-white dark:bg-slate-800 shadow-sm text-slate-800 dark:text-slate-200' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
               >
-                Todos
+                {t('adminLibrary.filterAll')}
               </button>
               <button 
                 onClick={() => setFilter('mine')}
                 className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${filter === 'mine' ? 'bg-white dark:bg-slate-800 shadow-sm text-slate-800 dark:text-slate-200' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
               >
-                Míos
+                {t('adminLibrary.filterMine')}
               </button>
               <button 
                 onClick={() => setFilter('community')}
                 className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${filter === 'community' ? 'bg-white dark:bg-slate-800 shadow-sm text-slate-800 dark:text-slate-200' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}
               >
-                De la Comunidad
+                {t('adminLibrary.filterCommunity')}
               </button>
             </div>
           </div>
@@ -206,11 +206,11 @@ export default function AdminLibraryPage() {
             <table className="w-full text-sm text-left">
               <thead className="text-xs text-slate-500 bg-slate-50/50 dark:bg-slate-900/50 dark:text-slate-400 uppercase">
                 <tr>
-                  <th className="px-6 py-4 font-medium">Fecha</th>
-                  <th className="px-6 py-4 font-medium">Autor</th>
-                  <th className="px-6 py-4 font-medium">Curso</th>
-                  <th className="px-6 py-4 font-medium">Materia</th>
-                  <th className="px-6 py-4 font-medium text-right">Acciones</th>
+                  <th className="px-6 py-4 font-medium">{t('adminLibrary.date')}</th>
+                  <th className="px-6 py-4 font-medium">{t('adminLibrary.author')}</th>
+                  <th className="px-6 py-4 font-medium">{t('adminLibrary.course')}</th>
+                  <th className="px-6 py-4 font-medium">{t('adminLibrary.subject')}</th>
+                  <th className="px-6 py-4 font-medium text-right">{t('adminLibrary.actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
@@ -220,19 +220,19 @@ export default function AdminLibraryPage() {
                       {gc.createdAtTime ? new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(gc.createdAtTime)) : 'N/A'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap font-medium text-slate-700 dark:text-slate-300 flex items-center gap-2">
-                      {gc.authorNickname || 'Unknown'}
+                      {gc.authorNickname || t('adminLibrary.unknown')}
                     </td>
                     <td className="px-6 py-4">
                       <div className="font-semibold text-slate-800 dark:text-slate-200 line-clamp-1" title={gc.stage?.name}>
-                        {gc.stage?.name || 'Untitled'}
+                        {gc.stage?.name || t('adminLibrary.untitled')}
                       </div>
                       <div className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-1">
-                        <LayoutTemplate className="size-3" /> {gc.scenes?.length || 0} diapositivas
+                        <LayoutTemplate className="size-3" /> {gc.scenes?.length || 0} {t('adminLibrary.slides')}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="inline-flex items-center rounded-sm bg-indigo-100 dark:bg-indigo-900/40 px-2 py-0.5 text-xs font-semibold text-indigo-700 dark:text-indigo-400">
-                        {gc.subject === 'none' || !gc.subject ? 'Libre' : gc.subject}
+                        {gc.subject === 'none' || !gc.subject ? t('adminLibrary.free') : gc.subject}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right">
@@ -240,7 +240,7 @@ export default function AdminLibraryPage() {
                         <button
                           onClick={() => handleDownload(gc._id, gc)}
                           className="p-1.5 rounded-md bg-sky-50 text-sky-600 hover:bg-sky-100 dark:bg-sky-900/20 dark:text-sky-400 dark:hover:bg-sky-900/40 transition-colors"
-                          title="Clonar a mis cursos"
+                          title={t('adminLibrary.cloneTitle')}
                         >
                           <DownloadCloud className="size-4" />
                         </button>

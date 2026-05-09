@@ -7,6 +7,7 @@ import { Loader2, ArrowLeft, Search, Users, ClipboardList, CheckCircle2, Clock, 
 import { collection, query, getDocs, doc, getDoc, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/lib/hooks/use-auth';
+import { useI18n } from '@/lib/hooks/use-i18n';
 
 interface AssignedCourseData {
   stageId: string;
@@ -21,6 +22,7 @@ interface AssignedCourseData {
 
 export default function AdminAssignmentsPage() {
   const { role, loading: authLoading } = useAuth();
+  const { t } = useI18n();
   const router = useRouter();
   
   const [assignments, setAssignments] = useState<AssignedCourseData[]>([]);
@@ -102,7 +104,7 @@ export default function AdminAssignmentsPage() {
           className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors mb-6 group"
         >
           <ArrowLeft className="size-4 group-hover:-translate-x-1 transition-transform" />
-          Volver a la plataforma
+          {t('common.backToHome')}
         </button>
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
@@ -112,10 +114,10 @@ export default function AdminAssignmentsPage() {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-                Control de Asignaciones
+                {t('adminAssignments.title')}
               </h1>
               <p className="text-sm text-slate-500 dark:text-slate-400">
-                Monitorea los cursos enviados a tus estudiantes
+                {t('adminAssignments.description')}
               </p>
             </div>
           </div>
@@ -124,7 +126,7 @@ export default function AdminAssignmentsPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
             <input
               type="text"
-              placeholder="Buscar alumno o curso..."
+              placeholder={t('adminAssignments.searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full md:w-64 pl-10 pr-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-shadow dark:text-slate-200"
@@ -153,12 +155,12 @@ export default function AdminAssignmentsPage() {
             >
               <FileSearch className="size-16 text-slate-300 dark:text-slate-700 mb-4" />
               <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300">
-                {searchQuery ? "No se encontraron resultados" : "No hay asignaciones activas"}
+                {searchQuery ? t('adminAssignments.noResults') : t('adminAssignments.noAssignments')}
               </h3>
               <p className="text-sm text-slate-500 text-center max-w-sm mt-2">
                 {searchQuery 
-                  ? "Intenta con otro término de búsqueda." 
-                  : "Los cursos que asignes a los estudiantes aparecerán aquí."}
+                  ? t('adminAssignments.searchHint') 
+                  : t('adminAssignments.emptyHint')}
               </p>
             </motion.div>
           ) : (
@@ -173,10 +175,10 @@ export default function AdminAssignmentsPage() {
                 <table className="w-full text-left text-sm">
                   <thead className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400">
                     <tr>
-                      <th className="px-6 py-4 font-semibold">Estudiante</th>
-                      <th className="px-6 py-4 font-semibold">Curso Asignado</th>
-                      <th className="px-6 py-4 font-semibold text-center">Fecha</th>
-                      <th className="px-6 py-4 font-semibold text-center">Estado</th>
+                      <th className="px-6 py-4 font-semibold">{t('adminAssignments.student')}</th>
+                      <th className="px-6 py-4 font-semibold">{t('adminAssignments.course')}</th>
+                      <th className="px-6 py-4 font-semibold text-center">{t('adminAssignments.date')}</th>
+                      <th className="px-6 py-4 font-semibold text-center">{t('adminAssignments.status')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
@@ -216,15 +218,15 @@ export default function AdminAssignmentsPage() {
                           <div className="flex justify-center">
                             {ac.status === 'passed' ? (
                               <span className="px-3 py-1 text-xs font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 rounded-full flex items-center gap-1.5 border border-emerald-200 dark:border-emerald-800/50">
-                                <CheckCircle2 className="size-3.5" /> Aprobado
+                                <CheckCircle2 className="size-3.5" /> {t('adminAssignments.passed')}
                               </span>
                             ) : ac.status === 'failed' ? (
                               <span className="px-3 py-1 text-xs font-bold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded-full flex items-center gap-1.5 border border-red-200 dark:border-red-800/50">
-                                <XCircle className="size-3.5" /> Reprobado
+                                <XCircle className="size-3.5" /> {t('adminAssignments.failed')}
                               </span>
                             ) : (
                               <span className="px-3 py-1 text-xs font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 rounded-full flex items-center gap-1.5 border border-amber-200 dark:border-amber-800/50">
-                                <Clock className="size-3.5" /> Pendiente
+                                <Clock className="size-3.5" /> {t('adminAssignments.pending')}
                               </span>
                             )}
                           </div>
