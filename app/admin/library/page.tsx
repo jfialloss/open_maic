@@ -23,7 +23,7 @@ export default function AdminLibraryPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!authLoading && role !== 'admin') {
+    if (!authLoading && role !== 'admin' && role !== 'tutor') {
       router.push('/');
     }
   }, [role, authLoading, router]);
@@ -69,7 +69,7 @@ export default function AdminLibraryPage() {
   };
 
   useEffect(() => {
-    if (role === 'admin') {
+    if (role === 'admin' || role === 'tutor') {
       fetchClassrooms();
     }
   }, [role]);
@@ -116,7 +116,7 @@ export default function AdminLibraryPage() {
     }
   };
 
-  if (authLoading || role !== 'admin') {
+  if (authLoading || (role !== 'admin' && role !== 'tutor')) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
         <Loader2 className="size-8 animate-spin text-sky-500" />

@@ -19,6 +19,7 @@ export interface StageStoreData {
   scenes: Scene[];
   currentSceneId: string | null;
   chats: ChatSession[];
+  agents?: import('./database').GeneratedAgentRecord[];
 }
 
 export interface StageListItem {
@@ -78,6 +79,12 @@ export async function saveStageData(stageId: string, data: StageStoreData): Prom
       await saveChatSessions(stageId, data.chats);
     }
 
+    // Save generated agents
+    if (data.agents && data.agents.length > 0) {
+      await db.generatedAgents.where('stageId').equals(stageId).delete();
+      await db.generatedAgents.bulkPut(data.agents);
+    }
+
     log.info(`Saved stage: ${stageId}`);
   } catch (error) {
     log.error('Failed to save stage:', error);
@@ -103,13 +110,17 @@ export async function loadStageData(stageId: string): Promise<StageStoreData | n
     // Load chat sessions from independent table
     const chats = await loadChatSessions(stageId);
 
-    log.info(`Loaded stage: ${stageId}, scenes: ${scenes.length}, chats: ${chats.length}`);
+    // Load agents
+    const agents = await db.generatedAgents.where('stageId').equals(stageId).toArray();
+
+    log.info(`Loaded stage: ${stageId}, scenes: ${scenes.length}, chats: ${chats.length}, agents: ${agents.length}`);
 
     return {
       stage,
       scenes,
       currentSceneId: stage.currentSceneId || scenes[0]?.id || null,
       chats,
+      agents,
     };
   } catch (error) {
     log.error('Failed to load stage:', error);

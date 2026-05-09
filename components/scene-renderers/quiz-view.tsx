@@ -599,11 +599,13 @@ function ScoreBanner({
   total,
   results,
   courseAttempts,
+  isAssigned,
 }: {
   score: number;
   total: number;
   results: QuestionResult[];
   courseAttempts: number;
+  isAssigned?: boolean;
 }) {
   const { t } = useI18n();
   const pct = total > 0 ? Math.round((score / total) * 100) : 0;
@@ -656,14 +658,19 @@ function ScoreBanner({
           </div>
           
           {/* Strict Mastery Feedback */}
-          {pct >= 80 && courseAttempts > 1 && (
+          {pct >= 80 && courseAttempts > 1 && !isAssigned && (
             <div className="mt-3 text-xs bg-white/20 p-2 rounded-lg leading-relaxed">
-              <strong>Nota:</strong> Has aprobado la prueba, pero al ser tu intento #{courseAttempts}, este tema no se registrará como Superado en tu currículo oficial.
+              <strong>{t('quiz.analysis').replace('：', '').replace(': ', '')}:</strong> {t('quiz.passedNoRecord').replace('{attempts}', courseAttempts.toString())}
             </div>
           )}
-          {pct < 80 && courseAttempts === 1 && (
+          {pct < 80 && courseAttempts === 1 && !isAssigned && (
             <div className="mt-3 text-xs bg-white/20 p-2 rounded-lg leading-relaxed">
-              <strong>Nota:</strong> Puedes volver a intentarlo para repasar, pero para marcar el tema como Superado deberás generar un nuevo curso y aprobarlo a la primera.
+              <strong>{t('quiz.analysis').replace('：', '').replace(': ', '')}:</strong> {t('quiz.failedRetryNote')}
+            </div>
+          )}
+          {isAssigned && (
+            <div className="mt-3 text-xs bg-white/20 p-2 rounded-lg leading-relaxed">
+              {t('quiz.assignedDefinitive')}
             </div>
           )}
         </div>
@@ -799,10 +806,18 @@ export function QuizView({ questions, sceneId }: QuizViewProps) {
       
       const userStore = useUserProfileStore.getState();
       const currentAttempts = userStore.courseAttempts[sceneId] || 0;
+      const isAssigned = !!(userStore.assignedCourses && actualStageId && userStore.assignedCourses[actualStageId]);
       
       if (total > 0 && earned / total >= 0.8) {
         if (actualStageId) {
           userStore.addPassedCourse(actualStageId);
+        }
+        if (isAssigned && actualStageId) {
+          const currentStatus = userStore.assignedCourses[actualStageId]?.status;
+          // Sólo se aprueba si es el primer intento O si todavía estaba pendiente (fallback)
+          if (currentAttempts === 0 && currentStatus !== 'failed') {
+            userStore.updateAssignedCourseStatus(actualStageId, 'passed');
+          }
         }
         if (currentAttempts === 0) { // Only award on FIRST attempt
           if (stageTopic && stageTopic !== 'LIBRE') {
@@ -828,6 +843,14 @@ export function QuizView({ questions, sceneId }: QuizViewProps) {
             if (matchedTopic) {
               userStore.addMasteredTopic(matchedTopic);
             }
+          }
+        }
+      } else {
+        // Failed the test
+        if (isAssigned && actualStageId) {
+          const currentStatus = userStore.assignedCourses[actualStageId]?.status;
+          if (currentStatus !== 'passed') {
+            userStore.updateAssignedCourseStatus(actualStageId, 'failed');
           }
         }
       }
@@ -1010,23 +1033,26 @@ export function QuizView({ questions, sceneId }: QuizViewProps) {
                   {t('quiz.quizReport')}
                 </span>
               </div>
-              <button
-                onClick={handleRetry}
-                className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                {t('quiz.retry')}
-              </button>
+              {!(useUserProfileStore.getState().assignedCourses && useStageStore.getState().stage?.id && useUserProfileStore.getState().assignedCourses![useStageStore.getState().stage!.id]) && (
+                <button
+                  onClick={handleRetry}
+                  className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  {t('quiz.retry')}
+                </button>
+              )}
             </div>
 
             {/* Results */}
             <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
               <ScoreBanner 
-              score={earnedScore} 
-              total={totalPoints} 
-              results={results} 
-              courseAttempts={useUserProfileStore.getState().courseAttempts[sceneId] || 1}
-            />
+                score={earnedScore} 
+                total={totalPoints} 
+                results={results} 
+                courseAttempts={useUserProfileStore.getState().courseAttempts[sceneId] || 1}
+                isAssigned={!!(useUserProfileStore.getState().assignedCourses && useStageStore.getState().stage?.id && useUserProfileStore.getState().assignedCourses![useStageStore.getState().stage!.id])}
+              />
 
               {questions.map((q, i) => {
                 const r = resultMap[q.id];

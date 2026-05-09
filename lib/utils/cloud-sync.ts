@@ -16,6 +16,7 @@ export interface CloudClassroom extends Partial<StageStoreData> {
   subject: string;
   createdAtTime: number;
   status?: 'building' | 'completed';
+  audioUrlMap?: Record<string, string>;
 }
 
 export async function publishStageToCloud(
@@ -49,6 +50,11 @@ export async function publishStageToCloud(
       await Promise.all(
         batch.map(async (record) => {
           try {
+            if (!record.blob || record.blob.size === 0) {
+              log.info(`Skipping media ${record.id} because it has an empty blob (failed generation task).`);
+              return;
+            }
+
             const elementId = record.id.includes(':') ? record.id.split(':').slice(1).join(':') : record.id;
             log.info(`Uploading media ${elementId} (${record.blob.size} bytes)...`);
             
@@ -87,6 +93,51 @@ export async function publishStageToCloud(
       }
     }
 
+    // 1.5 Traverse and upload AudioFiles
+    const audioIds = new Set<string>();
+    for (const scene of stageData.scenes) {
+      if (scene.actions) {
+        for (const action of scene.actions) {
+          if (action.audioId) audioIds.add(action.audioId);
+        }
+      }
+    }
+
+    const audioUrlMap: Record<string, string> = {};
+    const audioRecordsToUpload = [];
+
+    for (const aid of audioIds) {
+      const rec = await dexieDb.audioFiles.get(aid);
+      if (rec && rec.blob) {
+        if (rec.ossKey) {
+          audioUrlMap[aid] = rec.ossKey;
+        } else {
+          audioRecordsToUpload.push(rec);
+        }
+      }
+    }
+
+    const AUDIO_BATCH = 3;
+    for (let i = 0; i < audioRecordsToUpload.length; i += AUDIO_BATCH) {
+      const batch = audioRecordsToUpload.slice(i, i + AUDIO_BATCH);
+      await Promise.all(
+        batch.map(async (record) => {
+          try {
+            log.info(`Uploading audio ${record.id}...`);
+            const storageRef = ref(firebaseStorage, `courses_audio/${stageId}/${record.id}`);
+            const uploadTask = uploadBytes(storageRef, record.blob);
+            const timeoutTask = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout audio")), 20000));
+            await Promise.race([uploadTask, timeoutTask]);
+            const url = await getDownloadURL(storageRef);
+            audioUrlMap[record.id] = url;
+            await dexieDb.audioFiles.update(record.id, { ossKey: url });
+          } catch (e) {
+            log.error(`Failed to upload audio ${record.id}:`, e);
+          }
+        })
+      );
+    }
+
     // 2. Wrap and send to Firestore
     const cloudClassroom: CloudClassroom = {
       ...stageData,
@@ -95,6 +146,7 @@ export async function publishStageToCloud(
       subject: subject,
       createdAtTime: Date.now(),
       status: 'completed',
+      audioUrlMap,
     };
 
     // Use stageId as document ID
@@ -165,10 +217,49 @@ export async function processCloudDownload(stageId: string, cloudData: CloudClas
     scenes: cloudData.scenes || [],
     currentSceneId: cloudData.currentSceneId || '',
     chats: cloudData.chats || [],
+    agents: cloudData.agents || [],
   });
+
+  if (cloudData.audioUrlMap) {
+     const audioStubs = Object.entries(cloudData.audioUrlMap).map(([audioId, url]) => ({
+        id: audioId,
+        blob: new Blob([]), // Dummy blob
+        format: 'audio/mp3',
+        createdAt: Date.now(),
+        ossKey: url
+     }));
+     const { db: dexieDb } = await import('./database');
+     await dexieDb.audioFiles.bulkPut(audioStubs);
+  }
 }
 
-export async function findSimilarGlobalClassroom(subject: string, requirement: string): Promise<CloudClassroom | null> {
+const STOP_WORDS = new Set([
+  // Español
+  'el', 'la', 'los', 'las', 'un', 'una', 'unos', 'unas', 'lo', 'al', 'del',
+  'a', 'ante', 'bajo', 'cabe', 'con', 'contra', 'de', 'desde', 'durante', 'en', 
+  'entre', 'hacia', 'hasta', 'mediante', 'para', 'por', 'segun', 'sin', 'so', 
+  'sobre', 'tras', 'versus', 'via',
+  'y', 'e', 'ni', 'o', 'u', 'ya', 'bien', 'sea', 'pero', 'mas', 'sino', 'aunque',
+  'porque', 'pues', 'como', 'si', 'que',
+  'curso', 'clase', 'tema', 'leccion', 'unidad', 'alumnos', 'niños', 'estudiantes',
+  'quiero', 'necesito', 'hazme', 'crea', 'generame', 'generar', 'crear', 'hacer',
+  'interactivo', 'dinamico', 'divertido', 'basico', 'avanzado', 'introduccion',
+  // English
+  'the', 'a', 'an', 'and', 'or', 'but', 'is', 'are', 'was', 'were', 'to', 'of', 
+  'for', 'with', 'on', 'in', 'at', 'by', 'about', 'from', 'into', 'through',
+  'course', 'class', 'lesson', 'unit', 'topic', 'student', 'students', 'kids', 
+  'children', 'generate', 'create', 'make', 'want', 'need', 'interactive',
+  'dynamic', 'fun', 'basic', 'advanced', 'introduction', 'please', 'can', 'you'
+]);
+
+function tokenizeAndFilter(text: string): string[] {
+  // Remover puntuacion y acentos, pasar a minuscula
+  const normalized = text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s]/g, ' ');
+  const tokens = normalized.split(/\s+/).filter(t => t.length > 2);
+  return tokens.filter(t => !STOP_WORDS.has(t));
+}
+
+export async function findSimilarGlobalClassroom(subject: string, requirement: string, topic: string = 'LIBRE'): Promise<CloudClassroom | null> {
   // Fetch recent classrooms from this subject
   const q = query(
     collection(firestoreDb, 'global_classrooms'),
@@ -177,19 +268,46 @@ export async function findSimilarGlobalClassroom(subject: string, requirement: s
   );
   const snap = await getDocs(q);
   
-  const reqLower = requirement.toLowerCase();
+  const reqTokens = new Set(tokenizeAndFilter(requirement));
 
   for (const docSnap of snap.docs) {
     const data = docSnap.data() as CloudClassroom;
-    const stageNameLower = (data.stage?.name || '').toLowerCase();
     
-    // Primitive String Overlap (Anti-duplication)
-    // If the stage name contains key exact phrases from the requirement
-    if (stageNameLower.length > 5 && reqLower.includes(stageNameLower)) {
+    // 1. Curricular Approach (Enfoque guiado por bloque/tema)
+    if (topic !== 'LIBRE' && topic !== 'none') {
+       // Si tienen el mismo topic oficial del curriculo, es una coincidencia fuerte
+       if (data.stage?.topic === topic) {
+          return data;
+       }
+       // Como es un curso estructurado, no usamos flexibilidad semántica. Exigimos exactitud.
+       continue;
+    }
+
+    // 2. Free Approach (Similitud de Tokens - Jaccard / Overlap) solo para cursos Libres
+    const stageName = data.stage?.name || '';
+    const nameTokens = tokenizeAndFilter(stageName);
+    
+    if (nameTokens.length === 0) continue;
+
+    let matchCount = 0;
+    for (const token of nameTokens) {
+      if (reqTokens.has(token)) {
+        matchCount++;
+      }
+    }
+
+    // Calcular el porcentaje de las palabras clave del titulo del curso que estan en el requerimiento del usuario
+    const overlapPercentage = matchCount / nameTokens.length;
+
+    // Si al menos un 50% de las palabras clave del titulo coinciden, lo consideramos similar
+    if (overlapPercentage >= 0.5) {
       return data;
     }
-    // O viceversa
-    if (reqLower.length > 5 && stageNameLower.includes(reqLower)) {
+    
+    // Backup: Primitive Overlap fallback por si el usuario escribe muy poco
+    const reqLower = requirement.toLowerCase();
+    const stageNameLower = stageName.toLowerCase();
+    if (stageNameLower.length > 5 && reqLower.includes(stageNameLower)) {
       return data;
     }
   }

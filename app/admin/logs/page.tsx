@@ -34,7 +34,7 @@ export default function AdminLogsPage() {
   const [statusFilter, setStatusFilter] = useState<'all' | 'safe' | 'blocked'>('all');
 
   useEffect(() => {
-    if (!authLoading && role !== 'admin') {
+    if (!authLoading && role !== 'admin' && role !== 'tutor') {
       router.push('/');
     }
   }, [role, authLoading, router]);
@@ -88,12 +88,12 @@ export default function AdminLogsPage() {
   };
 
   useEffect(() => {
-    if (role === 'admin') {
+    if (role === 'admin' || role === 'tutor') {
       fetchLogs();
     }
   }, [role]);
 
-  if (authLoading || role !== 'admin') {
+  if (authLoading || (role !== 'admin' && role !== 'tutor')) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
         <Loader2 className="size-8 animate-spin text-sky-500" />

@@ -91,6 +91,7 @@ Requirements:
 - Exactly 1 agent must have role "teacher", the rest can be "assistant" or "student"
 - Priority values: teacher=10 (highest), assistant=7, student=4-6
 - Each agent needs: name, role, persona (2-3 sentences describing personality and teaching/learning style)
+- For the "teacher" role, use a generic name like "Profesor" (or "Teacher" in English) without any personal name, and explicitly state in their persona that they NEVER introduce themselves by name.
 - Names and personas must be in language: ${language}
 - Each agent must be assigned one avatar from this list: ${JSON.stringify(availableAvatars)}
   - CRITICAL: Avatars ending in "-2.png" (e.g. teacher-2.png) are FEMALE. Avatars without "-2.png" (e.g. teacher.png) are MALE. Match the avatar strictly to the agent's gender!

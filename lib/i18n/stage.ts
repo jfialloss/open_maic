@@ -56,6 +56,9 @@ export const stageZhCN = {
     aiGradingWait: '请稍候，正在分析你的答案',
     quizReport: '答题报告',
     retry: '重新答题',
+    assignedDefinitive: '分配：此课程由你的导师发送。本次成绩为最终成绩。',
+    passedNoRecord: '注意：您已通过测验，但由于这是您的第 {attempts} 次尝试，此主题将不会被记录为官方通过。',
+    failedRetryNote: '注意：你可以重新尝试以复习，但要将主题标记为通过，你需要生成一个新课程并在第一次尝试时通过。',
   },
   roundtable: {
     teacher: '教师',
@@ -202,6 +205,9 @@ export const stageEnUS = {
     aiGradingWait: 'Please wait, analyzing your answers',
     quizReport: 'Quiz Report',
     retry: 'Retry',
+    assignedDefinitive: 'Assignment: This course was sent by your tutor. Your score on this attempt is definitive.',
+    passedNoRecord: 'Note: You passed the quiz, but since this is your attempt #{attempts}, this topic will not be recorded as Mastered in your official curriculum.',
+    failedRetryNote: 'Note: You can try again to review, but to mark the topic as Mastered you must generate a new course and pass it on the first try.',
   },
   roundtable: {
     teacher: 'TEACHER',
@@ -349,6 +355,9 @@ export const stageEsES = {
     aiGradingWait: 'Por favor espera, analizando tus respuestas',
     quizReport: 'Reporte del cuestionario',
     retry: 'Reintentar',
+    assignedDefinitive: 'Asignación: Este curso fue enviado por tu tutor. Tu calificación en este intento es definitiva.',
+    passedNoRecord: 'Nota: Has aprobado la prueba, pero al ser tu intento #{attempts}, este tema no se registrará como Superado en tu currículo oficial.',
+    failedRetryNote: 'Nota: Puedes volver a intentarlo para repasar, pero para marcar el tema como Superado deberás generar un nuevo curso y aprobarlo a la primera.',
   },
   roundtable: {
     teacher: 'PROFESOR',

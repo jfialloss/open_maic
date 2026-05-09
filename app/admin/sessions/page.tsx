@@ -40,7 +40,7 @@ export default function AdminSessionsPage() {
   });
 
   useEffect(() => {
-    if (!authLoading && role !== 'admin') {
+    if (!authLoading && role !== 'admin' && role !== 'tutor') {
       router.push('/');
     }
   }, [role, authLoading, router]);
@@ -107,13 +107,13 @@ export default function AdminSessionsPage() {
   };
 
   useEffect(() => {
-    if (role === 'admin') {
+    if (role === 'admin' || role === 'tutor') {
       setLastDoc(null);
       fetchSessions(false);
     }
   }, [role, startDate, endDate]);
 
-  if (authLoading || role !== 'admin') {
+  if (authLoading || (role !== 'admin' && role !== 'tutor')) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
         <Loader2 className="size-8 animate-spin text-sky-500" />

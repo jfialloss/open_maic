@@ -180,6 +180,8 @@ export default function ClassroomDetailPage() {
             .then(async ({ publishStageToCloud }) => {
               const user = auth.currentUser;
               if (user) {
+                // Force flush any debounced state to IndexedDB before reading it for cloud upload
+                await useStageStore.getState().saveToStorage();
                 await publishStageToCloud(
                   classroomId, 
                   user.uid, 

@@ -127,12 +127,13 @@ async function pollOperation(
   model: string,
   operationName: string,
 ): Promise<VeoOperation> {
-  const url = `${baseUrl}/v1beta/models/${model}:fetchPredictOperation`;
+  // Google API Standard LRO Polling
+  const opPath = operationName.startsWith('operations/') ? operationName : `operations/${operationName}`;
+  const url = `${baseUrl}/v1beta/${opPath}`;
 
   const response = await fetch(url, {
-    method: 'POST',
+    method: 'GET',
     headers: apiHeaders(apiKey),
-    body: JSON.stringify({ operationName }),
   });
 
   if (!response.ok) {

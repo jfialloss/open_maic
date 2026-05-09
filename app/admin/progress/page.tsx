@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
-import { Loader2, ArrowLeft, TrendingUp, Search, User, X, CheckCircle2, Clock, FileSearch } from 'lucide-react';
+import { Loader2, ArrowLeft, TrendingUp, Search, User, Users, X, CheckCircle2, Clock, FileSearch } from 'lucide-react';
 import { collection, query, getDocs, doc, getDoc, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/lib/hooks/use-auth';
@@ -46,6 +46,7 @@ interface StudentProfile {
   englishLevel: string;
   masteredTopics: string[];
   subjectsProgress: Record<string, SubjectProgress>;
+  assignedCourses: any;
 }
 
 function getSublevelFromGrade(grade: string): string | null {
@@ -105,14 +106,14 @@ export default function AdminProgressPage() {
   const [selectedStudent, setSelectedStudent] = useState<StudentProfile | null>(null);
 
   useEffect(() => {
-    if (!authLoading && role !== 'admin') {
+    if (!authLoading && role !== 'admin' && role !== 'tutor') {
       router.push('/');
     }
   }, [role, authLoading, router]);
 
   useEffect(() => {
     const fetchProgress = async () => {
-      if (role !== 'admin') return;
+      if (role !== 'admin' && role !== 'tutor') return;
       try {
         setLoading(true);
         const usersQ = query(collection(db, 'users'), where('role', '==', 'student'));
@@ -130,6 +131,7 @@ export default function AdminProgressPage() {
             const masteredTopics = profileData.masteredTopics || [];
             const grade = profileData.grade || 'Sin Asignar';
             const englishLevel = profileData.englishLevel || 'A1';
+            const assignedCourses = profileData.assignedCourses || {};
             
             const sublevel = getSublevelFromGrade(grade);
             const subjectsProgress: Record<string, SubjectProgress> = {};
@@ -153,7 +155,8 @@ export default function AdminProgressPage() {
               grade,
               englishLevel,
               masteredTopics,
-              subjectsProgress
+              subjectsProgress,
+              assignedCourses
             });
           }
         }
@@ -173,7 +176,7 @@ export default function AdminProgressPage() {
     }
   }, [authLoading, role]);
 
-  if (authLoading || role !== 'admin') {
+  if (authLoading || (role !== 'admin' && role !== 'tutor')) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
         <Loader2 className="size-8 animate-spin text-sky-500" />
@@ -405,6 +408,7 @@ export default function AdminProgressPage() {
                       </div>
                     );
                   })}
+
                 </div>
               </div>
             </motion.div>

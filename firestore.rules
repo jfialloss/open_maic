@@ -2,14 +2,32 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    
+    // Obtener rol de forma segura
+    function getRole() {
+      return exists(/databases/$(database)/documents/users/$(request.auth.uid)) 
+        ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role 
+        : 'none';
+    }
+
+    // Función de validación de admin global
+    function isAdmin() {
+      return request.auth != null && getRole() == 'admin';
+    }
+
+    // Función de validación de staff (admin o tutor)
+    function isStaff() {
+      return request.auth != null && (getRole() == 'admin' || getRole() == 'tutor');
+    }
+
     // Perfil de Usuario y Progreso (Solo el dueño puede leer y escribir, incluyendo subcolecciones)
     match /users/{userId} {
-      allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
-      allow write: if request.auth != null && request.auth.uid == userId;
+      allow read: if request.auth != null && (request.auth.uid == userId || isStaff());
+      allow write: if request.auth != null && (request.auth.uid == userId || isStaff());
       
       match /{document=**} {
-        allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
-        allow write: if request.auth != null && request.auth.uid == userId;
+        allow read: if request.auth != null && (request.auth.uid == userId || isStaff());
+        allow write: if request.auth != null && (request.auth.uid == userId || isStaff());
       }
     }
 
@@ -25,8 +43,6 @@ service cloud.firestore {
       allow read: if request.auth != null;
       
       // Solo administradores o el creador del curso pueden escribir o borrar
-      // NOTA: Para producción idealmente verificar un custom claim `request.auth.token.role == 'admin'`
-      // O verificar que el uid del usuario sea el creador `request.resource.data.createdBy == request.auth.uid`
       allow create, update: if request.auth != null && (
         request.auth.uid == request.resource.data.createdBy || 
         isAdmin()
@@ -38,16 +54,9 @@ service cloud.firestore {
       );
     }
 
-    // Función de validación de admin global
-    function isAdmin() {
-      return request.auth != null && 
-             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
-    }
-
     // Auditoría de Prompts
     match /prompt_logs/{document=**} {
-      allow read: if isAdmin();
+      allow read: if isStaff();
       allow write: if false; // Solo el backend (Admin SDK) escribe aquí
     }
 
@@ -56,9 +65,9 @@ service cloud.firestore {
       // El dueño de la sesión puede crearla y actualizarla
       allow create, update: if request.auth != null && request.auth.uid == request.resource.data.uid;
       
-      // Solo el dueño o los administradores pueden leer las sesiones
+      // Solo el dueño o el staff pueden leer las sesiones
       allow read: if request.auth != null && (
-        isAdmin() || request.auth.uid == resource.data.uid
+        isStaff() || request.auth.uid == resource.data.uid
       );
     }
 

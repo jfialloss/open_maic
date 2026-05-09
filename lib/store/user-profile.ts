@@ -37,6 +37,13 @@ export interface UserProfileState {
     actionIndex: number;
     lastPlayedAt: number;
   }>;
+  assignedCourses: Record<string, {
+    stageId: string;
+    name: string;
+    subject: string;
+    assignedAt: number;
+    status: 'pending' | 'passed';
+  }>;
   courseAttempts: Record<string, number>;
   setAvatar: (avatar: string) => void;
   setNickname: (nickname: string) => void;
@@ -48,6 +55,8 @@ export interface UserProfileState {
   incrementCourseAttempt: (stageId: string) => void;
   updateActiveCourse: (stageId: string, data: any) => void;
   removeActiveCourse: (stageId: string) => void;
+  setAssignedCourses: (courses: Record<string, any>) => void;
+  updateAssignedCourseStatus: (stageId: string, status: 'pending' | 'passed' | 'failed') => void;
 }
 
 export const useUserProfileStore = create<UserProfileState>()(
@@ -61,6 +70,7 @@ export const useUserProfileStore = create<UserProfileState>()(
       masteredTopics: [],
       passedCourses: [],
       activeCourses: {},
+      assignedCourses: {},
       courseAttempts: {},
       setAvatar: (avatar) => set({ avatar }),
       setNickname: (nickname) => set({ nickname }),
@@ -74,8 +84,16 @@ export const useUserProfileStore = create<UserProfileState>()(
         }
       })),
       addPassedCourse: (stageId) => set((state) => {
-        if (state.passedCourses?.includes(stageId)) return state;
-        return { passedCourses: [...(state.passedCourses || []), stageId] };
+        const newPassed = state.passedCourses?.includes(stageId) 
+          ? state.passedCourses 
+          : [...(state.passedCourses || []), stageId];
+          
+        let newAssigned = { ...state.assignedCourses };
+        if (newAssigned[stageId]) {
+          newAssigned[stageId] = { ...newAssigned[stageId], status: 'passed' };
+        }
+
+        return { passedCourses: newPassed, assignedCourses: newAssigned };
       }),
       addMasteredTopic: (topic) => set((state) => {
         if (state.masteredTopics.includes(topic)) return state;
@@ -129,6 +147,19 @@ export const useUserProfileStore = create<UserProfileState>()(
         const newCourses = { ...state.activeCourses };
         delete newCourses[stageId];
         return { activeCourses: newCourses };
+      }),
+      setAssignedCourses: (courses) => set({ assignedCourses: courses }),
+      updateAssignedCourseStatus: (stageId, status) => set((state) => {
+        if (!state.assignedCourses || !state.assignedCourses[stageId]) return state;
+        return {
+          assignedCourses: {
+            ...state.assignedCourses,
+            [stageId]: {
+              ...state.assignedCourses[stageId],
+              status
+            }
+          }
+        };
       }),
     }),
     {

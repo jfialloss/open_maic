@@ -43,6 +43,7 @@ export default function OnboardingPage() {
         role: selectedRole,
         email: user.email,
         displayName: user.displayName,
+        grade: '5º Grado de EGB', // Grado predeterminado para sincronización temprana
         createdAt: serverTimestamp()
       });
       toast.success('¡Perfil configurado con éxito!');

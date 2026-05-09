@@ -18,7 +18,8 @@ const ALLOWED_DOMAINS = [
 ];
 
 const ALLOWED_EMAILS = [
-  'spearhead.ec@gmail.com'
+  'spearhead.ec@gmail.com',
+  'tiendasfamilia2021@gmail.com'
 ];
 
 export default function LoginPage() {

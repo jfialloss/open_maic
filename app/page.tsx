@@ -29,9 +29,13 @@ import {
   Lock,
   ShieldAlert,
   ShieldCheck,
+  BookOpen,
+  ArrowRight,
   Users,
   Library,
   TrendingUp,
+  Play,
+  ClipboardList
 } from 'lucide-react';
 import { signOut } from 'firebase/auth';
 import { useAuth } from '@/lib/hooks/use-auth';
@@ -151,6 +155,7 @@ function HomePage() {
   const masteredTopics = useUserProfileStore((s) => s.masteredTopics);
   const passedCourses = useUserProfileStore((s) => s.passedCourses) || [];
   const activeCourses = useUserProfileStore((s) => s.activeCourses);
+  const assignedCourses = useUserProfileStore((s) => s.assignedCourses);
   const removeActiveCourse = useUserProfileStore((s) => s.removeActiveCourse);
   const globalGrade = useUserProfileStore((s) => s.grade);
   const globalEnglishLevel = useUserProfileStore((s) => s.englishLevel);
@@ -204,7 +209,7 @@ function HomePage() {
   const [themeOpen, setThemeOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [classrooms, setClassrooms] = useState<StageListItem[]>([]);
-  const [activeTab, setActiveTab] = useState<'local' | 'progress'>('local');
+  const [activeTab, setActiveTab] = useState<'local' | 'progress' | 'assigned'>('local');
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
@@ -446,25 +451,43 @@ function HomePage() {
     }
 
     // --- ESCUDO ANTI-DUPLICADO ---
-    if (form.subject && form.subject !== 'none') {
+    if (form.subject) {
       try {
         const { findSimilarGlobalClassroom } = await import('@/lib/utils/cloud-sync');
-        const similarClassroom = await findSimilarGlobalClassroom(form.subject, form.requirement);
+        const similarClassroom = await findSimilarGlobalClassroom(form.subject, form.requirement, form.topic || 'LIBRE');
         if (similarClassroom) {
+          const isEn = locale === 'en-US';
           if (similarClassroom.status === 'building') {
             window.alert(
-              `¡Espera! Un tutor está construyendo un curso sobre este tema en este momento ("${similarClassroom.stage?.name}").\n\nPor favor, revisa la Biblioteca Global en unos minutos para clonarlo sin gastar créditos.`
+              isEn 
+                ? `Wait! A tutor is currently building a course on this topic ("${similarClassroom.stage?.name}").\n\nPlease try again in a few minutes. The system will offer to clone it automatically.`
+                : `¡Espera! Un tutor está construyendo un curso sobre este tema en este momento ("${similarClassroom.stage?.name}").\n\nPor favor, intenta nuevamente en unos minutos. El sistema te ofrecerá clonarlo automáticamente.`
             );
             return;
           }
 
-          // Alert user of similarity
-          const proceed = window.confirm(
-            `¡Alto! Hemos detectado un curso creado previamente por un tutor en la Biblioteca Global que encaja con este tema:\n\n"${similarClassroom.stage?.name}"\n\n¿Cancelas esta generación para buscarlo gratis en la Biblioteca Global (Cancelar), o fuerzas crear uno nuevo gastando créditos (Aceptar)?`
+          // Alert user of similarity and offer direct clone
+          const proceedToClone = window.confirm(
+            isEn 
+              ? `Stop! We found that a community course already exists for this exact topic:\n\n"${similarClassroom.stage?.name}"\n\nWould you like to IMPORT (clone) this course for FREE to your local account (OK), or force the generation of a new one spending your own credits (Cancel)?`
+              : `¡Alto! Hemos detectado que ya existe un curso creado previamente por la comunidad que encaja con este tema:\n\n"${similarClassroom.stage?.name}"\n\n¿Deseas IMPORTAR (clonar) este curso GRATIS a tu cuenta local (Aceptar), o prefieres forzar la generación de uno nuevo gastando tus propios créditos (Cancelar)?`
           );
-          if (!proceed) {
-            return; // Cancel execution
+          if (proceedToClone) {
+            toast.loading(isEn ? 'Cloning suggested course...' : 'Clonando curso sugerido...', { id: 'clone' });
+            try {
+              const { processCloudDownload } = await import('@/lib/utils/cloud-sync');
+              const targetStageId = similarClassroom.stage?.id;
+              if (!targetStageId) throw new Error("ID de curso inválido");
+              await processCloudDownload(targetStageId, similarClassroom);
+              toast.success(isEn ? 'Cloning complete' : 'Clonación completa', { id: 'clone' });
+              router.push(`/classroom/${targetStageId}`);
+            } catch (err) {
+              log.error('Failed to clone classroom:', err);
+              toast.error(isEn ? 'Failed to clone course' : 'Fallo al clonar curso', { id: 'clone' });
+            }
+            return; // Detenemos la generacion sin importar exito/fracaso
           }
+          // Si Cancelan, quieren forzar la generacion (siguen de largo)
         }
       } catch (e: any) {
         log.error('Anti-dup mechanism failed:', e?.message || e?.code || e);
@@ -694,7 +717,7 @@ function HomePage() {
         </div>
 
         {/* Auditoria Button */}
-        {role === 'admin' && (
+        {(role === 'admin' || role === 'tutor') && (
           <button
             onClick={() => router.push('/admin/logs')}
             className="p-2 rounded-full text-gray-400 dark:text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200 hover:shadow-sm transition-all"
@@ -705,7 +728,7 @@ function HomePage() {
         )}
 
         {/* Biblioteca Global Button */}
-        {role === 'admin' && (
+        {(role === 'admin' || role === 'tutor') && (
           <button
             onClick={() => router.push('/admin/library')}
             className="p-2 rounded-full text-gray-400 dark:text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200 hover:shadow-sm transition-all"
@@ -716,7 +739,7 @@ function HomePage() {
         )}
 
         {/* Sessions Button */}
-        {role === 'admin' && (
+        {(role === 'admin' || role === 'tutor') && (
           <button
             onClick={() => router.push('/admin/sessions')}
             className="p-2 rounded-full text-gray-400 dark:text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200 hover:shadow-sm transition-all"
@@ -727,13 +750,24 @@ function HomePage() {
         )}
 
         {/* Progress Button */}
-        {role === 'admin' && (
+        {(role === 'admin' || role === 'tutor') && (
           <button
             onClick={() => router.push('/admin/progress')}
             className="p-2 rounded-full text-gray-400 dark:text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200 hover:shadow-sm transition-all"
             title={t('adminToolbar.progress')}
           >
             <TrendingUp className="w-4 h-4" />
+          </button>
+        )}
+
+        {/* Assignments Button */}
+        {(role === 'admin' || role === 'tutor') && (
+          <button
+            onClick={() => router.push('/admin/assignments')}
+            className="p-2 rounded-full text-gray-400 dark:text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-indigo-600 dark:hover:text-indigo-400 hover:shadow-sm transition-all"
+            title="Control de Asignaciones"
+          >
+            <ClipboardList className="w-4 h-4" />
           </button>
         )}
 
@@ -1129,10 +1163,29 @@ function HomePage() {
               <Clock className="size-3.5" />
               <div className="flex bg-muted/60 p-0.5 rounded-md border border-border/40 gap-1 ml-1 cursor-default" onClick={e => e.stopPropagation()}>
                 <button
-                  className={cn("px-2 py-0.5 rounded-sm transition-colors cursor-pointer", activeTab === 'local' ? "bg-white dark:bg-slate-800 shadow-sm text-foreground" : "text-muted-foreground")}
+                  className={cn("relative px-2 py-0.5 rounded-sm transition-colors cursor-pointer flex items-center gap-1 pr-3", activeTab === 'local' ? "bg-white dark:bg-slate-800 shadow-sm text-foreground" : "text-muted-foreground")}
                   onClick={() => setActiveTab('local')}
                 >
                   Mis Cursos Locales
+                  {Object.values(activeCourses || {}).some((ac: any) => !classrooms.some((c) => c.id === ac.stageId) && !masteredTopics.includes(ac.topic) && !passedCourses.includes(ac.stageId)) && (
+                    <span className="absolute top-1 right-0.5 flex size-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full size-2 bg-amber-500"></span>
+                    </span>
+                  )}
+                </button>
+                <button
+                  className={cn("relative px-2 py-0.5 rounded-sm transition-colors cursor-pointer flex items-center gap-1 pr-3", activeTab === 'assigned' ? "bg-white dark:bg-slate-800 shadow-sm text-indigo-600 dark:text-indigo-400" : "text-muted-foreground")}
+                  onClick={() => setActiveTab('assigned')}
+                >
+                  <Users className="size-3" />
+                  Asignados
+                  {Object.values(assignedCourses || {}).some((ac: any) => ac.status === 'pending') && (
+                    <span className="absolute top-1 right-0.5 flex size-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full size-2 bg-amber-500"></span>
+                    </span>
+                  )}
                 </button>
                 <button
                   className={cn("px-2 py-0.5 rounded-sm transition-colors cursor-pointer flex items-center gap-1", activeTab === 'progress' ? "bg-white dark:bg-slate-800 shadow-sm text-emerald-600 dark:text-emerald-400" : "text-muted-foreground")}
@@ -1315,7 +1368,7 @@ function HomePage() {
                     </div>
                   ) : activeTab === 'local' ? (
                     (() => {
-                      let filtered = [...classrooms];
+                      let filtered = classrooms.filter(c => !assignedCourses || !assignedCourses[c.id]);
 
                       // Búsqueda
                       if (searchQuery.trim()) {
@@ -1342,12 +1395,14 @@ function HomePage() {
                         return sortOrder === 'desc' ? timeB - timeA : timeA - timeB;
                       });
 
-                      if (classrooms.length === 0) {
-                        return <div className="col-span-full py-8 text-center text-muted-foreground text-sm">No tienes cursos locales aún.</div>;
-                      }
+                      const pendingCloud = Object.values(activeCourses || {}).filter(
+                        (ac) => !classrooms.some((c) => c.id === ac.stageId) && !masteredTopics.includes(ac.topic) && !passedCourses.includes(ac.stageId)
+                      );
+                      
+                      const assignedList = Object.values(assignedCourses || {}).sort((a, b) => b.assignedAt - a.assignedAt);
 
-                      if (filtered.length === 0) {
-                        return <div className="col-span-full py-8 text-center text-muted-foreground text-sm">No se encontraron cursos con este filtro.</div>;
+                      if (classrooms.length === 0 && pendingCloud.length === 0) {
+                        return <div className="col-span-full py-8 text-center text-muted-foreground text-sm">No tienes cursos locales aún.</div>;
                       }
 
                       const localCourseCards = filtered.slice(0, localLimit).map((classroom, i) => (
@@ -1370,12 +1425,9 @@ function HomePage() {
                         </motion.div>
                       ));
 
-                      const pendingCloud = Object.values(activeCourses || {}).filter(
-                        (ac) => !classrooms.some((c) => c.id === ac.stageId) && !masteredTopics.includes(ac.topic) && !passedCourses.includes(ac.stageId)
-                      );
-
                       return (
                         <div className="col-span-full w-full flex flex-col gap-8">
+
                           {pendingCloud.length > 0 && (
                             <div className="flex flex-col gap-4">
                               <h3 className="text-lg font-semibold text-amber-600 dark:text-amber-500 border-b border-border/40 pb-2 flex items-center gap-2">
@@ -1445,17 +1497,21 @@ function HomePage() {
                             </div>
                           )}
                           
-                          {localCourseCards.length > 0 && (
+                          {filtered.length === 0 && classrooms.length > 0 ? (
+                            <div className="py-8 text-center text-muted-foreground text-sm">
+                              No se encontraron cursos locales con este filtro.
+                            </div>
+                          ) : localCourseCards.length > 0 ? (
                             <div className="flex flex-col gap-4 mt-2">
                               {pendingCloud.length > 0 && (
                                 <h3 className="text-lg font-semibold text-foreground/90 border-b border-border/40 pb-2">
-                                  Cursos Descargados
+                                  Cursos Locales / Descargados
                                 </h3>
                               )}
                               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-8">
                                 {localCourseCards}
                               </div>
-                              {localLimit < classrooms.length && !searchQuery && categoryFilter === 'all' && (
+                              {localLimit < filtered.length && (
                                 <div className="flex justify-center mt-4">
                                   <Button variant="outline" size="sm" onClick={() => setLocalLimit(l => l + 20)}>
                                     Cargar más
@@ -1463,7 +1519,127 @@ function HomePage() {
                                 </div>
                               )}
                             </div>
-                          )}
+                          ) : null}
+                        </div>
+                      );
+                    })()
+                  ) : activeTab === 'assigned' ? (
+                    (() => {
+                      const assignedList = Object.values(assignedCourses || {}).sort((a, b) => b.assignedAt - a.assignedAt);
+                      
+                      if (assignedList.length === 0) {
+                        return <div className="col-span-full py-8 text-center text-muted-foreground text-sm">No tienes cursos asignados por tu tutor aún.</div>;
+                      }
+
+                      return (
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-8 pt-8">
+                          {assignedList.map((ac: any, i: number) => {
+                            const isPassed = ac.status === 'passed';
+                            const isFailed = ac.status === 'failed';
+                            const downloadedClassroom = classrooms.find((c) => c.id === ac.stageId);
+                            
+                            // Si está descargado, mostramos la ClassroomCard normal (con un badge visual si deseamos)
+                            if (downloadedClassroom) {
+                              return (
+                                <motion.div
+                                  key={ac.stageId}
+                                  initial={{ opacity: 0, y: 16 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ delay: i * 0.04, duration: 0.35, ease: 'easeOut' }}
+                                  className="relative"
+                                >
+                                  <ClassroomCard
+                                    classroom={downloadedClassroom}
+                                    slide={thumbnails[downloadedClassroom.id]}
+                                    formatDate={formatDate}
+                                    onClick={() => {
+                                      if (isFailed) {
+                                        import('sonner').then(({ toast }) => {
+                                          toast.error('Has reprobado esta asignación y está bloqueada.');
+                                        });
+                                        return;
+                                      }
+                                      router.push(`/classroom/${downloadedClassroom.id}`);
+                                    }}
+                                  />
+                                  <div className={cn(
+                                    "absolute -top-2.5 -right-2.5 text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm z-10 pointer-events-none",
+                                    isPassed ? "bg-emerald-500 text-white" : isFailed ? "bg-red-500 text-white" : "bg-sky-500 text-white"
+                                  )}>
+                                    {isPassed ? "Aprobado" : isFailed ? "Reprobado" : "Asignado"}
+                                  </div>
+                                </motion.div>
+                              );
+                            }
+
+                            // Si NO está descargado (o es fallback), mostramos la caja de neón
+                            return (
+                              <motion.div
+                                key={ac.stageId}
+                                initial={{ opacity: 0, y: 16 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: i * 0.04, duration: 0.35, ease: 'easeOut' }}
+                                className={cn(
+                                  "relative group border-2 rounded-2xl p-4 flex flex-col items-center justify-center text-center transition-all min-h-[220px]",
+                                  isPassed 
+                                    ? "bg-emerald-50/50 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-800/50" 
+                                    : isFailed
+                                    ? "bg-red-50/50 dark:bg-red-900/10 border-red-200 dark:border-red-800/50"
+                                    : "bg-indigo-50/40 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-800/50 cursor-pointer hover:bg-indigo-100/50 dark:hover:bg-indigo-900/40 hover:shadow-sm"
+                                )}
+                                onClick={async () => {
+                                  if (isPassed || isFailed) return;
+
+                                  toast.loading('Descargando asignación...', { id: ac.stageId });
+                                  try {
+                                    const { processCloudDownload } = await import('@/lib/utils/cloud-sync');
+                                    const { getDoc, doc } = await import('firebase/firestore');
+                                    const { db } = await import('@/lib/firebase');
+                                    const docSnap = await getDoc(doc(db, 'global_classrooms', ac.stageId));
+                                    if (docSnap.exists()) {
+                                      const data = docSnap.data();
+                                      await processCloudDownload(ac.stageId, data as any);
+                                      toast.success('Clonación completa', { id: ac.stageId });
+                                      router.push(`/classroom/${ac.stageId}`);
+                                    } else {
+                                      toast.error('La asignación ya no está disponible en la base de datos.', { id: ac.stageId });
+                                    }
+                                  } catch (e) {
+                                    console.error(e);
+                                    toast.error('Fallo al descargar asignación', { id: ac.stageId });
+                                  }
+                                }}
+                              >
+                                {isPassed ? (
+                                  <div className="size-10 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center mb-3 text-emerald-600 dark:text-emerald-400">
+                                    <Check className="size-5 stroke-[3]" />
+                                  </div>
+                                ) : (
+                                  <div className="size-10 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center mb-3 text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform">
+                                    <Cloud className="size-5" />
+                                  </div>
+                                )}
+                                <h4 className="font-bold text-[15px] text-slate-800 dark:text-slate-200 line-clamp-2 leading-tight mb-2">
+                                  {ac.name}
+                                </h4>
+                                <div className="flex flex-wrap items-center justify-center gap-1.5 mb-3">
+                                  <span className="inline-flex items-center rounded-sm bg-indigo-100 dark:bg-indigo-900/40 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-700 dark:text-indigo-400 uppercase">
+                                    {(!ac.subject || ac.subject === 'none') ? 'Libre' : ac.subject}
+                                  </span>
+                                </div>
+                                <div className="text-[12px] text-muted-foreground mt-auto">
+                                  {new Date(ac.assignedAt).toLocaleDateString()}
+                                </div>
+                                
+                                <div className={cn(
+                                  "absolute -top-2.5 -right-2.5 text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm",
+                                  isPassed ? "bg-emerald-500 text-white" : "bg-indigo-500 text-white"
+                                )}>
+                                  {isPassed ? "Aprobado" : "Iniciar"}
+                                </div>
+                              </motion.div>
+                            );
+                          })}
                         </div>
                       );
                     })()
@@ -1928,7 +2104,7 @@ function ClassroomCard({
 
         {/* Delete — top-right, only on hover */}
         <AnimatePresence>
-          {!confirmingDelete && (!isGlobal || isAdmin) && (
+          {onDelete && !confirmingDelete && (!isGlobal || isAdmin) && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

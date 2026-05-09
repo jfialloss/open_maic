@@ -17,6 +17,7 @@ import { useTheme } from '@/lib/hooks/use-theme';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { SettingsDialog } from './settings';
+import { AssignCourseModal } from './ui/assign-course-modal';
 import { cn } from '@/lib/utils';
 import { useSettingsStore } from '@/lib/store/settings';
 import { useStageStore } from '@/lib/store/stage';
@@ -44,6 +45,7 @@ export function Header({ currentSceneTitle }: HeaderProps) {
   // Export
   const { exporting: isExporting, exportPPTX, exportResourcePack } = useExportPPTX();
   const [exportMenuOpen, setExportMenuOpen] = useState(false);
+  const [assignModalOpen, setAssignModalOpen] = useState(false);
   const exportRef = useRef<HTMLDivElement>(null);
   const scenes = useStageStore((s) => s.scenes);
   const generatingOutlines = useStageStore((s) => s.generatingOutlines);
@@ -221,45 +223,18 @@ export function Header({ currentSceneTitle }: HeaderProps) {
             )}
           </div>
 
-          {/* Auditoria Button */}
-          {role === 'admin' && (
-            <button
-              onClick={() => router.push('/admin/logs')}
-              className="p-2 rounded-full text-gray-400 dark:text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200 hover:shadow-sm transition-all"
-              title="Auditoría de Prompts"
-            >
-              <ShieldAlert className="w-4 h-4" />
-            </button>
-          )}
-
-          {role === 'admin' && <div className="w-[1px] h-4 bg-gray-200 dark:bg-gray-700" />}
-
-          {/* Settings Button */}
-          {role === 'admin' && (
-            <div className="relative">
-              <button
-                onClick={() => setSettingsOpen(true)}
-                className={cn(
-                  'p-2 rounded-full text-gray-400 dark:text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200 hover:shadow-sm transition-all group',
-                  needsSetup && 'animate-setup-glow',
-                )}
-              >
-                <Settings className="w-4 h-4 group-hover:rotate-90 transition-transform duration-500" />
-              </button>
-              {needsSetup && (
-                <>
-                  <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3">
-                    <span className="animate-setup-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500" />
-                  </span>
-                  <span className="animate-setup-float absolute top-full mt-2 right-0 whitespace-nowrap text-[11px] font-medium text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800/50 px-2 py-0.5 rounded-full shadow-sm pointer-events-none">
-                    {t('settings.setupNeeded')}
-                  </span>
-                </>
-              )}
-            </div>
-          )}
         </div>
+
+        {/* Assign Course Button */}
+        {(role === 'admin' || role === 'tutor') && canExport && (
+          <button
+            onClick={() => setAssignModalOpen(true)}
+            title="Asignar a Alumnos"
+            className="shrink-0 flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors border border-indigo-200 dark:border-indigo-800/50 mr-1"
+          >
+            <span>Asignar</span>
+          </button>
+        )}
 
         {/* Export Dropdown */}
         <div className="relative" ref={exportRef}>
@@ -320,6 +295,14 @@ export function Header({ currentSceneTitle }: HeaderProps) {
         </div>
       </header>
       {role === 'admin' && <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />}
+      
+      {/* Dynamic import of AssignModal to keep bundle light */}
+      {assignModalOpen && (
+        <AssignCourseModal 
+          open={assignModalOpen} 
+          onOpenChange={setAssignModalOpen}
+        />
+      )}
     </>
   );
 }

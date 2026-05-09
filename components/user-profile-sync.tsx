@@ -30,6 +30,10 @@ export function UserProfileSync() {
           activeCourses: {
             ...(data.activeCourses || {}),
             ...state.activeCourses,
+          },
+          assignedCourses: {
+            ...(data.assignedCourses || {}),
+            ...state.assignedCourses,
           }
         }));
         
@@ -65,13 +69,16 @@ export function UserProfileSync() {
        const cleanPayload = JSON.parse(JSON.stringify(payload));
        
        // Save to global Firestore config
-       setDoc(doc(db, 'users', user.uid, 'data', 'profile'), cleanPayload).catch(err => {
+       setDoc(doc(db, 'users', user.uid, 'data', 'profile'), cleanPayload, { merge: true }).catch(err => {
          console.error('Failed to sync user profile to Firestore:', err);
        });
        
-       // Guarda el arreglo plano de IDs en la raíz del usuario para consultas rápidas
+       // Guarda el arreglo plano de IDs y el grado en la raíz del usuario para consultas rápidas
        const activeCourseIds = Object.keys(cleanPayload.activeCourses || {});
-       setDoc(doc(db, 'users', user.uid), { activeCourseIds }, { merge: true }).catch(err => {
+       setDoc(doc(db, 'users', user.uid), { 
+         activeCourseIds,
+         grade: cleanPayload.grade || 'Desconocido'
+       }, { merge: true }).catch(err => {
          console.error('Failed to sync activeCourseIds to root:', err);
        });
     };
@@ -88,9 +95,12 @@ export function UserProfileSync() {
          if (LOCAL_KEYS.includes(key)) return false;
          if (typeof state[key as keyof typeof state] === 'function') return false;
          
-         // Deep compare for activeCourses
+         // Deep compare for activeCourses and assignedCourses
          if (key === 'activeCourses') {
            return JSON.stringify(state.activeCourses) !== JSON.stringify(prevState.activeCourses);
+         }
+         if (key === 'assignedCourses') {
+           return JSON.stringify(state.assignedCourses) !== JSON.stringify(prevState.assignedCourses);
          }
          if (key === 'masteredTopics') {
            return JSON.stringify(state.masteredTopics) !== JSON.stringify(prevState.masteredTopics);

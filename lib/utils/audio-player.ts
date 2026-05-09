@@ -43,8 +43,19 @@ export class AudioPlayer {
       this.audio = new Audio();
 
       // Set audio source
-      const blobUrl = URL.createObjectURL(audioRecord.blob);
-      this.audio.src = blobUrl;
+      let audioSrc = '';
+      let isBlobUrl = false;
+      
+      if (audioRecord.blob && audioRecord.blob.size > 0) {
+        audioSrc = URL.createObjectURL(audioRecord.blob);
+        isBlobUrl = true;
+      } else if (audioRecord.ossKey) {
+        audioSrc = audioRecord.ossKey;
+      } else {
+        return false;
+      }
+
+      this.audio.src = audioSrc;
       if (this.muted) this.audio.volume = 0;
       else this.audio.volume = this.volume;
 
@@ -54,7 +65,9 @@ export class AudioPlayer {
 
       // Set ended callback
       this.audio.addEventListener('ended', () => {
-        URL.revokeObjectURL(blobUrl);
+        if (isBlobUrl) {
+          URL.revokeObjectURL(audioSrc);
+        }
         this.onEndedCallback?.();
       });
 
