@@ -233,83 +233,29 @@ export async function processCloudDownload(stageId: string, cloudData: CloudClas
   }
 }
 
-const STOP_WORDS = new Set([
-  // Español
-  'el', 'la', 'los', 'las', 'un', 'una', 'unos', 'unas', 'lo', 'al', 'del',
-  'a', 'ante', 'bajo', 'cabe', 'con', 'contra', 'de', 'desde', 'durante', 'en', 
-  'entre', 'hacia', 'hasta', 'mediante', 'para', 'por', 'segun', 'sin', 'so', 
-  'sobre', 'tras', 'versus', 'via',
-  'y', 'e', 'ni', 'o', 'u', 'ya', 'bien', 'sea', 'pero', 'mas', 'sino', 'aunque',
-  'porque', 'pues', 'como', 'si', 'que',
-  'curso', 'clase', 'tema', 'leccion', 'unidad', 'alumnos', 'niños', 'estudiantes',
-  'quiero', 'necesito', 'hazme', 'crea', 'generame', 'generar', 'crear', 'hacer',
-  'interactivo', 'dinamico', 'divertido', 'basico', 'avanzado', 'introduccion',
-  // English
-  'the', 'a', 'an', 'and', 'or', 'but', 'is', 'are', 'was', 'were', 'to', 'of', 
-  'for', 'with', 'on', 'in', 'at', 'by', 'about', 'from', 'into', 'through',
-  'course', 'class', 'lesson', 'unit', 'topic', 'student', 'students', 'kids', 
-  'children', 'generate', 'create', 'make', 'want', 'need', 'interactive',
-  'dynamic', 'fun', 'basic', 'advanced', 'introduction', 'please', 'can', 'you'
-]);
-
-function tokenizeAndFilter(text: string): string[] {
-  // Remover puntuacion y acentos, pasar a minuscula
-  const normalized = text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s]/g, ' ');
-  const tokens = normalized.split(/\s+/).filter(t => t.length > 2);
-  return tokens.filter(t => !STOP_WORDS.has(t));
-}
-
 export async function findSimilarGlobalClassroom(subject: string, requirement: string, topic: string = 'LIBRE'): Promise<CloudClassroom | null> {
-  // Fetch recent classrooms from this subject
+  // Si es un curso libre, saltamos la validación de duplicados y permitimos la generación
+  if (topic === 'LIBRE' || topic === 'none') {
+    return null;
+  }
+
+  // Fetch recent classrooms from this subject for Curricular matching
   const q = query(
     collection(firestoreDb, 'global_classrooms'),
     where('subject', '==', subject),
     limit(50)
   );
   const snap = await getDocs(q);
-  
-  const reqTokens = new Set(tokenizeAndFilter(requirement));
 
   for (const docSnap of snap.docs) {
     const data = docSnap.data() as CloudClassroom;
     
-    // 1. Curricular Approach (Enfoque guiado por bloque/tema)
-    if (topic !== 'LIBRE' && topic !== 'none') {
-       // Si tienen el mismo topic oficial del curriculo, es una coincidencia fuerte
-       if (data.stage?.topic === topic) {
-          return data;
-       }
-       // Como es un curso estructurado, no usamos flexibilidad semántica. Exigimos exactitud.
-       continue;
-    }
-
-    // 2. Free Approach (Similitud de Tokens - Jaccard / Overlap) solo para cursos Libres
-    const stageName = data.stage?.name || '';
-    const nameTokens = tokenizeAndFilter(stageName);
-    
-    if (nameTokens.length === 0) continue;
-
-    let matchCount = 0;
-    for (const token of nameTokens) {
-      if (reqTokens.has(token)) {
-        matchCount++;
-      }
-    }
-
-    // Calcular el porcentaje de las palabras clave del titulo del curso que estan en el requerimiento del usuario
-    const overlapPercentage = matchCount / nameTokens.length;
-
-    // Si al menos un 50% de las palabras clave del titulo coinciden, lo consideramos similar
-    if (overlapPercentage >= 0.5) {
-      return data;
-    }
-    
-    // Backup: Primitive Overlap fallback por si el usuario escribe muy poco
-    const reqLower = requirement.toLowerCase();
-    const stageNameLower = stageName.toLowerCase();
-    if (stageNameLower.length > 5 && reqLower.includes(stageNameLower)) {
+    // Curricular Approach (Enfoque guiado por bloque/tema)
+    // Exigimos exactitud en el tema curricular asignado
+    if (data.stage?.topic === topic) {
       return data;
     }
   }
+  
   return null;
 }
