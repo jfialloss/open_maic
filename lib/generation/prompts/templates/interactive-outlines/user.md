@@ -41,16 +41,9 @@ Infer the course language directive by applying the decision rules from the syst
 
 ## Distribution Target
 
-- **70% interactive scenes** (widgets: simulation, diagram, code, game)
-- **30% slide scenes** (introductions, summaries, transitions)
-
-## Widget Type Constraints (MANDATORY)
-
-| Widget Type | Constraint |
-|------------|-----------|
-| simulation | **Minimum 2 scenes** |
-| game | **Minimum 1 scene** |
-| diagram | **Maximum 1 scene** |
+- **Maximum 3 interactive scenes in total**. Choose the widget types (simulation, diagram, code, game) that best fit the subject matter.
+- **~8 to 11 slide scenes** (introductions, deep theoretical explanations, summaries)
+- **Exactly 1 quiz scene** at the end.
 
 ## CRITICAL: Required Fields for Interactive Scenes
 

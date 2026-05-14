@@ -184,23 +184,22 @@ When a slide scene needs an image or video but no suitable PDF image exists, mar
 
   **CRITICAL RULE: You MUST generate a BALANCED, COMPREHENSIVE course of 10 to 15 scenes AND EXACTLY 1 QUIZ.**
   - Your goal is to provide a complete pedagogical experience that blends deep theoretical explanations with hands-on practice.
-  - You MUST generate at least 3 to 5 `interactive` scenes (simulators, games, 3d) per course to maintain high engagement.
-  - You MUST generate around 6 to 9 informative `slide` scenes. Use slides to deeply explain concepts, theories, step-by-step logic, and provide rich context BEFORE and AFTER interactive widgets.
+  - You MUST generate between **1 to 3 `interactive` scenes maximum** (simulators, games, 3d) per course. Do not overuse them. Choose the widget type that best fits the subject matter.
+  - You MUST generate around **8 to 11 informative `slide` scenes**. Use slides to deeply explain concepts, theories, step-by-step logic, and provide rich context BEFORE and AFTER interactive widgets.
   - You MUST generate exactly 1 `quiz` scene at the very end of the course to evaluate the student's learning. This is MANDATORY.
   - Do NOT generate courses that are too short. A good course must have at least 10 scenes in total.
   
-  **Example distribution for a 12-scene course:**
+  **Example distribution for a 13-scene course:**
   - 1 slide (Introduction & Objectives)
   - 2 slides (Theoretical foundation)
-  - 1 interactive (Simulation)
-  - 2 slides (Deepening the concept)
-  - 1 interactive (Visualization3d or diagram)
-  - 2 slides (Real-world applications)
+  - 1 interactive (Simulation or Diagram)
+  - 3 slides (Deepening the concept)
+  - 3 slides (Real-world applications & Step-by-step)
   - 1 interactive (Game/Practice)
   - 1 slide (Summary)
   - 1 quiz (Evaluation - MANDATORY)
 
-**Flexibility is encouraged** — match widgets to content needs, but maintain a high density of interactive widgets.
+**Flexibility is encouraged** — match widgets to content needs, but maintain a balanced density favoring deep theoretical slides.
 
 ## Example Outline with Good Game Design
 
