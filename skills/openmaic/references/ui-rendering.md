@@ -33,3 +33,11 @@ Para erradicar la dependencia de que la IA recuerde aplicar un fondo claro, la s
 
 ### Excepciones
 El widget de Visualización 3D (`visualization3d`) maneja su propio ecosistema de luces e implementa un fondo `#0a0a1a` directamente en la directiva del prompt. Debido a la cascada de estilos web, si la IA sí especifica un fondo para el body, este **anula/sobreescribe** el `bg-white` aplicado al componente iframe, manteniendo intactos los diseños oscuros (como la simulación del espacio o el sistema solar) mientras protege el resto de widgets convencionales.
+
+## Configuración de Tema (Dark Mode por Defecto)
+
+Para garantizar que los nuevos usuarios experimenten el diseño "Glassmorphism" oscuro inmediatamente, la inicialización del tema no depende de `next-themes` nativo, sino de un hook personalizado en `lib/hooks/use-theme.tsx`.
+
+1. **Estado Inicial Fijo:** En lugar de `useState('system')`, el estado de React se inicializa estrictamente en `'dark'`. Esto le informa a Next.js que el primer renderizado (SSR) debe contener las clases oscuras.
+2. **Evitar Flashes Blancos:** El estado de `systemTheme` también se inicializa por defecto en `'dark'`.
+3. **Respeto a la Caché:** Durante la fase de hidratación del cliente (`useEffect`), el sistema lee el `localStorage`. Si detecta una preferencia explícita antigua (ej. `'light'`), la respeta; de lo contrario, asume permanentemente el modo `'dark'`.
