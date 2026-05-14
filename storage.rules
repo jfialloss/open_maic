@@ -14,14 +14,19 @@ service firebase.storage {
       // Cualquiera autenticado puede leer para ver los cursos
       allow read: if request.auth != null;
       // Solo el creador original o un administrador puede modificar archivos del curso
-      // Simplificado: asumiendo que los archivos son públicos para lectura en la app
-      allow write: if request.auth != null; 
+      allow write: if request.auth != null && (
+        firestore.get(/databases/(default)/documents/global_classrooms/$(classroomId)).data.createdBy == request.auth.uid || 
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
     }
 
     // Carpeta de Audio (TTS pregenerados) para cursos
     match /courses_audio/{classroomId}/{fileName} {
       allow read: if request.auth != null;
-      allow write: if request.auth != null; 
+      allow write: if request.auth != null && (
+        firestore.get(/databases/(default)/documents/global_classrooms/$(classroomId)).data.createdBy == request.auth.uid || 
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
     }
 
     // Denegar el resto

@@ -46,6 +46,7 @@ export function PracticeModal({ onClose }: PracticeModalProps) {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [hasAnswered, setHasAnswered] = useState(false);
   const [score, setScore] = useState(0);
+  const [practiceType, setPracticeType] = useState<string>('multiple_choice');
   const [isGenerating, setIsGenerating] = useState(false);
 
   // Derived data for syllabus
@@ -102,8 +103,14 @@ export function PracticeModal({ onClose }: PracticeModalProps) {
       
       if (!data || !data.questions) throw new Error('Formato inválido');
 
+      setPracticeType(data.practiceType || 'multiple_choice');
+
       const shuffledQuestions = data.questions.map((q: Question) => {
-        const indices = [0, 1, 2, 3];
+        if (data.practiceType === 'true_false') {
+          return q; // Keep original order for True/False
+        }
+        
+        const indices = Array.from({ length: q.options.length }, (_, i) => i);
         for (let i = indices.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [indices[i], indices[j]] = [indices[j], indices[i]];
@@ -335,11 +342,22 @@ export function PracticeModal({ onClose }: PracticeModalProps) {
 
                 <div className="bg-slate-50 dark:bg-slate-800/40 p-5 rounded-2xl border border-border">
                   <h3 className="text-lg font-semibold text-foreground leading-relaxed">
-                    {questions[currentQIndex].question}
+                    {practiceType === 'fill_in_the_blank' && questions[currentQIndex].question.includes('___') ? (
+                      questions[currentQIndex].question.split('___').map((part, i, arr) => (
+                        <span key={i}>
+                          {part}
+                          {i < arr.length - 1 && (
+                            <span className="inline-block border-b-2 border-slate-400 dark:border-slate-500 w-12 mx-1 translate-y-1" />
+                          )}
+                        </span>
+                      ))
+                    ) : (
+                      questions[currentQIndex].question
+                    )}
                   </h3>
                 </div>
 
-                <div className="space-y-3">
+                <div className={practiceType === 'true_false' ? "grid grid-cols-2 gap-3" : "space-y-3"}>
                   {questions[currentQIndex].options.map((opt, idx) => {
                     const isSelected = selectedAnswer === idx;
                     const isCorrect = idx === questions[currentQIndex].correctIndex;

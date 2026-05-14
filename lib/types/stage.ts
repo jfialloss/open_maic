@@ -92,6 +92,7 @@ export interface QuizOption {
 export interface QuizQuestion {
   id: string;
   type: 'single' | 'multiple' | 'short_answer';
+  reasoning?: string; // Chain of thought for AI accuracy
   question: string;
   options?: QuizOption[];
   answer?: string[]; // Correct answer values: ["A"], ["A","C"], or undefined for text

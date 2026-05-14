@@ -1695,9 +1695,9 @@ function HomePage() {
                                 
                                 <div className={cn(
                                   "absolute -top-2.5 -right-2.5 text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm",
-                                  isPassed ? "bg-emerald-500 text-white" : "bg-indigo-500 text-white"
+                                  isPassed ? "bg-emerald-500 text-white" : isFailed ? "bg-red-500 text-white" : "bg-indigo-500 text-white"
                                 )}>
-                                  {isPassed ? "Aprobado" : "Iniciar"}
+                                  {isPassed ? "Aprobado" : isFailed ? "Reprobado" : "Iniciar"}
                                 </div>
                               </motion.div>
                             );
