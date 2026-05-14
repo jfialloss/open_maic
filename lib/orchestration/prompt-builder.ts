@@ -743,10 +743,22 @@ export function summarizeConversation(
 export function convertMessagesToOpenAI(
   messages: StatelessChatRequest['messages'],
   currentAgentId?: string,
+  maxMessages: number = 15,
 ): Array<{ role: 'system' | 'user' | 'assistant'; content: string }> {
-  return messages
-    .filter((msg) => msg.role === 'user' || msg.role === 'assistant')
-    .map((msg) => {
+  // Filter relevant messages
+  const relevantMessages = messages.filter(
+    (msg) => msg.role === 'user' || msg.role === 'assistant',
+  );
+
+  // Truncate if necessary to prevent quadratic token consumption
+  const isTruncated = relevantMessages.length > maxMessages;
+  const truncatedMessages = isTruncated
+    ? relevantMessages.slice(-maxMessages)
+    : relevantMessages;
+
+  const result: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> =
+    truncatedMessages
+      .map((msg) => {
       if (msg.role === 'assistant') {
         // Assistant messages use JSON array format to serve as few-shot examples
         // that match the expected output format from the system prompt
@@ -845,4 +857,15 @@ export function convertMessagesToOpenAI(
       const stripped = msg.content.replace(/[.\s…]+/g, '');
       return stripped.length > 0;
     });
+
+  // If we truncated the history, prepend a system note to inform the LLM
+  if (isTruncated && result.length > 0) {
+    result.unshift({
+      role: 'system',
+      content:
+        '[Earlier conversation history has been truncated for length. Continue the lesson naturally based on the current context.]',
+    });
+  }
+
+  return result;
 }

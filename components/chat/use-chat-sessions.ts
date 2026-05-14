@@ -25,6 +25,7 @@ import type { AgentStartItem, ActionItem } from '@/lib/buffer/stream-buffer';
 import { ActionEngine } from '@/lib/action/engine';
 import { toast } from 'sonner';
 import { createLogger } from '@/lib/logger';
+import { auth } from '@/lib/firebase';
 
 const log = createLogger('ChatSessions');
 
@@ -397,9 +398,14 @@ export function useChatSessions(options: UseChatSessionsOptions = {}) {
           whiteboardOpen: useCanvasStore.getState().whiteboardOpen,
         };
 
+        const idToken = auth.currentUser ? await auth.currentUser.getIdToken() : '';
+
         const response = await fetch('/api/chat', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${idToken}`
+          },
           body: JSON.stringify({
             ...requestTemplate,
             messages: currentMessages,

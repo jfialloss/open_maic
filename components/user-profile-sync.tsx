@@ -123,6 +123,12 @@ export function UserProfileSync() {
          if (key === 'masteredTopics') {
            return JSON.stringify(state.masteredTopics) !== JSON.stringify(prevState.masteredTopics);
          }
+         if (key === 'xpHistory') {
+           return JSON.stringify(state.xpHistory) !== JSON.stringify(prevState.xpHistory);
+         }
+         if (key === 'xpByCourse') {
+           return JSON.stringify(state.xpByCourse) !== JSON.stringify(prevState.xpByCourse);
+         }
          return state[key as keyof typeof state] !== prevState[key as keyof typeof prevState];
       });
 

@@ -26,6 +26,7 @@ import {
   Filter,
   FileText,
   Award,
+  Star,
   Lock,
   ShieldAlert,
   ShieldCheck,
@@ -35,7 +36,8 @@ import {
   Library,
   TrendingUp,
   Play,
-  ClipboardList
+  ClipboardList,
+  Brain
 } from 'lucide-react';
 import { signOut } from 'firebase/auth';
 import { useAuth } from '@/lib/hooks/use-auth';
@@ -68,6 +70,8 @@ import { toast } from 'sonner';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useDraftCache } from '@/lib/hooks/use-draft-cache';
 import { SpeechButton } from '@/components/audio/speech-button';
+import { XpAnalyticsModal } from '@/components/progress/xp-analytics-modal';
+import { PracticeModal } from '@/components/progress/practice-modal';
 import syllabusDataRaw from '@/lib/data/syllabus.json';
 
 const syllabusData = syllabusDataRaw as any;
@@ -145,6 +149,7 @@ function HomePage() {
   const [settingsSection, setSettingsSection] = useState<
     import('@/lib/types/settings').SettingsSection | undefined
   >(undefined);
+  const [xpModalOpen, setXpModalOpen] = useState(false);
 
   // Draft cache for requirement text
   const { cachedValue: cachedRequirement, updateCache: updateRequirementCache } =
@@ -159,6 +164,8 @@ function HomePage() {
   const removeActiveCourse = useUserProfileStore((s) => s.removeActiveCourse);
   const globalGrade = useUserProfileStore((s) => s.grade);
   const globalEnglishLevel = useUserProfileStore((s) => s.englishLevel);
+  const xpByCourse = useUserProfileStore((s) => s.xpByCourse) || {};
+  const totalXP = Object.values(xpByCourse).reduce((sum, xp) => sum + xp, 0);
   const mappedSublevel = form.subject === 'ingles' ? globalEnglishLevel : getSublevelFromGrade(globalGrade);
   const [storeHydrated, setStoreHydrated] = useState(false);
   const [recentOpen, setRecentOpen] = useState(true);
@@ -207,6 +214,7 @@ function HomePage() {
   const needsSetup = storeHydrated && !currentModelId;
   const [languageOpen, setLanguageOpen] = useState(false);
   const [themeOpen, setThemeOpen] = useState(false);
+  const [practiceModalOpen, setPracticeModalOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [classrooms, setClassrooms] = useState<StageListItem[]>([]);
   const [activeTab, setActiveTab] = useState<'local' | 'progress' | 'assigned'>('local');
@@ -605,7 +613,25 @@ function HomePage() {
 
   return (
     <div className="min-h-[100dvh] w-full bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 flex flex-col items-center p-4 pt-16 md:p-8 md:pt-16 overflow-x-hidden [overflow-anchor:none]">
-      {/* ═══ Top-right pill (unchanged) ═══ */}
+      {/* ═══ Top-left PEAAS Pill ═══ */}
+      <div className="fixed top-4 left-4 z-50 flex items-center gap-1 bg-white/60 dark:bg-gray-800/60 backdrop-blur-md px-2 py-1.5 rounded-full border border-gray-100/50 dark:border-gray-700/50 shadow-sm">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={() => router.push('/peaas')}
+              className="flex items-center gap-2 px-3 py-1 rounded-full text-sm font-bold text-sky-600 dark:text-sky-400 hover:bg-white dark:hover:bg-gray-700 transition-all"
+            >
+              <ShieldCheck className="w-5 h-5" />
+              <span className="hidden sm:inline">PEAAS</span>
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom" sideOffset={4}>
+            {t('peaas.title')}
+          </TooltipContent>
+        </Tooltip>
+      </div>
+
+      {/* ═══ Top-right pill ═══ */}
       <div
         ref={toolbarRef}
         className="fixed top-4 right-4 z-50 flex items-center gap-1 bg-white/60 dark:bg-gray-800/60 backdrop-blur-md px-2 py-1.5 rounded-full border border-gray-100/50 dark:border-gray-700/50 shadow-sm"
@@ -760,6 +786,17 @@ function HomePage() {
           </button>
         )}
 
+        {/* Gamification Button */}
+        {(role === 'admin' || role === 'tutor') && (
+          <button
+            onClick={() => router.push('/admin/gamification')}
+            className="p-2 rounded-full text-gray-400 dark:text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-amber-500 dark:hover:text-amber-400 hover:shadow-sm transition-all"
+            title="Reporte de Gamificación (XP)"
+          >
+            <Star className="w-4 h-4" />
+          </button>
+        )}
+
         {/* Assignments Button */}
         {(role === 'admin' || role === 'tutor') && (
           <button
@@ -801,20 +838,6 @@ function HomePage() {
 
         <div className="w-[1px] h-4 bg-gray-200 dark:bg-gray-700" />
 
-        {/* PEAAS Policy Button */}
-        <div className="relative">
-          <button
-            onClick={() => router.push('/peaas')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 shadow-sm hover:shadow transition-all"
-            title="Política PEAAS"
-          >
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">PEAAS</span>
-          </button>
-        </div>
-
-        <div className="w-[1px] h-4 bg-gray-200 dark:bg-gray-700" />
-
         {/* Logout Button */}
         <div className="relative">
           <button
@@ -834,17 +857,27 @@ function HomePage() {
             <LogOut className="w-4 h-4" />
           </button>
         </div>
-      </div>
-      {role === 'admin' && (
-        <SettingsDialog
-          open={settingsOpen}
-          onOpenChange={(open) => {
-            setSettingsOpen(open);
-            if (!open) setSettingsSection(undefined);
-          }}
-          initialSection={settingsSection}
+        </div>
+        
+        {role === 'admin' && (
+          <SettingsDialog
+            open={settingsOpen}
+            onOpenChange={(open) => {
+              setSettingsOpen(open);
+              if (!open) setSettingsSection(undefined);
+            }}
+            initialSection={settingsSection}
+          />
+        )}
+        
+        <XpAnalyticsModal 
+          open={xpModalOpen}
+          onClose={() => setXpModalOpen(false)}
         />
-      )}
+
+        {practiceModalOpen && (
+          <PracticeModal onClose={() => setPracticeModalOpen(false)} />
+        )}
 
       {/* ═══ Background Decor ═══ */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -915,9 +948,29 @@ function HomePage() {
         >
           <div className="w-full rounded-2xl border border-border/60 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-xl shadow-black/[0.03] dark:shadow-black/20 transition-shadow focus-within:shadow-2xl focus-within:shadow-sky-500/[0.06]">
             {/* ── Greeting + Profile + Agents ── */}
-            <div className="relative z-20 flex items-start justify-between">
-              <GreetingBar />
-              <div className="pr-3 pt-3.5 shrink-0">
+            {/* ── Greeting + Profile + Agents ── */}
+            <div className="relative z-20 flex items-stretch justify-between">
+              <div className="flex items-stretch">
+                <GreetingBar />
+                {role === 'student' && (
+                  <div className="pt-3.5 pb-1 pr-2 flex items-stretch">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={() => setPracticeModalOpen(true)}
+                          className="flex items-center justify-center cursor-pointer transition-all duration-200 group rounded-[22px] px-3.5 border border-border/50 text-muted-foreground/70 hover:text-sky-500 hover:bg-muted/60 active:scale-[0.97]"
+                        >
+                          <Brain className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" sideOffset={4}>
+                        {t('toolbar.practiceZone')}
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                )}
+              </div>
+              <div className="pr-3 pt-3.5 shrink-0 flex items-start">
                 <AgentBar />
               </div>
             </div>
@@ -1278,7 +1331,16 @@ function HomePage() {
                         </div>
                         <div>
                           <h2 className="text-lg font-bold text-foreground leading-tight">Tu Progreso Académico</h2>
-                          <p className="text-sm text-muted-foreground mt-0.5">Nivel: {globalGrade} ({mappedSublevel})</p>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <p className="text-sm text-muted-foreground">Nivel: {globalGrade} ({mappedSublevel})</p>
+                            <button 
+                              onClick={() => setXpModalOpen(true)}
+                              className="flex items-center gap-1 text-[11px] font-bold bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 px-2.5 py-0.5 rounded-full border border-amber-200 dark:border-amber-800/50 hover:bg-amber-200 dark:hover:bg-amber-900/60 transition-colors cursor-pointer"
+                              title="Ver Análisis de XP"
+                            >
+                              <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" /> {storeHydrated ? totalXP : 0} XP
+                            </button>
+                          </div>
                         </div>
                       </div>
 
@@ -1679,6 +1741,11 @@ function GreetingBar() {
   const setBio = useUserProfileStore((s) => s.setBio);
   const setGrade = useUserProfileStore((s) => s.setGrade);
   const setEnglishLevel = useUserProfileStore((s) => s.setEnglishLevel);
+  const xpByCourse = useUserProfileStore((s) => s.xpByCourse) || {};
+  const totalXP = Object.values(xpByCourse).reduce((sum, xp) => sum + xp, 0);
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   const [open, setOpen] = useState(false);
   const [editingName, setEditingName] = useState(false);
@@ -1787,8 +1854,11 @@ function GreetingBar() {
                       <span className="text-[13px] font-semibold text-foreground/85 group-hover:text-foreground transition-colors leading-none mb-1">
                         {t('home.greeting')} {displayName}
                       </span>
-                      <span className="text-[10px] font-medium text-sky-600 dark:text-sky-400 group-hover:text-sky-700 dark:group-hover:text-sky-300 transition-colors leading-none">
-                        {grade} • Nivel: {englishLevel}
+                      <span className="flex flex-wrap items-center gap-1.5 text-[10px] font-medium text-sky-600 dark:text-sky-400 group-hover:text-sky-700 dark:group-hover:text-sky-300 transition-colors leading-none">
+                        <span>{grade} • Nivel: {englishLevel}</span>
+                        <span className="flex items-center gap-0.5 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 px-1.5 py-0.5 rounded-sm border border-amber-200 dark:border-amber-800/50">
+                          <Star className="w-2.5 h-2.5 fill-amber-500 text-amber-500" /> {mounted ? totalXP : 0} XP
+                        </span>
                       </span>
                     </span>
                     <ChevronDown className="size-3 text-muted-foreground/30 group-hover:text-muted-foreground/60 transition-colors shrink-0" />

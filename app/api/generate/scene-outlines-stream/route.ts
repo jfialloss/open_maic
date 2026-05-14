@@ -102,7 +102,7 @@ function extractNewOutlines(buffer: string, alreadyParsed: number): SceneOutline
 
 export async function POST(req: NextRequest) {
   try {
-    const authUser = await authenticateRequest(req).catch(() => null);
+    const authUser = await authenticateRequest(req);
     const body = await req.json();
 
     // Get API configuration from request headers
@@ -405,6 +405,9 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (error) {
+    if (error instanceof Error && (error.message === 'Unauthorized' || error.message.includes('Authorization'))) {
+      return apiError('UNAUTHORIZED', 401, 'Unauthorized request');
+    }
     log.error('Streaming error:', error);
     return apiError('INTERNAL_ERROR', 500, error instanceof Error ? error.message : String(error));
   }

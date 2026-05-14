@@ -30,6 +30,7 @@ export const commonZhCN = {
     ttsHint: '选择 AI 教师的朗读音色',
     ttsPreview: '试听',
     ttsPreviewing: '播放中...',
+    practiceZone: '练习区',
   },
   export: {
     pptx: '导出 PPTX',
@@ -175,6 +176,7 @@ export const commonEnUS = {
     ttsHint: 'Choose a voice for the AI teacher',
     ttsPreview: 'Preview',
     ttsPreviewing: 'Playing...',
+    practiceZone: 'Practice Zone',
   },
   export: {
     pptx: 'Export PPTX',
@@ -320,6 +322,7 @@ export const commonEsES = {
     ttsHint: 'Elige una voz para el profesor IA',
     ttsPreview: 'Probar',
     ttsPreviewing: 'Reproduciendo...',
+    practiceZone: 'Zona de Prácticas',
   },
   export: {
     pptx: 'Exportar PPTX',

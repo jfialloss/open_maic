@@ -98,3 +98,9 @@ Use this only after the service is healthy. Confirm before reading local PDFs. I
 - Always include the recommended option first and explain why in one sentence.
 - After a step completes, say what changed and what the next confirmation is for.
 - When returning a classroom link, place the raw absolute URL on its own line with no bold, markdown link syntax, code formatting, or tables.
+
+## Architecture & Best Practices
+
+When editing core Next.js API routes or the chat orchestration logic, consult the following architectural guides to avoid introducing security vulnerabilities or quadratic token scaling:
+
+- **Security & Token Optimization:** Load [references/security_and_token_optimization.md](references/security_and_token_optimization.md) for strict Firebase middleware requirements and Sliding Window history truncation logic.

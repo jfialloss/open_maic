@@ -857,6 +857,7 @@ export function QuizView({ questions, sceneId }: QuizViewProps) {
       
       // Always record that an attempt was made
       userStore.incrementCourseAttempt(sceneId);
+      userStore.awardXP(actualStageId || sceneId, earned);
 
       setPhase('reviewing');
     })();

@@ -11,6 +11,7 @@ import type { PBLAgent, PBLIssue } from '@/lib/pbl/types';
 import { createLogger } from '@/lib/logger';
 import { apiError, apiSuccess } from '@/lib/server/api-response';
 import { resolveModelFromHeaders } from '@/lib/server/resolve-model';
+import { authenticateRequest } from '@/lib/server/auth';
 const log = createLogger('PBL Chat');
 
 interface PBLChatRequest {
@@ -24,6 +25,7 @@ interface PBLChatRequest {
 
 export async function POST(req: NextRequest) {
   try {
+    await authenticateRequest(req);
     const body = (await req.json()) as PBLChatRequest;
     const { message, agent, currentIssue, recentMessages, userRole, agentType } = body;
 
@@ -68,6 +70,9 @@ export async function POST(req: NextRequest) {
 
     return apiSuccess({ message: result.text, agentName: agent.name });
   } catch (error) {
+    if (error instanceof Error && (error.message === 'Unauthorized' || error.message.includes('Authorization'))) {
+      return apiError('UNAUTHORIZED', 401, 'Unauthorized request');
+    }
     log.error('Error:', error);
     return apiError('INTERNAL_ERROR', 500, error instanceof Error ? error.message : String(error));
   }

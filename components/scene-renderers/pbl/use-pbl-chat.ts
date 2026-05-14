@@ -9,6 +9,7 @@ import type { PBLProjectConfig, PBLChatMessage, PBLAgent, PBLIssue } from '@/lib
 import { getCurrentModelConfig } from '@/lib/utils/model-config';
 import { useI18n } from '@/lib/hooks/use-i18n';
 import { createLogger } from '@/lib/logger';
+import { auth } from '@/lib/firebase';
 
 const log = createLogger('PBLChat');
 
@@ -57,8 +58,10 @@ export function usePBLChat({ projectConfig, userRole, onConfigUpdate }: UsePBLCh
 
       try {
         const modelConfig = getCurrentModelConfig();
+        const idToken = auth.currentUser ? await auth.currentUser.getIdToken() : '';
         const headers: Record<string, string> = {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`,
           'x-model': modelConfig.modelString,
           'x-api-key': modelConfig.apiKey,
         };

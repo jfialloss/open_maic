@@ -45,6 +45,8 @@ export interface UserProfileState {
     status: 'pending' | 'passed' | 'failed';
   }>;
   courseAttempts: Record<string, number>;
+  xpByCourse: Record<string, number>;
+  xpHistory: Array<{ timestamp: number; courseId: string; earned: number }>;
   setAvatar: (avatar: string) => void;
   setNickname: (nickname: string) => void;
   setBio: (bio: string) => void;
@@ -57,6 +59,7 @@ export interface UserProfileState {
   removeActiveCourse: (stageId: string) => void;
   setAssignedCourses: (courses: Record<string, any>) => void;
   updateAssignedCourseStatus: (stageId: string, status: 'pending' | 'passed' | 'failed') => void;
+  awardXP: (stageId: string, earnedXP: number) => void;
 }
 
 export const useUserProfileStore = create<UserProfileState>()(
@@ -72,6 +75,8 @@ export const useUserProfileStore = create<UserProfileState>()(
       activeCourses: {},
       assignedCourses: {},
       courseAttempts: {},
+      xpByCourse: {},
+      xpHistory: [],
       setAvatar: (avatar) => set({ avatar }),
       setNickname: (nickname) => set({ nickname }),
       setBio: (bio) => set({ bio }),
@@ -83,6 +88,23 @@ export const useUserProfileStore = create<UserProfileState>()(
           [stageId]: (state.courseAttempts[stageId] || 0) + 1
         }
       })),
+      awardXP: (stageId, earnedXP) => set((state) => {
+        const currentXP = state.xpByCourse[stageId] || 0;
+        if (earnedXP > currentXP) {
+          const delta = earnedXP - currentXP;
+          return {
+            xpByCourse: {
+              ...state.xpByCourse,
+              [stageId]: earnedXP
+            },
+            xpHistory: [
+              ...(state.xpHistory || []),
+              { timestamp: Date.now(), courseId: stageId, earned: delta }
+            ]
+          };
+        }
+        return state;
+      }),
       addPassedCourse: (stageId) => set((state) => {
         const newPassed = state.passedCourses?.includes(stageId) 
           ? state.passedCourses 

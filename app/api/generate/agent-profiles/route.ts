@@ -11,6 +11,7 @@ import { callLLM } from '@/lib/ai/llm';
 import { createLogger } from '@/lib/logger';
 import { apiError, apiSuccess } from '@/lib/server/api-response';
 import { resolveModelFromHeaders } from '@/lib/server/resolve-model';
+import { authenticateRequest } from '@/lib/server/auth';
 
 const log = createLogger('Agent Profiles API');
 
@@ -50,6 +51,7 @@ function stripCodeFences(text: string): string {
 
 export async function POST(req: NextRequest) {
   try {
+    await authenticateRequest(req);
     const body = (await req.json()) as RequestBody;
     const { stageInfo, sceneOutlines, language, availableAvatars, requirement } = body;
 
@@ -181,6 +183,9 @@ Return a JSON object with this exact structure:
 
     return apiSuccess({ agents });
   } catch (error) {
+    if (error instanceof Error && (error.message === 'Unauthorized' || error.message.includes('Authorization'))) {
+      return apiError('UNAUTHORIZED', 401, 'Unauthorized request');
+    }
     log.error('Agent profiles generation error:', error);
     return apiError('INTERNAL_ERROR', 500, error instanceof Error ? error.message : String(error));
   }

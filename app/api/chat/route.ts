@@ -21,6 +21,7 @@ import type { ThinkingConfig } from '@/lib/types/provider';
 import { apiError } from '@/lib/server/api-response';
 import { createLogger } from '@/lib/logger';
 import { validateUrlForSSRF } from '@/lib/server/ssrf-guard';
+import { authenticateRequest } from '@/lib/server/auth';
 const log = createLogger('Chat API');
 
 // Allow streaming responses up to 60 seconds
@@ -46,6 +47,7 @@ export async function POST(req: NextRequest) {
   const encoder = new TextEncoder();
 
   try {
+    await authenticateRequest(req);
     const body: StatelessChatRequest = await req.json();
 
     // Validate required fields
@@ -194,6 +196,9 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (error) {
+    if (error instanceof Error && (error.message === 'Unauthorized' || error.message.includes('Authorization'))) {
+      return apiError('UNAUTHORIZED', 401, 'Unauthorized request');
+    }
     log.error('Error:', error);
     return apiError(
       'INTERNAL_ERROR',

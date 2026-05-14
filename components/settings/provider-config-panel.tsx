@@ -37,6 +37,7 @@ import { PROVIDERS, type ProviderId } from '@/lib/ai/providers';
 import type { ProvidersConfig } from '@/lib/types/settings';
 import { formatContextWindow } from './utils';
 import { cn } from '@/lib/utils';
+import { auth } from '@/lib/firebase';
 
 interface ProviderConfigPanelProps {
   provider: ProviderConfig;
@@ -123,9 +124,13 @@ export function ProviderConfigPanel({
     const testModelId = availableModels[0].id;
 
     try {
+      const idToken = auth.currentUser ? await auth.currentUser.getIdToken() : '';
       const response = await fetch('/api/verify-model', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`
+        },
         body: JSON.stringify({
           apiKey,
           baseUrl,

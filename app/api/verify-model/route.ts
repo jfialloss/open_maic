@@ -3,10 +3,12 @@ import { generateText } from 'ai';
 import { createLogger } from '@/lib/logger';
 import { apiError, apiSuccess } from '@/lib/server/api-response';
 import { resolveModel } from '@/lib/server/resolve-model';
+import { authenticateRequest } from '@/lib/server/auth';
 const log = createLogger('Verify Model');
 
 export async function POST(req: NextRequest) {
   try {
+    await authenticateRequest(req);
     const { apiKey, baseUrl, model, providerType, requiresApiKey } = await req.json();
 
     if (!model) {
