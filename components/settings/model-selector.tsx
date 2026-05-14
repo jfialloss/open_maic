@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { useI18n } from '@/lib/hooks/use-i18n';
-import type { ProviderId } from '@/lib/ai/providers';
+import { PROVIDERS, type ProviderId } from '@/lib/ai/providers';
 import type { ProvidersConfig } from '@/lib/types/settings';
 import { formatContextWindow } from './utils';
 
@@ -89,7 +89,7 @@ export function ModelSelector({
   // Filter models across all providers by search query and server model restrictions
   const getFilteredModelsForProvider = (pid: ProviderId) => {
     const config = providersConfig[pid];
-    let models = config?.models || [];
+    let models = PROVIDERS[pid]?.models || [];
     // When using server config without own key, restrict to server-allowed models
     if (config?.isServerConfigured && !config.apiKey && config.serverModels?.length) {
       const allowed = new Set(config.serverModels);

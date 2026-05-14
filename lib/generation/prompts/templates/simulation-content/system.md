@@ -119,16 +119,27 @@ To make highlight/annotation work, use consistent IDs for controls:
 - Use `min-height` for canvas to ensure it's visible on mobile
 - Control panel should be collapsible on mobile if large
 
-Example mobile-safe layout:
+Example mobile-safe layout (STRICTLY USE RAW CSS, NO TAILWIND):
 ```html
-<body class="flex flex-col min-h-screen md:flex-row">
+<style>
+  body { margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; font-family: sans-serif; }
+  #controls { flex-shrink: 0; max-height: 40vh; overflow-y: auto; padding: 10px; background: #f8f9fa; border-bottom: 1px solid #ccc; }
+  #canvas-container { flex: 1; min-height: 0; position: relative; }
+  canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+  
+  @media (min-width: 768px) {
+    body { flex-direction: row; }
+    #controls { width: 300px; max-height: 100vh; border-bottom: none; border-right: 1px solid #ccc; }
+  }
+</style>
+<body>
   <!-- Mobile: Full-width, collapsible control panel -->
-  <div id="controls" class="w-full md:w-80 shrink-0 overflow-auto max-h-[40vh] md:max-h-screen">
+  <div id="controls">
     <!-- Controls here -->
-    <button onclick="toggleControls()" class="md:hidden">Hide Controls</button>
+    <button onclick="toggleControls()" class="mobile-toggle">Hide Controls</button>
   </div>
   <!-- Canvas area gets remaining space -->
-  <div class="flex-1 min-h-[300px] relative">
+  <div id="canvas-container">
     <canvas id="canvas"></canvas>
   </div>
 </body>

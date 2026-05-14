@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { doc, onSnapshot, setDoc } from 'firebase/firestore';
+import { doc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useUserProfileStore } from '@/lib/store/user-profile';
 import { useAuth } from '@/lib/hooks/use-auth';
@@ -23,19 +23,31 @@ export function UserProfileSync() {
         const data = docSnap.data();
         isUpdatingFromFirebase.current = true;
         // Merge cloud data into local Zustand state
-        useUserProfileStore.setState((state) => ({
-          ...state,
-          ...data,
-          // Preserve local active courses that might be newer
-          activeCourses: {
-            ...(data.activeCourses || {}),
-            ...state.activeCourses,
-          },
-          assignedCourses: {
-            ...(data.assignedCourses || {}),
-            ...state.assignedCourses,
-          }
-        }));
+        useUserProfileStore.setState((state) => {
+          // Preparar assignedCourses:
+          // Mantener las asignaciones de la nube, pero preservar el progreso local (ej. passed/failed)
+          // Si el tutor borró la asignación en la nube, NO la revivimos con el estado local.
+          const mergedAssignedCourses: Record<string, any> = { ...(data.assignedCourses || {}) };
+          Object.keys(mergedAssignedCourses).forEach(stageId => {
+            if (state.assignedCourses && state.assignedCourses[stageId]) {
+              mergedAssignedCourses[stageId] = {
+                ...mergedAssignedCourses[stageId],
+                ...state.assignedCourses[stageId]
+              };
+            }
+          });
+
+          return {
+            ...state,
+            ...data,
+            // Preserve local active courses that might be newer
+            activeCourses: {
+              ...(data.activeCourses || {}),
+              ...state.activeCourses,
+            },
+            assignedCourses: mergedAssignedCourses
+          };
+        });
         
         setTimeout(() => {
           isUpdatingFromFirebase.current = false;
@@ -69,8 +81,14 @@ export function UserProfileSync() {
        const cleanPayload = JSON.parse(JSON.stringify(payload));
        
        // Save to global Firestore config
-       setDoc(doc(db, 'users', user.uid, 'data', 'profile'), cleanPayload, { merge: true }).catch(err => {
-         console.error('Failed to sync user profile to Firestore:', err);
+       const docRef = doc(db, 'users', user.uid, 'data', 'profile');
+       
+       updateDoc(docRef, cleanPayload).catch(err => {
+         if (err.code === 'not-found') {
+           setDoc(docRef, cleanPayload).catch(e => console.error('Failed to create user profile:', e));
+         } else {
+           console.error('Failed to sync user profile to Firestore:', err);
+         }
        });
        
        // Guarda el arreglo plano de IDs y el grado en la raíz del usuario para consultas rápidas

@@ -17,7 +17,7 @@ import type { AgentInfo } from '@/lib/generation/generation-pipeline';
 import type { SceneOutline, PdfImage, ImageMapping } from '@/lib/types/generation';
 import { createLogger } from '@/lib/logger';
 import { apiError, apiSuccess } from '@/lib/server/api-response';
-import { resolveModelFromHeaders } from '@/lib/server/resolve-model';
+import { resolveModelFromHeaders, getThinkingConfigFromBody } from '@/lib/server/resolve-model';
 import { authenticateRequest } from '@/lib/server/auth';
 
 const log = createLogger('Scene Content API');
@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
       stageInfo,
       stageId,
       agents,
+      languageDirective,
     } = body as {
       outline: SceneOutline;
       allOutlines: SceneOutline[];
@@ -49,6 +50,7 @@ export async function POST(req: NextRequest) {
       };
       stageId: string;
       agents?: AgentInfo[];
+      languageDirective?: string;
     };
 
     // Validate required fields
@@ -72,7 +74,21 @@ export async function POST(req: NextRequest) {
     };
 
     // ── Model resolution from request headers ──
-    const { model: languageModel, modelInfo, modelString } = resolveModelFromHeaders(req);
+    const { model: languageModel, modelInfo, modelString, thinkingConfig: resolvedThinkingConfig } = resolveModelFromHeaders(req);
+    
+    // Check for thinkingConfig in body or headers
+    let thinkingConfig = getThinkingConfigFromBody(body) ?? resolvedThinkingConfig;
+    
+    // Inject default thinking configuration for Gemini interactive scenes
+    if (!thinkingConfig && outline.type === 'interactive') {
+      if (modelString.includes('gemini-2.5')) {
+        thinkingConfig = { enabled: true, budgetTokens: 4096 };
+        log.info(`[Thinking] Injected default thinkingBudget=4096 for Gemini 2.5 interactive scene`);
+      } else if (modelString.includes('gemini-3')) {
+        thinkingConfig = { enabled: true };
+        log.info(`[Thinking] Injected default thinkingLevel=high for Gemini 3.x interactive scene`);
+      }
+    }
 
     // Detect vision capability
     const hasVision = !!modelInfo?.capabilities?.vision;
@@ -97,6 +113,8 @@ export async function POST(req: NextRequest) {
             maxOutputTokens: modelInfo?.outputWindow,
           },
           'scene-content',
+          undefined,
+          thinkingConfig
         );
         return result.text;
       }
@@ -108,6 +126,8 @@ export async function POST(req: NextRequest) {
           maxOutputTokens: modelInfo?.outputWindow,
         },
         'scene-content',
+        undefined,
+        thinkingConfig
       );
       return result.text;
     };
@@ -147,6 +167,8 @@ export async function POST(req: NextRequest) {
         visionEnabled: hasVision,
         generatedMediaMapping,
         agents,
+        languageDirective,
+        thinkingConfig,
       }
     );
 

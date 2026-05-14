@@ -12,8 +12,12 @@ import { createLogger } from '@/lib/logger';
 
 const log = createLogger('ServerProviders');
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
+    console.log("DEBUG: GOOGLE_MODELS =", process.env.GOOGLE_MODELS);
+    console.log("DEBUG: getServerProviders() =", getServerProviders());
     return apiSuccess({
       providers: getServerProviders(),
       tts: getServerTTSProviders(),

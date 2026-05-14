@@ -311,6 +311,38 @@ export const PROVIDERS: Record<ProviderId, ProviderConfig> = {
     icon: '/logos/gemini.svg',
     models: [
       {
+        id: 'gemini-3.1-pro-preview',
+        name: 'Gemini 3.1 Pro',
+        contextWindow: 1048576,
+        outputWindow: 65536,
+        capabilities: {
+          streaming: true,
+          tools: true,
+          vision: true,
+          thinking: {
+            toggleable: true,
+            budgetAdjustable: false,
+            defaultEnabled: true,
+          },
+        },
+      },
+      {
+        id: 'gemini-2.5-pro',
+        name: 'Gemini 2.5 Pro',
+        contextWindow: 1048576,
+        outputWindow: 65536,
+        capabilities: {
+          streaming: true,
+          tools: true,
+          vision: true,
+          thinking: {
+            toggleable: true,
+            budgetAdjustable: true,
+            defaultEnabled: true,
+          },
+        },
+      },
+      {
         id: 'gemini-2.5-flash',
         name: 'Gemini 2.5 Flash',
         contextWindow: 1048576,

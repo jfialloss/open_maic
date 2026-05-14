@@ -330,7 +330,7 @@ function ensureBuiltInProviders(state: Partial<SettingsState>): void {
       delete state.providersConfig![pid as ProviderId];
       if (state.providerId === pid) {
         state.providerId = 'google';
-        state.modelId = 'gemini-2.5-flash';
+        state.modelId = 'gemini-2.5-pro';
       }
     }
   });
@@ -380,7 +380,7 @@ const migrateFromOldStorage = () => {
 
   // Parse model selection
   let providerId: ProviderId = 'google';
-  let modelId = 'gemini-2.5-flash';
+  let modelId = 'gemini-2.5-pro';
   if (oldLlmModel) {
     const [pid, mid] = oldLlmModel.split(':');
     if (pid && mid) {
@@ -443,7 +443,7 @@ export const useSettingsStore = create<SettingsState>()(
       return {
         // Initial state (use migrated data if available)
         providerId: migratedData?.providerId || 'google',
-        modelId: migratedData?.modelId || 'gemini-2.5-flash',
+        modelId: migratedData?.modelId || 'gemini-2.5-pro',
         providersConfig: migratedData?.providersConfig || getDefaultProvidersConfig(),
         ttsModel: migratedData?.ttsModel || 'openai-tts',
         selectedAgentIds: migratedData?.selectedAgentIds || ['default-1', 'default-2', 'default-3'],
@@ -631,7 +631,7 @@ export const useSettingsStore = create<SettingsState>()(
         // Fetch server-configured providers and merge into local state
         fetchServerProviders: async () => {
           try {
-            const res = await fetch('/api/server-providers');
+            const res = await fetch('/api/server-providers', { cache: 'no-store' });
             if (!res.ok) return;
             const data = (await res.json()) as {
               providers: Record<string, { models?: string[]; baseUrl?: string }>;
@@ -944,7 +944,7 @@ export const useSettingsStore = create<SettingsState>()(
     },
     {
       name: 'settings-storage',
-      version: 2,
+      version: 3,
       // Migrate persisted state
       migrate: (persistedState: unknown, version: number) => {
         const state = persistedState as Partial<SettingsState>;

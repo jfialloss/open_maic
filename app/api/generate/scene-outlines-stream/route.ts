@@ -32,7 +32,7 @@ import type {
 } from '@/lib/types/generation';
 import { apiError } from '@/lib/server/api-response';
 import { createLogger } from '@/lib/logger';
-import { resolveModelFromHeaders } from '@/lib/server/resolve-model';
+import { resolveModelFromHeaders, getThinkingConfigFromBody } from '@/lib/server/resolve-model';
 import { validatePromptSafety } from '@/lib/server/safety-guard';
 import { authenticateRequest } from '@/lib/server/auth';
 import { logUserPrompt } from '@/lib/server/prompt-logger';
@@ -107,6 +107,20 @@ export async function POST(req: NextRequest) {
 
     // Get API configuration from request headers
     const { model: languageModel, modelInfo, modelString } = resolveModelFromHeaders(req);
+    let thinkingConfig = getThinkingConfigFromBody(body);
+
+    const isInteractive = body.requirements?.interactiveMode || body.requirements?.deepInteraction;
+
+    // Inject default thinking configuration for Gemini interactive outlines
+    if (!thinkingConfig && isInteractive) {
+      if (modelString.includes('gemini-2.5')) {
+        thinkingConfig = { enabled: true, budgetTokens: 4096 };
+        log.info(`[Thinking] Injected default thinkingBudget=4096 for Gemini 2.5 outline generation`);
+      } else if (modelString.includes('gemini-3')) {
+        thinkingConfig = { enabled: true };
+        log.info(`[Thinking] Injected default thinkingLevel=high for Gemini 3.x outline generation`);
+      }
+    }
 
     if (!body.requirements) {
       return apiError('MISSING_REQUIRED_FIELD', 400, 'Requirements are required');
@@ -200,7 +214,7 @@ export async function POST(req: NextRequest) {
     // Build teacher context from agents (if available)
     const teacherContext = formatTeacherPersonaForPrompt(agents);
 
-    const promptId = requirements.interactiveMode
+    const promptId = isInteractive
       ? PROMPT_IDS.INTERACTIVE_OUTLINES
       : PROMPT_IDS.REQUIREMENTS_TO_OUTLINES;
 
@@ -274,7 +288,7 @@ export async function POST(req: NextRequest) {
 
           for (let attempt = 1; attempt <= MAX_STREAM_RETRIES + 1; attempt++) {
             try {
-              const result = streamLLM(streamParams, 'scene-outlines-stream');
+              const result = streamLLM(streamParams, 'scene-outlines-stream', thinkingConfig);
 
               let fullText = '';
               parsedOutlines = [];

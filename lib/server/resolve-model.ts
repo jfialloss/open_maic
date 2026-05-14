@@ -9,10 +9,25 @@ import type { NextRequest } from 'next/server';
 import { getModel, parseModelString, type ModelWithInfo } from '@/lib/ai/providers';
 import { resolveApiKey, resolveBaseUrl, resolveProxy } from '@/lib/server/provider-config';
 import { validateUrlForSSRF } from '@/lib/server/ssrf-guard';
+import type { ThinkingConfig } from '@/lib/types/provider';
 
 export interface ResolvedModel extends ModelWithInfo {
   /** Original model string (e.g. "openai/gpt-4o-mini") */
   modelString: string;
+  thinkingConfig?: ThinkingConfig;
+}
+
+/**
+ * Extract thinkingConfig from JSON request body
+ */
+export function getThinkingConfigFromBody(body: unknown): ThinkingConfig | undefined {
+  if (!body || typeof body !== 'object') return undefined;
+  const record = body as { thinkingConfig?: unknown; thinking?: unknown };
+  const config = record.thinkingConfig ?? record.thinking;
+  if (config && typeof config === 'object') {
+    return config as ThinkingConfig;
+  }
+  return undefined;
 }
 
 /**
@@ -26,6 +41,7 @@ export function resolveModel(params: {
   baseUrl?: string;
   providerType?: string;
   requiresApiKey?: boolean;
+  thinkingConfig?: ThinkingConfig;
 }): ResolvedModel {
   const modelString = params.modelString || process.env.DEFAULT_MODEL || 'gpt-4o-mini';
   const { providerId, modelId } = parseModelString(modelString);
@@ -53,7 +69,7 @@ export function resolveModel(params: {
     requiresApiKey: params.requiresApiKey,
   });
 
-  return { model, modelInfo, modelString };
+  return { model, modelInfo, modelString, thinkingConfig: params.thinkingConfig };
 }
 
 /**

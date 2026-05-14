@@ -98,7 +98,8 @@ export async function generateSceneOutlinesFromRequirements(
       '**IMPORTANT: Do NOT include any video mediaGenerations (type: "video") in the outlines. Video generation is disabled. Image generation is allowed.**';
   }
 
-  const promptId = requirements.interactiveMode
+  const isInteractive = requirements.interactiveMode || requirements.deepInteraction;
+  const promptId = isInteractive
     ? PROMPT_IDS.INTERACTIVE_OUTLINES
     : PROMPT_IDS.REQUIREMENTS_TO_OUTLINES;
 

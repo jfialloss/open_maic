@@ -33,6 +33,7 @@ import {
 } from 'lucide-react';
 import { useI18n } from '@/lib/hooks/use-i18n';
 import type { ProviderConfig } from '@/lib/ai/providers';
+import { PROVIDERS, type ProviderId } from '@/lib/ai/providers';
 import type { ProvidersConfig } from '@/lib/types/settings';
 import { formatContextWindow } from './utils';
 import { cn } from '@/lib/utils';
@@ -149,8 +150,16 @@ export function ProviderConfigPanel({
     }
   }, [apiKey, baseUrl, provider.id, provider.type, requiresApiKey, providersConfig, t]);
 
-  const models = providersConfig[provider.id]?.models || [];
-  const isServerConfigured = providersConfig[provider.id]?.isServerConfigured;
+
+  const serverModels = providersConfig[provider.id]?.serverModels;
+  const isServerConfigured = !!providersConfig[provider.id]?.isServerConfigured;
+  
+  let models = PROVIDERS[provider.id as ProviderId]?.models || [];
+  if (isServerConfigured && !apiKey && serverModels?.length) {
+    const allowed = new Set(serverModels);
+    models = models.filter((m) => allowed.has(m.id));
+  }
+
 
   return (
     <div className="space-y-6 max-w-3xl">

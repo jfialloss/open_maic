@@ -68,6 +68,7 @@ export interface SceneContentOptions {
   generatedMediaMapping?: ImageMapping;
   agents?: AgentInfo[];
   languageDirective?: string;
+  thinkingConfig?: import('@/lib/types/provider').ThinkingConfig;
 }
 
 export interface SceneActionsOptions {

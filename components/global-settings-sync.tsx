@@ -18,8 +18,6 @@ const LOCAL_KEYS = [
   'maxTurns',
   'agentMode',
   'autoAgentCount',
-  'providerId',
-  'modelId',
   'imageProviderId',
   'imageModelId',
   'videoProviderId',

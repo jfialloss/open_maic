@@ -180,25 +180,27 @@ When a slide scene needs an image or video but no suitable PDF image exists, mar
 3. **Transition scenes (slides)**: Concept explanations between widgets
 4. **Closing scenes (slides)**: Summary, key takeaways, next steps
 
-## Widget Type Preferences (Adjust Based on Course Length)
+## Widget Type Preferences (Deep Interaction Mode)
 
-For **longer courses (10+ scenes)**, consider:
-- Multiple simulations for varied experiments
-- At least one game for fun practice
-- Use diagrams sparingly (prefer interactive diagrams)
+  **CRITICAL RULE: You MUST generate a BALANCED, COMPREHENSIVE course of 10 to 15 scenes AND EXACTLY 1 QUIZ.**
+  - Your goal is to provide a complete pedagogical experience that blends deep theoretical explanations with hands-on practice.
+  - You MUST generate at least 3 to 5 `interactive` scenes (simulators, games, 3d) per course to maintain high engagement.
+  - You MUST generate around 6 to 9 informative `slide` scenes. Use slides to deeply explain concepts, theories, step-by-step logic, and provide rich context BEFORE and AFTER interactive widgets.
+  - You MUST generate exactly 1 `quiz` scene at the very end of the course to evaluate the student's learning. This is MANDATORY.
+  - Do NOT generate courses that are too short. A good course must have at least 10 scenes in total.
+  
+  **Example distribution for a 12-scene course:**
+  - 1 slide (Introduction & Objectives)
+  - 2 slides (Theoretical foundation)
+  - 1 interactive (Simulation)
+  - 2 slides (Deepening the concept)
+  - 1 interactive (Visualization3d or diagram)
+  - 2 slides (Real-world applications)
+  - 1 interactive (Game/Practice)
+  - 1 slide (Summary)
+  - 1 quiz (Evaluation - MANDATORY)
 
-For **shorter courses (<10 scenes)**:
-- Focus on quality over quantity
-- One well-designed widget may be sufficient
-- Slides can provide context when widget variety is limited
-
-**Example distribution for 10 scenes:**
-- 2 simulations
-- 1-2 games
-- 1 diagram (if relevant)
-- code/visualization3d as needed
-
-**Flexibility is encouraged** — match widgets to content needs, not rigid formulas.
+**Flexibility is encouraged** — match widgets to content needs, but maintain a high density of interactive widgets.
 
 ## Example Outline with Good Game Design
 

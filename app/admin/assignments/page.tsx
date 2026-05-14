@@ -3,9 +3,11 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
-import { Loader2, ArrowLeft, Search, Users, ClipboardList, CheckCircle2, Clock, FileSearch, XCircle } from 'lucide-react';
-import { collection, query, getDocs, doc, getDoc, where } from 'firebase/firestore';
+import { Loader2, ArrowLeft, Search, Users, ClipboardList, CheckCircle2, Clock, FileSearch, XCircle, Trash2 } from 'lucide-react';
+import { collection, query, getDocs, doc, getDoc, where, updateDoc, deleteField } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { toast } from 'sonner';
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from '@/components/ui/alert-dialog';
 import { useAuth } from '@/lib/hooks/use-auth';
 import { useI18n } from '@/lib/hooks/use-i18n';
 
@@ -28,6 +30,27 @@ export default function AdminAssignmentsPage() {
   const [assignments, setAssignments] = useState<AssignedCourseData[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  
+  const [unassignTarget, setUnassignTarget] = useState<{ studentUid: string; stageId: string } | null>(null);
+  const [unassigning, setUnassigning] = useState(false);
+
+  const handleUnassign = async () => {
+    if (!unassignTarget) return;
+    try {
+      setUnassigning(true);
+      await updateDoc(doc(db, 'users', unassignTarget.studentUid, 'data', 'profile'), {
+        [`assignedCourses.${unassignTarget.stageId}`]: deleteField()
+      });
+      setAssignments(prev => prev.filter(ac => ac.stageId !== unassignTarget.stageId || ac.studentUid !== unassignTarget.studentUid));
+      toast.success((t('adminAssignments') as any)?.unassignSuccess || 'Asignación eliminada');
+      setUnassignTarget(null);
+    } catch (error) {
+      console.error('Error unassigning course:', error);
+      toast.error('Error');
+    } finally {
+      setUnassigning(false);
+    }
+  };
 
   useEffect(() => {
     if (!authLoading && role !== 'admin' && role !== 'tutor') {
@@ -179,6 +202,7 @@ export default function AdminAssignmentsPage() {
                       <th className="px-6 py-4 font-semibold">{t('adminAssignments.course')}</th>
                       <th className="px-6 py-4 font-semibold text-center">{t('adminAssignments.date')}</th>
                       <th className="px-6 py-4 font-semibold text-center">{t('adminAssignments.status')}</th>
+                      <th className="px-6 py-4 font-semibold text-center">{(t('adminAssignments') as any)?.actions || 'Acciones'}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
@@ -231,6 +255,17 @@ export default function AdminAssignmentsPage() {
                             )}
                           </div>
                         </td>
+                        <td className="px-6 py-4">
+                          <div className="flex justify-center">
+                            <button
+                              onClick={() => setUnassignTarget({ studentUid: ac.studentUid, stageId: ac.stageId })}
+                              className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors"
+                              title={(t('adminAssignments') as any)?.unassign || 'Desasignar'}
+                            >
+                              <Trash2 className="size-4" />
+                            </button>
+                          </div>
+                        </td>
                       </motion.tr>
                     ))}
                   </tbody>
@@ -239,6 +274,31 @@ export default function AdminAssignmentsPage() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        <AlertDialog open={!!unassignTarget} onOpenChange={(open) => !open && setUnassignTarget(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{(t('adminAssignments') as any)?.unassignConfirmTitle || '¿Desasignar Curso?'}</AlertDialogTitle>
+              <AlertDialogDescription>
+                {(t('adminAssignments') as any)?.unassignConfirmDesc || 'Esto eliminará permanentemente la asignación del panel del estudiante.'}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={unassigning}>{(t('common') as any)?.cancel || 'Cancelar'}</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleUnassign();
+                }}
+                disabled={unassigning}
+                className="bg-red-600 hover:bg-red-700 text-white"
+              >
+                {unassigning ? <Loader2 className="size-4 animate-spin mr-2" /> : <Trash2 className="size-4 mr-2" />}
+                {(t('adminAssignments') as any)?.unassign || 'Desasignar'}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );
