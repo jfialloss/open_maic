@@ -330,7 +330,7 @@ function ensureBuiltInProviders(state: Partial<SettingsState>): void {
       delete state.providersConfig![pid as ProviderId];
       if (state.providerId === pid) {
         state.providerId = 'google';
-        state.modelId = 'gemini-2.5-pro';
+        state.modelId = 'gemini-3-flash-preview';
       }
     }
   });
@@ -380,7 +380,7 @@ const migrateFromOldStorage = () => {
 
   // Parse model selection
   let providerId: ProviderId = 'google';
-  let modelId = 'gemini-2.5-pro';
+  let modelId = 'gemini-3-flash-preview';
   if (oldLlmModel) {
     const [pid, mid] = oldLlmModel.split(':');
     if (pid && mid) {
@@ -443,7 +443,7 @@ export const useSettingsStore = create<SettingsState>()(
       return {
         // Initial state (use migrated data if available)
         providerId: migratedData?.providerId || 'google',
-        modelId: migratedData?.modelId || 'gemini-2.5-pro',
+        modelId: migratedData?.modelId || 'gemini-3-flash-preview',
         providersConfig: migratedData?.providersConfig || getDefaultProvidersConfig(),
         ttsModel: migratedData?.ttsModel || 'openai-tts',
         selectedAgentIds: migratedData?.selectedAgentIds || ['default-1', 'default-2', 'default-3'],

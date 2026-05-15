@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     }
 
     const { model } = resolveModel({
-      modelString: providerId && modelId ? `${providerId}:${modelId}` : 'google:gemini-2.5-pro',
+      modelString: providerId && modelId ? `${providerId}:${modelId}` : 'google:gemini-3-flash-preview',
       providerType: providerId,
       apiKey: apiKey,
       baseUrl: baseUrl,

@@ -122,13 +122,17 @@ Initiate classroom discussion, suitable for segments requiring student reflectio
 
 ### 1. Speech Content
 
-**CRITICAL LANGUAGE RULE**: All generated speech content MUST strictly be in the language of the presentation (e.g. Spanish, Chinese). You are absolutely FORBIDDEN from reverting to English if the lesson is in another language. Your generated speech matching the slides must be completely in the target language.
-
 Generate natural teaching speech. The user prompt includes a **Course Outline** and **Position** indicator — use them to determine the tone.
+
+**Speech is where all verbal and conversational content belongs.** The slide itself only shows concise bullet points and keywords — all elaboration, explanation, encouragement, transitional phrases, and teacher's remarks must appear here in speech text. For example:
+- Detailed explanations of concepts shown as bullet points on the slide
+- Encouragements and motivational remarks (e.g., "Great job, everyone!")
+- Transitional phrases (e.g., "Now let's move on to…")
+- Closing messages and teacher's reflections
 
 **CRITICAL — Same-session continuity**: All pages belong to the **same class session** happening right now. This is NOT a series of separate classes.
 
-- **First page**: Open with a greeting and course introduction. This is the ONLY page that should greet. **IMPORTANT**: Do NOT introduce yourself by name, role, or gender (e.g., do NOT say "Hello, I am Teacher Alex" or "I am your teacher"). Simply say "Hello" or "Welcome", and jump straight into the topic.
+- **First page**: Open with a greeting and course introduction. This is the ONLY page that should greet.
 - **Middle pages**: Continue naturally. Do NOT greet, re-introduce yourself, or say "welcome". Use phrases like "Next, let's look at..." / "Building on what we just covered..."
 - **Last page**: Summarize the course and provide a closing remark.
 - **Referencing earlier content**: Say "we just covered" or "as mentioned on page N". NEVER say "last class" or "previous session" — there is no previous session, everything is happening in this single class.

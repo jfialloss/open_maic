@@ -377,27 +377,6 @@ const earth = new THREE.Mesh(earthGeometry, earthMaterial);
     }
 
     // Scene initialization with error handling - REQUIRED
-    function showError(message) {
-      const loadingEl = document.getElementById('loading');
-      if (loadingEl) {
-        loadingEl.innerHTML =
-          `<div style="text-align:center;color:#ff6b6b;">
-            <div style="font-size:24px;margin-bottom:16px;">⚠️</div>
-            Failed to load 3D scene<br>
-            <small style="color:#888;">${message}</small><br>
-            <button onclick="location.reload()" style="margin-top:16px;padding:8px 16px;background:#6366f1;color:white;border:none;border-radius:6px;cursor:pointer;">Retry</button>
-          </div>`;
-      }
-    }
-
-    window.addEventListener('error', (event) => {
-      showError(event.error ? event.error.message : event.message);
-    });
-
-    window.addEventListener('unhandledrejection', (event) => {
-      showError(event.reason ? event.reason.message || event.reason : 'Promise rejected');
-    });
-
     async function initScene() {
       try {
         // Check WebGL support
@@ -479,31 +458,6 @@ const earth = new THREE.Mesh(earthGeometry, earthMaterial);
           controls.target.set(0, 0, 0);
         });
 
-        // Teacher Actions Listener - REQUIRED for external control
-        window.addEventListener('message', (event) => {
-          const data = event.data;
-          if (!data || !data.type) return;
-          
-          switch (data.type) {
-            case 'widget_setState': {
-              const payload = data.state || {};
-              // Example: if (payload.cameraPosition) camera.position.set(...payload.cameraPosition);
-              break;
-            }
-            case 'widget_highlight': {
-              const { target } = data;
-              if (objects[target]) {
-                const mesh = objects[target];
-                if (mesh.material && mesh.material.emissive) {
-                  mesh.material.emissive.set(0xffff00);
-                  setTimeout(() => mesh.material.emissive.set(0x000000), 3000);
-                }
-              }
-              break;
-            }
-          }
-        });
-
         // Handle resize
         window.addEventListener('resize', () => {
           const newWidth = container.clientWidth || window.innerWidth;
@@ -518,7 +472,14 @@ const earth = new THREE.Mesh(earthGeometry, earthMaterial);
 
       } catch (error) {
         console.error('Scene initialization failed:', error);
-        showError(error.message);
+        // Show error message in loading overlay
+        document.getElementById('loading').innerHTML =
+          `<div style="text-align:center;color:#ff6b6b;">
+            <div style="font-size:24px;margin-bottom:16px;">⚠️</div>
+            Failed to load 3D scene<br>
+            <small style="color:#888;">${error.message}</small><br>
+            <button onclick="location.reload()" style="margin-top:16px;padding:8px 16px;background:#6366f1;color:white;border:none;border-radius:6px;cursor:pointer;">Retry</button>
+          </div>`;
       }
     }
 
@@ -599,13 +560,98 @@ const earth = new THREE.Mesh(earthGeometry, earthMaterial);
 
 ## JavaScript Coding Rules
 
-### 1. ANTI-FREEZE PROTECTION (CRITICAL)
-**NEVER** use `while(true)`, `do...while`, or long-running `for` loops to simulate physics, orbits, or time-based animations. 
-This will cause an **INFINITE SYNCHRONOUS LOOP** that freezes and crashes the user's browser instantly!
-All animations MUST be placed inside the existing `function animate()` loop using `requestAnimationFrame`. Use `Date.now()` or a frame counter to calculate orbital positions dynamically inside `animate()`.
+### 1. Switch Statement Scope (CRITICAL - Causes SyntaxError)
 
-### 2. VARIABLE DECLARATION (CRITICAL)
-Always declare variables (e.g., `let moon`, `const earth`) before using them or assigning them to the `objects` dictionary to avoid `ReferenceError`.
+**WRONG - Variables redeclared across cases:**
+```javascript
+// This causes: SyntaxError: Identifier 'elementId' has already been declared
+switch (action) {
+  case 'HIGHLIGHT_ELEMENT':
+    const { elementId, highlight } = payload;  // First const
+    // ...
+    break;
+    
+  case 'ANNOTATE_ELEMENT':
+    const { elementId, text } = payload;  // ERROR! elementId already declared
+    // ...
+    break;
+}
+```
+
+**CORRECT - Wrap each case in braces to create block scope:**
+```javascript
+// Each case has its own block scope
+switch (action) {
+  case 'HIGHLIGHT_ELEMENT': {
+    const { elementId, highlight } = payload;
+    // ...
+    break;
+  }
+  
+  case 'ANNOTATE_ELEMENT': {
+    const { elementId, text } = payload;  // OK - different block scope
+    // ...
+    break;
+  }
+  
+  case 'SET_WIDGET_STATE': {
+    const { cameraPosition, scale } = payload;
+    // ...
+    break;
+  }
+}
+```
+
+**Alternative - Use different variable names:**
+```javascript
+switch (action) {
+  case 'HIGHLIGHT_ELEMENT':
+    const highlightData = payload;
+    // Use highlightData.elementId
+    break;
+    
+  case 'ANNOTATE_ELEMENT':
+    const annotateData = payload;
+    // Use annotateData.elementId
+    break;
+}
+```
+
+### 2. Teacher Actions Listener Pattern
+
+Always wrap switch cases in braces:
+
+```javascript
+window.addEventListener('message', (event) => {
+  const { action, payload } = event.data;
+  
+  switch (action) {
+    case 'SET_WIDGET_STATE': {
+      if (payload.cameraPosition) camera.position.set(...payload.cameraPosition);
+      if (payload.scale !== undefined) {
+        objects.cellGroup.scale.setScalar(payload.scale);
+      }
+      break;
+    }
+    
+    case 'HIGHLIGHT_ELEMENT': {
+      const { elementId, highlight } = payload;
+      if (objects[elementId]) {
+        objects[elementId].forEach(mesh => {
+          mesh.material.emissive.set(highlight ? 0xffff00 : 0x000000);
+        });
+      }
+      break;
+    }
+    
+    case 'ANNOTATE_ELEMENT': {
+      const { elementId, text } = payload;
+      // Create annotation tooltip
+      break;
+    }
+  }
+});
+```
 
 ## Output Format
 

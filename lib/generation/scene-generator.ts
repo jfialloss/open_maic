@@ -678,6 +678,9 @@ async function generateSlideContent(
     canvas_height: canvasHeight,
     teacherContext,
     languageDirective: languageDirective || '',
+    mediaElementEnabled: true,
+    imageElementEnabled: true,
+    generatedImageEnabled: true,
   });
 
   if (!prompts) {

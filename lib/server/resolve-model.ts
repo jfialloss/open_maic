@@ -43,7 +43,8 @@ export function resolveModel(params: {
   requiresApiKey?: boolean;
   thinkingConfig?: ThinkingConfig;
 }): ResolvedModel {
-  const modelString = params.modelString || process.env.DEFAULT_MODEL || 'gpt-4o-mini';
+  // FORZADO para evitar que el frontend mande gemini-2.5-pro por caché
+  const modelString = 'google:gemini-3-flash-preview';
   const { providerId, modelId } = parseModelString(modelString);
 
   const clientBaseUrl = params.baseUrl || undefined;

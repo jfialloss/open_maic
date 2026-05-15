@@ -154,12 +154,52 @@ export async function generateSceneOutlinesFromRequirements(
       return { success: false, error: 'Failed to parse scene outlines response' };
     }
 
-    // Ensure IDs and order
-    const enriched = rawOutlines.map((outline, index) => ({
-      ...outline,
-      id: outline.id || nanoid(),
-      order: index + 1,
-    }));
+    // Programmatically enforce a mandatory final evaluation quiz
+    const hasQuiz = rawOutlines.some((o) => o.type === 'quiz');
+    if (!hasQuiz && rawOutlines.length > 0) {
+      log.info('LLM failed to generate a quiz. Programmatically injecting one at the end.');
+      rawOutlines.push({
+        id: `scene_${nanoid()}`,
+        type: 'quiz',
+        title: 'Evaluación Final / Final Evaluation',
+        description: 'Evaluación final para comprobar los conocimientos adquiridos. / Final evaluation to check acquired knowledge.',
+        keyPoints: ['Verificar comprensión / Verify understanding', 'Reforzar conceptos clave / Reinforce key concepts'],
+        order: rawOutlines.length + 1,
+        languageDirective: languageDirective,
+        quizConfig: {
+          questionCount: 3,
+          difficulty: 'easy',
+          questionTypes: ['single', 'multiple'],
+        },
+      } as SceneOutline);
+    }
+
+    // Ensure IDs, order, and pass down languageDirective
+    const enriched = rawOutlines.map((outline, index) => {
+      // Bulletproof fix for title duplication: programmatically strip the title from keyPoints
+      let cleanedKeyPoints = outline.keyPoints;
+      if (cleanedKeyPoints && Array.isArray(cleanedKeyPoints) && outline.title) {
+        const titleLower = outline.title.trim().toLowerCase();
+        cleanedKeyPoints = cleanedKeyPoints.filter((p) => {
+          const ptLower = p.trim().toLowerCase();
+          // Remove if the point is exactly the title, or if it just adds "Introduction: " etc.
+          return ptLower !== titleLower && !ptLower.includes(titleLower);
+        });
+        
+        // If we accidentally filtered everything, just keep the original so we don't break the slide
+        if (cleanedKeyPoints.length === 0) {
+          cleanedKeyPoints = outline.keyPoints;
+        }
+      }
+
+      return {
+        ...outline,
+        keyPoints: cleanedKeyPoints,
+        id: outline.id || nanoid(),
+        order: index + 1,
+        languageDirective: outline.languageDirective || languageDirective,
+      };
+    });
 
     // Replace sequential gen_img_N/gen_vid_N with globally unique IDs
     const result = uniquifyMediaElementIds(enriched);
@@ -205,3 +245,4 @@ export function applyOutlineFallbacks(
   }
   return outline;
 }
+

@@ -15,8 +15,46 @@ export interface CloudClassroom extends Partial<StageStoreData> {
   authorNickname: string;
   subject: string;
   createdAtTime: number;
-  status?: 'building' | 'completed';
+  status?: 'building' | 'syncing' | 'completed';
   audioUrlMap?: Record<string, string>;
+}
+
+function encodeNestedArrays(obj: any): any {
+  if (Array.isArray(obj)) {
+    return obj.map(item => {
+      if (Array.isArray(item)) {
+        return { _isNestedArray: true, data: JSON.stringify(item) };
+      }
+      return encodeNestedArrays(item);
+    });
+  } else if (obj !== null && typeof obj === 'object') {
+    const newObj: any = {};
+    for (const key of Object.keys(obj)) {
+      newObj[key] = encodeNestedArrays(obj[key]);
+    }
+    return newObj;
+  }
+  return obj;
+}
+
+function decodeNestedArrays(obj: any): any {
+  if (Array.isArray(obj)) {
+    return obj.map(item => decodeNestedArrays(item));
+  } else if (obj !== null && typeof obj === 'object') {
+    if (obj._isNestedArray === true && typeof obj.data === 'string') {
+      try {
+        return decodeNestedArrays(JSON.parse(obj.data));
+      } catch (e) {
+        return [];
+      }
+    }
+    const newObj: any = {};
+    for (const key of Object.keys(obj)) {
+      newObj[key] = decodeNestedArrays(obj[key]);
+    }
+    return newObj;
+  }
+  return obj;
 }
 
 export async function publishStageToCloud(
@@ -38,6 +76,19 @@ export async function publishStageToCloud(
       log.info(`Sync lock active for ${stageId}, aborting duplicate publish attempt.`);
       return;
     }
+    // 0. Pre-create the Firestore document so Storage Rules pass
+    // (Firebase storage rules check firestore.get(global_classrooms/stageId).createdBy)
+    const cloudClassroom: CloudClassroom = {
+      ...stageData,
+      createdBy: userUid,
+      authorNickname: userNickname || 'Docente Anónimo',
+      subject: subject,
+      createdAtTime: Date.now(),
+      status: 'syncing', // Will be marked as completed at the end
+      audioUrlMap: {},
+    };
+    const sanitizedClassroom = encodeNestedArrays(JSON.parse(JSON.stringify(cloudClassroom)));
+    await setDoc(doc(firestoreDb, 'global_classrooms', stageId), sanitizedClassroom);
 
     // 1. Traverse and upload MediaFiles (Images/Videos)
     const mediaRecords = await dexieDb.mediaFiles.where('stageId').equals(stageId).toArray();
@@ -138,21 +189,12 @@ export async function publishStageToCloud(
       );
     }
 
-    // 2. Wrap and send to Firestore
-    const cloudClassroom: CloudClassroom = {
-      ...stageData,
-      createdBy: userUid,
-      authorNickname: userNickname || 'Docente Anónimo',
-      subject: subject,
-      createdAtTime: Date.now(),
+    // 3. Update the Firestore document with final URLs and completed status
+    await setDoc(doc(firestoreDb, 'global_classrooms', stageId), {
+      ...sanitizedClassroom,
       status: 'completed',
       audioUrlMap,
-    };
-
-    // Use stageId as document ID
-    // Remove undefined values via JSON stringify hack because Firestore throws if a field is explicitly 'undefined'
-    const sanitizedClassroom = JSON.parse(JSON.stringify(cloudClassroom));
-    await setDoc(doc(firestoreDb, 'global_classrooms', stageId), sanitizedClassroom);
+    }, { merge: true });
     
     // Mark locally as published to avoid redundant syncs
     await dexieDb.stages.update(stageId, { isPublishedToCloud: true });
@@ -201,7 +243,9 @@ export async function publishBuildingStageToCloud(
   }
 }
 
-export async function processCloudDownload(stageId: string, cloudData: CloudClassroom): Promise<void> {
+export async function processCloudDownload(stageId: string, cloudDataRaw: any): Promise<void> {
+  const cloudData = decodeNestedArrays(cloudDataRaw) as CloudClassroom;
+  
   // If the user clones this course, we hydrate local Dexie.
   // The scenes already contain the Firebase URLs in the JSON structure!
   // Slide renderer will natively load external HTTPS urls.

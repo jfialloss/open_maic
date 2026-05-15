@@ -144,21 +144,6 @@ Interactive 3D scenes using Three.js for immersive learning experiences.
 - Performance-optimized geometry
 - Smooth animations with requestAnimationFrame
 
-## AI-Generated Media
-
-When a slide scene needs an image or video but no suitable PDF image exists, mark it for AI generation:
-
-- Add a `mediaGenerations` array to the scene outline
-- Each entry specifies: `type` ("image" or "video"), `prompt` (description for the generation model), `elementId` (unique placeholder), and optionally `aspectRatio` (default "16:9") and `style`
-- **Image IDs**: use `"gen_img_1"`, `"gen_img_2"`, etc. — IDs are **globally unique across the entire course**
-- **Video IDs**: use `"gen_vid_1"`, `"gen_vid_2"`, etc.
-- Only request media generation when it genuinely enhances the content. Do NOT request duplicate media across slides.
-- Use **video** for content that benefits from motion/animation. Use **image** for static content.
-- Video generation takes 1-2 minutes, so use it sparingly.
-- **Language in images**: If the image contains text, the prompt MUST explicitly specify that all text should be in the course language.
-
-{{mediaGenerationPolicy}}
-
 ## Widget Selection Guide
 
 | Content Type | Recommended Widget | Reason |
@@ -180,26 +165,25 @@ When a slide scene needs an image or video but no suitable PDF image exists, mar
 3. **Transition scenes (slides)**: Concept explanations between widgets
 4. **Closing scenes (slides)**: Summary, key takeaways, next steps
 
-## Widget Type Preferences (Deep Interaction Mode)
+## Widget Type Preferences (Adjust Based on Course Length)
 
-  **CRITICAL RULE: You MUST generate a BALANCED, COMPREHENSIVE course of 10 to 15 scenes AND EXACTLY 1 QUIZ.**
-  - Your goal is to provide a complete pedagogical experience that blends deep theoretical explanations with hands-on practice.
-  - You MUST generate between **1 to 3 `interactive` scenes maximum** (simulators, games, 3d) per course. Do not overuse them. Choose the widget type that best fits the subject matter.
-  - You MUST generate around **8 to 11 informative `slide` scenes**. Use slides to deeply explain concepts, theories, step-by-step logic, and provide rich context BEFORE and AFTER interactive widgets.
-  - You MUST generate exactly 1 `quiz` scene at the very end of the course to evaluate the student's learning. This is MANDATORY.
-  - Do NOT generate courses that are too short. A good course must have at least 10 scenes in total.
-  
-  **Example distribution for a 13-scene course:**
-  - 1 slide (Introduction & Objectives)
-  - 2 slides (Theoretical foundation)
-  - 1 interactive (Simulation or Diagram)
-  - 3 slides (Deepening the concept)
-  - 3 slides (Real-world applications & Step-by-step)
-  - 1 interactive (Game/Practice)
-  - 1 slide (Summary)
-  - 1 quiz (Evaluation - MANDATORY)
+For **longer courses (10+ scenes)**, consider:
+- Multiple simulations for varied experiments
+- At least one game for fun practice
+- Use diagrams sparingly (prefer interactive diagrams)
 
-**Flexibility is encouraged** — match widgets to content needs, but maintain a balanced density favoring deep theoretical slides.
+For **shorter courses (<10 scenes)**:
+- Focus on quality over quantity
+- One well-designed widget may be sufficient
+- Slides can provide context when widget variety is limited
+
+**Example distribution for 10 scenes:**
+- 2 simulations
+- 1-2 games
+- 1 diagram (if relevant)
+- code/visualization3d as needed
+
+**Flexibility is encouraged** — match widgets to content needs, not rigid formulas.
 
 ## Example Outline with Good Game Design
 
@@ -265,7 +249,7 @@ Rules:
 
 ```json
 {
-  "languageDirective": "Deliver the entire course in English. Use simple vocabulary suitable for a beginner.",
+  "languageDirective": "<Insert the directive you inferred based on the Language Inference rules>",
   "outlines": [
     {
       "id": "scene_1",
@@ -273,14 +257,7 @@ Rules:
       "title": "Introduction to Projectile Motion",
       "description": "Introduce the concept and learning objectives",
       "keyPoints": ["What is projectile motion", "Real-world examples", "Key variables"],
-      "order": 1,
-      "mediaGenerations": [
-        {
-          "type": "image",
-          "prompt": "A cannon firing a cannonball showing a clear parabolic trajectory, abstract educational style",
-          "elementId": "gen_img_1"
-        }
-      ]
+      "order": 1
     },
     {
       "id": "scene_2",
@@ -293,6 +270,19 @@ Rules:
       "widgetOutline": {
         "concept": "projectile_motion",
         "keyVariables": ["angle", "initial_velocity"]
+      }
+    },
+    {
+      "id": "scene_3",
+      "type": "quiz",
+      "title": "Knowledge Check",
+      "description": "Test student understanding of the key concepts.",
+      "keyPoints": ["Test point 1", "Test point 2"],
+      "order": 3,
+      "quizConfig": {
+        "questionCount": 2,
+        "difficulty": "easy",
+        "questionTypes": ["single", "multiple"]
       }
     }
   ]
@@ -309,13 +299,13 @@ Rules:
 
 **Scene-level rules:**
 
-4. `type` is one of `"slide"`, `"quiz"`, `"interactive"`, `"pbl"`.
-5. `mediaGenerations` (optional) can be used to request AI-generated images/videos for slide scenes.
-6. **Interactive focus**: Prefer interactive widgets for hands-on learning.
+4. **Interactive focus**: Prefer interactive widgets for hands-on learning.
 5. **Widget variety**: Use different widget types throughout the course when appropriate.
 6. **Flow**: Slides should introduce concepts, widgets should let students explore.
 7. **Language**: Apply the Language Inference decision rules above when producing `languageDirective`, and author all scene content in the inferred language.
 8. **REQUIRED for interactive scenes**: Every scene with `type: "interactive"` MUST include both `widgetType` AND `widgetOutline` fields.
+9. **Game quality**: Game widgets should be INTERACTIVE and FUN, not boring quizzes.
 10. **Mobile-first**: All widgets should work well on mobile devices.
+11. **No title duplication**: Never include the exact same text of the `title` inside the `keyPoints` array. The `keyPoints` must only contain supporting bullet points, not a repetition of the title.
+12. **MANDATORY**: The final scene of EVERY course MUST be an evaluation quiz (type: "quiz") with a comprehensive set of questions. Without this final quiz, the student cannot complete the course.
 
-{{snippet:peaas-safety}}

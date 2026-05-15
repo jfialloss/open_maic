@@ -119,27 +119,16 @@ To make highlight/annotation work, use consistent IDs for controls:
 - Use `min-height` for canvas to ensure it's visible on mobile
 - Control panel should be collapsible on mobile if large
 
-Example mobile-safe layout (STRICTLY USE RAW CSS, NO TAILWIND):
+Example mobile-safe layout:
 ```html
-<style>
-  body { margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; font-family: sans-serif; }
-  #controls { flex-shrink: 0; max-height: 40vh; overflow-y: auto; padding: 10px; background: #f8f9fa; border-bottom: 1px solid #ccc; }
-  #canvas-container { flex: 1; min-height: 0; position: relative; }
-  canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-  
-  @media (min-width: 768px) {
-    body { flex-direction: row; }
-    #controls { width: 300px; max-height: 100vh; border-bottom: none; border-right: 1px solid #ccc; }
-  }
-</style>
-<body>
+<body class="flex flex-col min-h-screen md:flex-row">
   <!-- Mobile: Full-width, collapsible control panel -->
-  <div id="controls">
+  <div id="controls" class="w-full md:w-80 shrink-0 overflow-auto max-h-[40vh] md:max-h-screen">
     <!-- Controls here -->
-    <button onclick="toggleControls()" class="mobile-toggle">Hide Controls</button>
+    <button onclick="toggleControls()" class="md:hidden">Hide Controls</button>
   </div>
   <!-- Canvas area gets remaining space -->
-  <div id="canvas-container">
+  <div class="flex-1 min-h-[300px] relative">
     <canvas id="canvas"></canvas>
   </div>
 </body>
@@ -170,7 +159,7 @@ function resetSimulation() {
   state.ended = false;
   state.posX = 50;  // Reset to initial position!
   state.velocity = 0;  // Reset velocity!
-  updateButton('Start');
+  updateButton('启动');
   draw();
 }
 
@@ -188,11 +177,11 @@ function updateButton(text) {
 
 ### 3. Button State Management
 - Use clear state variables: `running`, `paused`, `ended`
-- Button text should reflect what will happen when clicked, properly localized:
-  - "Start" → Start simulation
-  - "Pause" → Pause running simulation
-  - "Resume" → Resume paused simulation
-  - "Reset" → Reset and start fresh (when ended)
+- Button text should reflect what will happen when clicked:
+  - "启动" / "开始" → Start simulation
+  - "暂停" / "暂停" → Pause running simulation
+  - "继续" / "继续" → Resume paused simulation
+  - "重新开始" / "重试" → Reset and start fresh (when ended)
 - One button should NOT do different things based on text alone
 
 ### 4. Touch-Friendly Controls
@@ -212,11 +201,11 @@ function updateButton(text) {
 - Show current state in UI (running indicator, paused icon)
 - Highlight end boundary or target
 - Show success/failure message when simulation ends
-- Animate the "Reset" button appearance
+- Animate the "重新开始" button appearance
 
 ### 7. Visible Animation (CRITICAL)
 
-**When the user clicks "Start", there MUST be OBVIOUS visual animation.**
+**When the user clicks "启动" (Start), there MUST be OBVIOUS visual animation.**
 
 #### Animation Requirements:
 1. **Moving objects**: Objects should visibly move, rotate, or change when simulation runs
@@ -326,7 +315,3 @@ const objectY = baseY - BOTTOM_MARGIN - (value / maxValue) * playableHeight;
 - [ ] Simulation objects are visible and not hidden under UI overlays
 - [ ] **Visible animation: Objects visibly move/rotate when simulation runs**
 - [ ] **Animation is OBVIOUS, not subtle - user can tell simulation is running**
-
-## Localization (CRITICAL)
-{{languageDirective}}
-Ensure ALL user-facing text, button labels, and variable names match the requested language.

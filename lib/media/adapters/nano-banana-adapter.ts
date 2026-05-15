@@ -132,7 +132,7 @@ export async function generateWithNanoBanana(
 
   const parts = data.candidates?.[0]?.content?.parts;
   if (!parts || parts.length === 0) {
-    throw new Error('Gemini returned empty response');
+    throw new Error(`Gemini returned empty response. Data: ${JSON.stringify(data)}`);
   }
 
   // Find the image part (inlineData with base64)

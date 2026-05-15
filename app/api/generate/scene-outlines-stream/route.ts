@@ -298,12 +298,18 @@ export async function POST(req: NextRequest) {
 
                 // Try to extract new outlines from the accumulated text
                 const newOutlines = extractNewOutlines(fullText, parsedOutlines.length);
+                
+                // Extract language directive which appears before the outlines array
+                const directiveMatch = fullText.match(/"languageDirective"\s*:\s*"([^"]+)"/);
+                const languageDirective = directiveMatch ? directiveMatch[1] : 'Teach in the language that matches the user requirement.';
+
                 for (const outline of newOutlines) {
-                  // Ensure ID and order
+                  // Ensure ID, order, and language directive
                   const enriched = {
                     ...outline,
                     id: outline.id || nanoid(),
                     order: parsedOutlines.length + 1,
+                    languageDirective: outline.languageDirective || languageDirective,
                   };
                   parsedOutlines.push(enriched);
 

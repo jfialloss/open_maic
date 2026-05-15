@@ -36,7 +36,7 @@ export type SvgPath = ReturnType<typeof parseSvgPath>;
 export const toPoints = (d: string) => {
   const pathData = new SVGPathData(d);
 
-  const points = [];
+  const points: any[] = [];
   for (const item of pathData.commands) {
     const type = typeMap[item.type];
 

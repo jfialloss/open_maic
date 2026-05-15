@@ -149,10 +149,6 @@ Learning: Player EXPERIENCES F=ma by adjusting thrust and seeing result
 // Player can adjust thrust before any danger
 ```
 
-### 5. No Fake "Teacher Locks"
-**NEVER generate messages stating the game is "locked until the teacher explains it."**
-The game must be immediately playable upon clicking the start button. Do not simulate a locked state or fake an educational blockade.
-
 ## Layout & Positioning (CRITICAL)
 
 ### Game Object Positioning
@@ -248,24 +244,22 @@ Return ONLY the HTML document, no markdown fences or explanations.
 
 **Rule**: For critical game-start buttons, use inline onclick. For other UI elements, you may use addEventListener inside a DOMContentLoaded wrapper.
 
-### 2. CSS: STRICTLY Use Custom CSS, NO TAILWIND
-**Use raw custom CSS instead of Tailwind CDN for game widgets.** Tailwind is not injected into the iframe. If you use Tailwind classes (like `flex` or `text-center`), they will be ignored by the browser and the layout will break.
+### 2. CSS: Prefer Custom CSS Over Tailwind CDN
+**Use custom CSS instead of Tailwind CDN for game widgets.** Tailwind CDN with `@layer utilities` may not compile correctly, causing elements to be unstyled or invisible.
 
 ```html
 <!-- CORRECT: Custom CSS - reliable and predictable -->
 <style>
-  body { margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
   .game-button { background: #3498db; padding: 12px 30px; }
-  .controls { display: flex; justify-content: center; gap: 10px; }
 </style>
 
-<!-- WRONG: Tailwind classes will be ignored because CDN is absent -->
-<div class="flex flex-col h-screen">
-  <button class="bg-blue-500 px-6">开始游戏</button>
-</div>
+<!-- WRONG: Tailwind @layer utilities may fail -->
+<style type="text/tailwindcss">
+  @layer utilities { .game-button { @apply bg-blue-500 px-6; } }
+</style>
 ```
 
-**Rule**: You MUST use standard CSS in a `<style>` block for all your layout needs (including flexbox for responsive layout). Do not use Tailwind classes anywhere.
+**Exception**: You may use basic Tailwind utility classes (like `flex`, `text-center`) directly on elements, but avoid `@layer utilities` blocks.
 
 ### 3. Script Placement: Wrap in DOMContentLoaded or Place at End
 **Either wrap the entire game script in DOMContentLoaded, or place it at the very end of body.**
@@ -292,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
 ```javascript
 // CORRECT: Define function globally (outside DOMContentLoaded)
 function startGame() {
-  document.getElementById('start-screen').style.display = 'none'; // ALWAYS use style.display instead of classes
+  document.getElementById('start-screen').classList.add('hidden');
   gameActive = true;
   initLevel();
 }
@@ -310,8 +304,8 @@ window.startGame = function() { ... };
 
 ```javascript
 function startGame() {
-  // 1. Hide start overlay using style (DO NOT use classList.add('hidden') since Tailwind is absent)
-  document.getElementById('start-screen').style.display = 'none';
+  // 1. Hide start overlay
+  document.getElementById('start-screen').classList.add('hidden');
   // 2. Set game state
   gameActive = true;
   startTime = Date.now();

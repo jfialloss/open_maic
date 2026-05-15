@@ -104,3 +104,4 @@ Use this only after the service is healthy. Confirm before reading local PDFs. I
 When editing core Next.js API routes or the chat orchestration logic, consult the following architectural guides to avoid introducing security vulnerabilities or quadratic token scaling:
 
 - **Security & Token Optimization:** Load [references/security_and_token_optimization.md](references/security_and_token_optimization.md) for strict Firebase middleware requirements and Sliding Window history truncation logic.
+- **Engine Stabilization & Sync:** Load [references/engine_stabilization_and_firestore_sync.md](references/engine_stabilization_and_firestore_sync.md) for Google Grounding v3 patterns, programmatic quiz fallbacks, and Firestore nested array sync interceptors.

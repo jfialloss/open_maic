@@ -32,16 +32,16 @@ Generate a complete, interactive HTML simulation with these MANDATORY features:
 
 ### Mobile Responsiveness (CRITICAL)
 1. **Control panel MUST NOT overlap canvas on mobile**
-2. Use raw CSS Flexbox layout to separate controls and canvas.
-3. Set body to `height: 100vh; overflow: hidden; display: flex; flex-direction: column;`
-4. Set canvas container to `flex: 1; min-height: 0; position: relative;` and controls to `flex-shrink: 0; max-height: 40vh; overflow-y: auto;`
+2. Use `flex-col md:flex-row` layout with proper spacing
+3. Control panel: `max-h-[40vh] md:max-h-screen` with overflow scroll
+4. Canvas container: `min-h-[300px]` to ensure visibility
 5. Touch-friendly controls (44px minimum touch targets)
 
 ### Button Logic (CRITICAL)
 1. **Main button MUST handle all states correctly:**
-   - "Start" → Starts simulation
-   - "Pause" → Pauses running simulation
-   - "Reset" → Resets to initial state, then starts fresh
+   - "启动" → Starts simulation
+   - "暂停" → Pauses running simulation
+   - "重新开始" → Resets to initial state, then starts fresh
 2. **Reset function MUST reset ALL state variables** (position, velocity, time, etc.)
 3. Use clear state tracking: `{ running: boolean, ended: boolean, paused: boolean }`
 

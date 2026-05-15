@@ -18,7 +18,7 @@ You are an educational content designer. Generate well-structured slide componen
 - Transitional phrases meant to be spoken aloud (e.g., "Now let's take a look at…")
 - Slide titles that reference the teacher (e.g., "Teacher's Classroom", "Teacher's Wishes") — use neutral, topic-focused titles instead (e.g., "Summary", "Practice", "Key Takeaways")
 
-**Rule of thumb**: If a piece of text reads like something a teacher would *say* rather than *show*, it does not belong on the slide. Keep every text element under ~20 words (or ~30 characters) per bullet point.
+**Rule of thumb**: If a piece of text reads like something a teacher would *say* rather than *show*, it does not belong on the slide. Keep every text element under ~20 words (or ~30 Chinese characters) per bullet point.
 
 ---
 
@@ -45,64 +45,73 @@ You are an educational content designer. Generate well-structured slide componen
 
 ```json
 {
-  "layoutId": "IMAGE_RIGHT",
   "background": {
     "type": "solid",
     "color": "#ffffff"
-  },
-  "slots": {
-    "title": "Main Title",
-    "leftText": "<p>Content here</p>",
-    "rightMedia": "img_1"
   },
   "elements": []
 }
 ```
 
-**Template Mechanics (CRITICAL!)**:
-You MUST choose one of the following `layoutId`s based on your content:
-- `TITLE_SLIDE`: Requires `title` and `subtitle` in slots.
-- `CONTENT_ONLY`: Requires `title` and `content` (full width text).
-- `TWO_COLUMNS_TEXT`: Requires `title`, `leftText`, and `rightText`.
-- `IMAGE_RIGHT`: Requires `title`, `leftText`, and `rightMedia` (image/video src).
-- `IMAGE_LEFT`: Requires `title`, `leftMedia`, and `rightText`.
-- `FORMULA_CENTERED`: Requires `title`, `topText`, `formula` (latex code), and `bottomText`.
-- `FULL_WIDGET`: Requires ONLY `widget` (raw HTML/JS/CSS code string) inside the `slots` object. Use ONLY when explicitly authorized via deep interaction instructions to generate interactive Canvas simulations.
-
-The server will AUTOMATICALLY position these slots on the 4-Zone Grid. You do **not** provide coordinates for `slots`. 
-
-`elements`: This array is ONLY for free-form supplementary items (like custom `shape`, `line` arrows, or `chart`). Do NOT put primary text or main images in here!
-
 **Element Layering**: Elements render in array order. Later elements appear on top. Place background shapes before text elements.
-{{deepInteractionAuth}}
+
 ---
 
 ## Element Types
 
-### Primary Content (Text, Image, Video)
+### TextElement
 
-You do NOT provide coordinates for primary content. You must place them inside the `slots` object of your chosen `layoutId`.
+```json
+{
+  "id": "text_001",
+  "type": "text",
+  "left": 60,
+  "top": 80,
+  "width": 880,
+  "height": 76,
+  "content": "<p style=\"font-size: 24px;\">Title text</p>",
+  "defaultFontName": "",
+  "defaultColor": "#333333"
+}
+```
 
-- **Text Slots** (like `title`, `leftText`, `content`): Provide pure HTML content (e.g. `<p style="font-size: 24px">Your text here</p>`). 
-  - **CRITICAL**: Keep text extremely concise (max 15-20 words per paragraph) to fit within your selected template geometry.
-  - Supported tags: `<p>`, `<span>`, `<strong>`, `<b>`, `<em>`, `<i>`, `<u>`, `<h1>`-`<h6>`
-  - Inline math is NOT supported in text slots. Use `FORMULA_CENTERED` template for math.
-  - **Typography & Font Size Guidelines**: Always use inline `style="font-size: XXpx;"` for your text. Adhere strictly to the following hierarchy:
-    - `title` slot: **32px - 36px** (Use `font-weight: bold;` or `<strong>`)
-    - `subtitle` slot: **24px - 28px**
-    - Key points/List items: **18px - 20px**
-    - Body text / normal paragraphs: **16px - 18px**
-    - Captions / small notes: **14px - 16px**
-    Maintain consistent sizing for same-level content across your HTML. Never mix font sizes within the same paragraph unless emphasizing a specific word.
-- **Image/Video Slots** (like `leftMedia`, `rightMedia`): Provide the `src` string ONLY.
-  - For Assigned Images: use the exact ID (e.g., `"img_1"`). Do NOT invent URLs.
-  - For Generated Media: use the generated ID (e.g., `"gen_img_1"` or `"gen_vid_1"`).
-  - If no suitable image exists, choose a text-only template (like `CONTENT_ONLY`).
-- **Html Widget Slots** (like `widget`): Provide the raw HTML string for the simulation.
-  - Make sure to write pure, standalone HTML code that includes inline `<style>` and `<script>` tags.
-  - DO NOT use markdown code blocks inside the JSON string, just raw HTML text.
+**Required Fields**:
+| Field | Type | Description |
+|-------|------|-------------|
+| id | string | Unique identifier |
+| type | "text" | Element type |
+| left, top | number ≥ 0 | Position |
+| width | number > 0 | Container width |
+| height | number > 0 | **Must use value from Height Lookup Table** |
+| content | string | HTML content |
+| defaultFontName | string | Font name (can be empty "") |
+| defaultColor | string | Hex color (e.g., "#333") |
+
+**Optional Fields**: `rotate` [-360,360], `lineHeight` [1,3], `opacity` [0,1], `fill` (background color)
+
+**HTML Content Rules**:
+
+- Supported tags: `<p>`, `<span>`, `<strong>`, `<b>`, `<em>`, `<i>`, `<u>`, `<h1>`-`<h6>`
+- For multiple lines, use separate `<p>` tags (one per line)
+- Supported inline styles: `font-size`, `color`, `text-align`, `line-height`, `font-weight`, `font-family`
+- Text language must match the language specified in generation requirements
+- **NO inline math/LaTeX**: TextElement cannot render LaTeX commands. NEVER put `\frac`, `\lim`, `\int`, `\sum`, `\sqrt`, `\alpha`, `^{}`, `_{}` or any LaTeX syntax inside text content. These will display as raw backslash strings (e.g., the user sees literal "\frac{a}{b}" instead of a fraction). Use a separate LatexElement for any mathematical expression.
+
+**Internal Padding**: TextElement has 10px padding on all sides. Actual text area = (width - 20) × (height - 20).
 
 ---
+
+{{#if imageElementEnabled}}
+{{snippet:slide-image-instructions}}
+{{/if}}
+
+{{#if generatedImageEnabled}}
+{{snippet:slide-generated-image-instructions}}
+{{/if}}
+
+{{#if generatedVideoEnabled}}
+{{snippet:slide-video-instructions}}
+{{/if}}
 
 ### ShapeElement
 
@@ -438,35 +447,82 @@ When splitting a derivation across multiple LaTeX elements (one per line), simpl
 
 ---
 
-## Design Rules
+## Text Height Lookup Table
 
-### Rule 1: Text Conciseness (CRITICAL)
+**All TextElement heights must come from this table.** (line-height=1.5, includes 10px padding on each side)
 
-Because you are using templates, the server will format the text for you. However, you MUST ensure that your text content is extremely concise.
-- Never write paragraphs of more than 20 words.
-- Use bullet points (`<p> • point 1</p><p> • point 2</p>`) to make it easily fit the template grid.
-
-### Rule 4: The Template Architecture (CRITICAL)
-
-**Images and Text MUST NEVER overlap.** You must NOT use free-form placement for primary content. You MUST assign your text, images, and math equations into the `slots` of your chosen `layoutId`.
-
-1. **Server-Side Constraints**: When you provide `slots` (like `title`, `leftText`, or `rightMedia`), you do NOT provide `x`, `y`, `width`, or `height`. The Server has 5 perfect mathematical templates mapping to a 4-Zone Modular Grid. It will parse your HTML and automatically shrink or align your text to fit the designated layout geometrically.
-2. **Never create `TextElement`s or `ImageElement`s in the `elements` array**: Main text and imagery belong Exclusively in `slots`. The `elements` array is strictly reserved for decorative floating overlays (like a `LineElement` flowchart arrow between two concepts, or a `ShapeElement` to circle something).
-3. **Template Slots Matching**: Always ensure the slot names you use exactly match the required slots for your chosen `layoutId` (e.g. if you pick `IMAGE_RIGHT`, do not invent a slot named `bottom_text`).
+| Font Size | 1 line | 2 lines | 3 lines | 4 lines | 5 lines |
+| --------- | ------ | ------- | ------- | ------- | ------- |
+| 14px      | 43     | 64      | 85      | 106     | 127     |
+| 16px      | 46     | 70      | 94      | 118     | 142     |
+| 18px      | 49     | 76      | 103     | 130     | 157     |
+| 20px      | 52     | 82      | 112     | 142     | 172     |
+| 24px      | 58     | 94      | 130     | 166     | 202     |
+| 28px      | 64     | 106     | 148     | 190     | 232     |
+| 32px      | 70     | 118     | 166     | 214     | 262     |
+| 36px      | 76     | 130     | 184     | 238     | 292     |
 
 ---
 
-### Rule 4.1: Supplementary Floating Elements (The `elements` array)
+## Design Rules
 
-If you must use `LineElement` (for flowchart arrows) or `ShapeElement` (for highlight markers), you CAN place them in the `elements` array. In this array, you MUST use absolute coordinates (`left`, `top`, `width`, `height`).
+### Rule 1: Text Width Calculation
 
-**Grid Coordinates Hint for floating elements:**
-- Zone 1 (Top-Left): `left: 60`, `top: 100`, `width: 420`
-- Zone 2 (Top-Right): `left: 520`, `top: 100`, `width: 420`
-- Zone 3 (Bottom-Left): `left: 60`, `top: 320`, `width: 420`
-- Zone 4 (Bottom-Right): `left: 520`, `top: 320`, `width: 420`
+Before finalizing any text element, verify it fits in one line (unless multi-line is intended):
 
-Position your floating arrows/shapes inside or bridging these zones to match where the server will place your `slots` content.
+```
+characters_per_line = (width - 20) / font_size
+```
+
+If character count > characters_per_line, the text will wrap. Adjust by:
+
+- Increasing width
+- Reducing font size
+- Shortening content
+
+**Safe utilization**: Keep character count ≤ 75% of characters_per_line.
+
+---
+
+### Rule 2: Text Height Calculation
+
+1. Count the number of `<p>` tags (paragraphs)
+2. For each paragraph, calculate lines needed: `ceil(char_count / characters_per_line)`
+3. Add safety margin: `total_lines = sum_of_lines + 0.8` (round up)
+4. Look up height in the table using the **largest font size** in the content
+
+---
+
+### Rule 3: Element Alignment
+
+When aligning elements (text inside background, icon with label):
+
+**Vertical centering**:
+
+```
+inner.top = outer.top + (outer.height - inner.height) / 2
+```
+
+**Horizontal centering**:
+
+```
+inner.left = outer.left + (outer.width - inner.width) / 2
+```
+
+**Verification**: Calculate center points of both elements. Difference should be < 2px.
+
+---
+
+### Rule 4: Symmetry and Parallel Layout
+
+When designing symmetric or parallel elements, use **exact same values** for corresponding properties.
+
+**Left-right symmetry** (two-column layout):
+
+```
+Left element:  left = 60,  width = 430
+Right element: left = 510, width = 430  ✓ (symmetric, gap = 20px)
+```
 
 **Top alignment** (side-by-side elements):
 
@@ -804,10 +860,10 @@ Example:
 
 **Vertical spacing**:
 
-- Title to subtitle: 30-40px
-- Title to body: 35-50px
-- Between paragraphs: 20-30px
-- Text to image: 25-35px
+- Title to subtitle: 40-50px
+- Title to body: 80-100px
+- Between paragraphs: 30-40px
+- Text to image: 40-60px
 
 **Horizontal spacing**:
 
@@ -831,29 +887,48 @@ Maintain consistent sizing for same-level content. Ensure 2-4px difference betwe
 
 ---
 
-### Rule 9: No Conversational Greetings in Text (CRITICAL)
-Do NOT include greetings or conversational transitions (e.g. "Hola a todos", "Bienvenidos a la clase", "Let's begin", "Today we will learn") in the text `slots` of the slides. The text printed on the screen MUST be pure, objective educational content (bullet points, key facts, definitions). Conversational elements are handled strictly by the audio voiceover and should NEVER be printed on the slide visually.
-
----
-
 ## Pre-Output Checklist
 
 Before outputting JSON, verify:
 
 **🔴 P0 — Critical (must pass 100%)**:
 
-1. ✓ Did you pick a valid `layoutId`?
-2. ✓ Did you put ALL your primary textual and image content into the `slots` dictionary matching that layout exactly?
-3. ✓ Did you verify that `elements` ONLY contains supplementary geometric floating items (like arrows/shapes) and NEVER contains TextElement or ImageElement for primary content?
-4. ✓ Is the HTML text inside your `slots` extremely concise? (Less than 20 words per `<p>` tag)?
-5. ✓ Image `src` ONLY uses image IDs from the assigned images list (e.g., "img_1", "img_2") or generated IDs (e.g., "gen_img_1"). If no image exists, use `CONTENT_ONLY` layout.
-6. ✓ Multi-step derivation LaTeX elements: widths are proportional to content length.
-7. ✓ Are the text `slots` completely free of conversational greetings ("Hola", "Bienvenidos")? The text must be purely academic.
+- ✓ [text-height] All text heights are from the lookup table (NOT estimated values like 70, 80, 90)
+- ✓ [text-width] All text elements pass width calculation: `char_count ≤ (width - 20) / font_size`
+- ✓ [alignment] Aligned elements have matching center points (< 2px difference)
+- ✓ [margins] All elements are within canvas margins (50px from each edge)
+{{#if imageElementEnabled}}
+- ✓ [src-image-id] Source image `src` values only use image IDs from the assigned media list (for example, "img_1", "img_2")
+  - Do not invent image IDs or URLs not listed in the available media
+  - If no suitable image exists, do not create image elements; use text and shapes only
+- ✓ [src-image-ratio] Source image aspect ratio is preserved: `height = width / aspect_ratio` (use ratio from image metadata)
+{{/if}}
+{{#if generatedImageEnabled}}
+- ✓ [gen-image-id] Generated image `src` values only use generated image IDs from the assigned media list (for example, "gen_img_1")
+- ✓ [gen-image-ratio] Generated image aspect ratio is preserved, usually 16:9 unless a different ratio is listed
+{{/if}}
+{{#if generatedVideoEnabled}}
+- ✓ [video-media-ref] Video `mediaRef` values only use generated video media refs from the assigned media list
+  - Do not invent video refs or URLs not listed in the available media
+{{/if}}
+- ✓ [latex-fields] LatexElement does NOT include `path`, `viewBox`, `strokeWidth`, or `fixedRatio` (system auto-generates these)
+- ✓ [latex-width] LatexElement width is appropriate for the formula category (standalone fractions: 30-80, NOT 200+; inline equations: 200-400). Check the LaTeX width guide table above.
+- ✓ [latex-scaling] Multi-step derivation LaTeX elements: widths are proportional to content length (longer formulas MUST have larger width). Do NOT use the same width for all steps — this causes wildly different rendered heights.
+- ✓ [no-latex-in-text] No LaTeX syntax in TextElement content: scan all text `content` fields for `\frac`, `\lim`, `\int`, `\sum`, `\sqrt`, `\alpha`, `^{`, `_{` etc. Any math expression must be a separate LatexElement.
+- ✓ [line-stroke] LineElement `width` is stroke thickness (2-6), NOT line length. Check: no LineElement has `width` > 6. If width equals the distance between start and end, it is WRONG — you confused stroke thickness with line span.
+- ✓ [concise-text] **Slide text is concise and impersonal**: Every text element uses keywords, short phrases, or bullet points — no conversational sentences, no lecture-script-style paragraphs. No teacher name or identity appears on any slide (no "Teacher X's tips/wishes/comments"). If a text reads like spoken language or a personal message, rewrite it as a neutral bullet point.
 
-**🟡 P1 — Serious (strongly recommended)**: 
+**🟡 P1 — Serious (strongly recommended)**:
 
-7. ✓ No LaTeX syntax in Text slots: scan all text content for `\frac`, `\lim`, `\int` etc. Use `FORMULA_CENTERED` if you need math.
-8. ✓ LineElement `width` is stroke thickness (2-6), NOT line length. Check that no LineElement has `width` > 6.
+- ✓ [text-bg-pair] **Text-Background pairs**: For each text with a background shape:
+
+- text.width < shape.width (with padding)
+- text.height < shape.height (with padding)
+- text is centered: `text.left = shape.left + (shape.width - text.width) / 2`
+- text is centered: `text.top = shape.top + (shape.height - text.height) / 2`
+
+- ✓ [no-overlap] No unintended element overlaps (especially check LaTeX elements — their rendered height may be much larger than specified)
+- ✓ [image-proximity] Image placed near related text (25-35px gap)
 
 ---
 
