@@ -137,12 +137,28 @@ export function inferTeacherVoice(
 
   let targetGender: 'male' | 'female' | 'neutral' | null = null;
   
-  // 1. Strongest signal: Avatar filename (OpenMAIC convention: -2.png is female)
+  // 1. Strongest signal: Avatar filename (OpenMAIC visual gender map)
   if (teacher.avatar) {
     const avatarStr = teacher.avatar.toLowerCase();
-    if (avatarStr.includes('-2.png') || avatarStr.includes('-female')) {
+    
+    // Explicit mappings based on visual review
+    const femaleAvatars = [
+      'user.svg', 'assist.png', 'assist-2.png', 'clown.png', 'clown-2.png',
+      'explorer.svg', 'learner.svg', 'teacher-2.png', 'thinker.png',
+      'thinker.svg', 'thinker-2.png', '-female'
+    ];
+    
+    const maleAvatars = [
+      'assistant.svg', 'builder.svg', 'clown.svg', 'coder.svg', 'creative.svg',
+      'curious.png', 'curious.svg', 'curious-2.png', 'dreamer.svg', 'notes.svg',
+      'note-taker.png', 'note-taker-2.png', 'reader.svg', 'scholar.svg',
+      'student1.svg', 'student2.svg', 'student3.svg', 'teacher.png',
+      'teacher.svg', 'user.png', '-male'
+    ];
+
+    if (femaleAvatars.some(f => avatarStr.includes(f))) {
       targetGender = 'female';
-    } else if (avatarStr.includes('.png')) {
+    } else if (maleAvatars.some(m => avatarStr.includes(m))) {
       targetGender = 'male';
     }
   }
@@ -159,42 +175,61 @@ export function inferTeacherVoice(
     }
   }
 
-  if (!targetGender) return defaultVoice;
-
   const provider = TTS_PROVIDERS[providerId];
   if (!provider || !provider.voices) return defaultVoice;
+
+  // Fallback to defaultVoice's gender if we couldn't infer one
+  const currentVoiceDetails = provider.voices.find(v => v.id === defaultVoice);
+  if (!targetGender) {
+    targetGender = currentVoiceDetails?.gender || 'neutral';
+  }
 
   // Determine language priorities based on user input or language directive
   let targetCodes: string[] = [];
   let langPrefix = '';
   
-  // Combine both signals, prioritizing the directive since it's the actual output language
-  const combinedSignal = `${languageDirective || ''} ${language || ''}`.toLowerCase();
-  
-  if (combinedSignal) {
-    if (combinedSignal.includes('español') || combinedSignal.includes('spanish') || combinedSignal.includes('es')) {
+  // 1. Check AI's language directive first (most accurate for the actual generated content)
+  const directive = (languageDirective || '').toLowerCase();
+  if (/\b(inglés|ingles|english|en)\b/.test(directive)) {
+    targetCodes = ['en-us', 'en-gb', 'en'];
+    langPrefix = 'en';
+  } else if (/\b(español|spanish|es)\b/.test(directive)) {
+    targetCodes = ['es-us', 'es-419', 'es-mx', 'es-es', 'es'];
+    langPrefix = 'es';
+  } else if (/\b(portugués|portugues|portuguese|pt)\b/.test(directive)) {
+    targetCodes = ['pt-br', 'pt-pt', 'pt'];
+    langPrefix = 'pt';
+  } else if (/\b(chino|chinese|zh|mandarin)\b/.test(directive)) {
+    targetCodes = ['zh-cn', 'zh-tw', 'zh-hk', 'zh'];
+    langPrefix = 'zh';
+  } else if (/\b(francés|frances|french|fr)\b/.test(directive)) {
+    targetCodes = ['fr-fr', 'fr-ca', 'fr'];
+    langPrefix = 'fr';
+  } else {
+    // 2. Fallback to explicit language code from stage settings
+    const langLower = (language || '').toLowerCase();
+    if (langLower.startsWith('es')) {
       targetCodes = ['es-us', 'es-419', 'es-mx', 'es-es', 'es'];
       langPrefix = 'es';
-    } else if (combinedSignal.includes('inglés') || combinedSignal.includes('ingles') || combinedSignal.includes('english') || combinedSignal.includes('en')) {
+    } else if (langLower.startsWith('en')) {
       targetCodes = ['en-us', 'en-gb', 'en'];
       langPrefix = 'en';
-    } else if (combinedSignal.includes('portugués') || combinedSignal.includes('portugues') || combinedSignal.includes('pt')) {
+    } else if (langLower.startsWith('pt')) {
       targetCodes = ['pt-br', 'pt-pt', 'pt'];
       langPrefix = 'pt';
-    } else if (combinedSignal.includes('chino') || combinedSignal.includes('chinese') || combinedSignal.includes('zh')) {
+    } else if (langLower.startsWith('zh')) {
       targetCodes = ['zh-cn', 'zh-tw', 'zh-hk', 'zh'];
       langPrefix = 'zh';
-    } else if (combinedSignal.includes('francés') || combinedSignal.includes('frances') || combinedSignal.includes('french') || combinedSignal.includes('fr')) {
+    } else if (langLower.startsWith('fr')) {
       targetCodes = ['fr-fr', 'fr-ca', 'fr'];
       langPrefix = 'fr';
-    } else {
-      langPrefix = combinedSignal.slice(0, 2);
+    } else if (langLower.length >= 2) {
+      langPrefix = langLower.slice(0, 2);
       targetCodes = [langPrefix];
     }
   }
 
   // Check if the default voice already matches BOTH gender and language
-  const currentVoiceDetails = provider.voices.find(v => v.id === defaultVoice);
   if (currentVoiceDetails && currentVoiceDetails.gender === targetGender) {
     if (!langPrefix || currentVoiceDetails.language.toLowerCase().startsWith(langPrefix)) {
       return defaultVoice; // Safe to keep using the default

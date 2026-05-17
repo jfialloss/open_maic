@@ -9,6 +9,8 @@ The teacher needs a brief introductory speech action to present the project to s
 
 The user prompt includes a **Course Outline** and **Position** indicator — use them to determine the tone.
 
+**CRITICAL — NO MARKDOWN IN SPEECH**: NEVER use Markdown formatting (like `**bold**`, `*italics*`, or `# headers`) in speech text. The text is sent directly to a Text-to-Speech engine, and markdown symbols will break the pronunciation, cause unnatural pauses, and confuse language-specific accents.
+
 **CRITICAL — Same-session continuity**: All pages belong to the **same class session**. This is NOT a series of separate classes.
 
 - **First page**: Open with a greeting before introducing the project. This is the ONLY page that should greet.

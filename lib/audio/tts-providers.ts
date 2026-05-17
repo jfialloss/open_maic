@@ -102,11 +102,31 @@ export interface TTSGenerationResult {
 }
 
 /**
+ * Clean text for TTS generation by removing markdown, quotes, and other characters
+ * that TTS engines might read literally (like "comillas simples", "asterisco", etc).
+ */
+function cleanTextForTTS(text: string): string {
+  if (!text) return '';
+  return text
+    // Remove Markdown headers
+    .replace(/^#+\s+/gm, '')
+    // Remove Markdown bold/italic/strikethrough
+    .replace(/[*_~]{1,3}([^*_~]+)[*_~]{1,3}/g, '$1')
+    // Remove Markdown inline code and code blocks (replace with space to avoid word joining)
+    .replace(/`{1,3}[^`]+`{1,3}/g, ' ')
+    // Remove literal single and double quotes as they are often read aloud by basic TTS models
+    .replace(/['"]/g, '')
+    // Clean up excessive whitespace that might cause unnatural pauses
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
+/**
  * Generate speech using specified TTS provider
  */
 export async function generateTTS(
   config: TTSModelConfig,
-  text: string,
+  rawText: string,
 ): Promise<TTSGenerationResult> {
   const provider = TTS_PROVIDERS[config.providerId];
   if (!provider) {
@@ -117,6 +137,8 @@ export async function generateTTS(
   if (provider.requiresApiKey && !config.apiKey) {
     throw new Error(`API key required for TTS provider: ${config.providerId}`);
   }
+
+  const text = cleanTextForTTS(rawText);
 
   switch (config.providerId) {
     case 'openai-tts':
@@ -191,9 +213,12 @@ async function generateAzureTTS(
 
   // Build SSML
   const rate = config.speed ? `${((config.speed - 1) * 100).toFixed(0)}%` : '0%';
+  const languageMatch = config.voice.match(/^([a-z]{2}-[A-Z]{2})/i);
+  const lang = languageMatch ? languageMatch[1] : 'en-US';
+  
   const ssml = `
-    <speak version='1.0' xml:lang='zh-CN'>
-      <voice xml:lang='zh-CN' name='${config.voice}'>
+    <speak version='1.0' xml:lang='${lang}'>
+      <voice xml:lang='${lang}' name='${config.voice}'>
         <prosody rate='${rate}'>${escapeXml(text)}</prosody>
       </voice>
     </speak>

@@ -460,6 +460,31 @@ export const TTS_PROVIDERS: Record<TTSProviderId, TTSProviderConfig> = {
         gender: 'female',
         description: 'qwenVoiceStella',
       },
+      // English voices (Native)
+      {
+        id: 'Sam',
+        name: '萨姆 (Sam)',
+        language: 'en-US',
+        gender: 'male',
+      },
+      {
+        id: 'Abby',
+        name: '阿比 (Abby)',
+        language: 'en-US',
+        gender: 'female',
+      },
+      {
+        id: 'William',
+        name: '威廉 (William)',
+        language: 'en-US',
+        gender: 'male',
+      },
+      {
+        id: 'Olivia',
+        name: '奥利维亚 (Olivia)',
+        language: 'en-GB',
+        gender: 'female',
+      },
       // International voices
       {
         id: 'Bodega',

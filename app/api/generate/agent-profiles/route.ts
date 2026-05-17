@@ -96,8 +96,10 @@ Requirements:
 - For the "teacher" role, use a generic name like "Profesor" (or "Teacher" in English) without any personal name, and explicitly state in their persona that they NEVER introduce themselves by name.
 - Names and personas must be in language: ${language}
 - Each agent must be assigned one avatar from this list: ${JSON.stringify(availableAvatars)}
-  - CRITICAL: Avatars ending in "-2.png" (e.g. teacher-2.png) are FEMALE. Avatars without "-2.png" (e.g. teacher.png) are MALE. Match the avatar strictly to the agent's gender!
-  - CRITICAL: You MUST balance the genders! Do NOT default to male avatars. Specifically, you MUST frequently assign female avatars (like teacher-2.png) to the teacher role!
+  - CRITICAL: Match the avatar strictly to the agent's gender based on the following visual genders:
+    FEMALE avatars: user.svg, assist.png, assist-2.png, clown.png, clown-2.png, explorer.svg, learner.svg, teacher-2.png, thinker.png, thinker.svg, thinker-2.png
+    MALE avatars: assistant.svg, builder.svg, clown.svg, coder.svg, creative.svg, curious.png, curious.svg, curious-2.png, dreamer.svg, notes.svg, note-taker.png, note-taker-2.png, reader.svg, scholar.svg, student1.svg, student2.svg, student3.svg, teacher.png, teacher.svg, user.png
+  - CRITICAL: You MUST balance the genders! Do NOT default to male avatars. Specifically, you MUST frequently assign female avatars to the teacher role!
   - Try to use different avatars for each agent
 - Each agent must be assigned one color from this list: ${JSON.stringify(COLOR_PALETTE)}
   - Each agent must have a different color

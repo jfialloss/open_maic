@@ -41,3 +41,27 @@ De igual forma, para solucionar la omisión ocasional del idioma en los guiones 
 
 ## Siguientes Pasos (Para el Próximo Build)
 - Siempre verificar que después de cambios profundos de configuración local (`lib/` o `app/`), estos se hagan Commit (`git push`) para que tengan un impacto tangible y sincrónico en **Google Cloud Run**, el cual no refleja los cambios inmediatos del editor sin que medie un pase de CI/CD regular de GitHub.
+
+## 6. Selección de Voz TTS y el Bug de los Acentos (Tildes) Perdidas
+Se descubrió que, en ocasiones, la voz generada por TTS (Text-To-Speech) ignoraba las tildes al pronunciar y sonaba con un "acento gringo" al hablar español.
+**Causa:** El selector de idioma de la interfaz del usuario (`stageInfo.language`) tenía mayor prioridad que la directiva de idioma generada internamente por la IA (`languageDirective`). Si la app o la sesión estaba en inglés, se forzaba una voz nativa en inglés (`en-US`) para leer el texto que la IA había generado en español. Las voces inglesas al leer español omiten las tildes y las reglas de sílaba tónica.
+**Reparación:** En `lib/hooks/use-scene-generator.ts`, se invirtió la prioridad en la función `inferTeacherVoice`. Ahora el sistema de TTS verifica primero la **directiva interna de la IA** (`languageDirective`) para asignar el idioma de la voz, garantizando que el acento de la voz (ej. `es-US` para voz latina o `en-US` para voz gringa) siempre coincida con el idioma real del texto generado.
+
+## 7. Mapeo Explícito de Género Visual y Auditivo (Avatares vs TTS)
+Para garantizar una experiencia inmersiva, se eliminó la lógica restrictiva que basaba el género del profesor en sufijos de archivos.
+**Lección:** Se debe mantener un mapeo explícito en `inferTeacherVoice` listando todos los archivos SVG/PNG femeninos y masculinos. El motor de IA que asigna los roles (`agent-profiles/route.ts`) debe estar al tanto de este mapeo exacto para no cometer el error de darle una voz de hombre a un avatar femenino.
+
+## 8. Tipado Flexible (Bypass) en Logs de Uso (AI SDK)
+Durante la preparación para la compilación de producción en Cloud Run, Turbopack lanzó errores estrictos de TypeScript indicando que propiedades como `promptTokens` no existían en el objeto de resultados de la librería `@ai-sdk`.
+**Solución:** Para mantener los builds impecables en Next.js sin sacrificar el registro analítico, se debe realizar un cast explícito a `any` en la extracción de logs: `(usage as any).promptTokens`. Esto salva la rigidez de TypeScript y permite completar el `npm run build` sin fricción.
+
+## 9. Prohibición de Sintaxis Markdown en Guiones (Speech)
+Al usar motores TTS como las voces "Journey" de Google, se descubrió que los textos que contienen formato Markdown (ej. `**negrita**` o `*cursiva*`) rompen la prosodia. El TTS intenta "leer" los asteriscos, lo que provoca pausas antinaturales y hace que el motor ignore reglas fonéticas (como las tildes diacríticas).
+**Regla Estricta:** Se añadió la cláusula `CRITICAL — NO MARKDOWN IN SPEECH` en todos los archivos del sistema de `actions` (`slide-actions/system.md`, `quiz-actions/system.md`, etc.), forzando a la IA a escribir guiones en texto 100% plano.
+
+## 10. Prioridad Absoluta del Selector de Idioma (UI Override)
+Originalmente, el motor de Outlines infería el idioma basándose en el idioma en el que el usuario escribía su Prompt. Esto provocaba que si el usuario elegía "Inglés" en el selector de la interfaz pero escribía su petición en Español, el curso se generaba en Español.
+**Solución:**
+1. Se extrajo la variable `requirements.language` enviada desde el UI Frontend y se inyectó dinámicamente como `explicitLanguage` en el generador de `buildPrompt` (`app/api/generate/scene-outlines-stream/route.ts`).
+2. Se inyectó una plantilla con `{{#if explicitLanguage}}` en los archivos `user.md` que impone un **CRITICAL LANGUAGE OVERRIDE** sobre el modelo, obligándolo a ignorar el idioma del texto del usuario y a usar exclusivamente el del selector visual.
+3. Se implementó una **regla de excepción estricta para materias**: `explicitLanguage: requirements.subject === 'ingles' ? 'en-US' : requirements.language`. Esto garantiza que la materia de "Inglés" siempre forzará una generación nativa en inglés (y por tanto, activará una voz gringa en el TTS), anulando cualquier otra configuración visual o textual.

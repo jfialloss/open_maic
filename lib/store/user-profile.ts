@@ -24,6 +24,7 @@ export interface UserProfileState {
   nickname: string;
   bio: string;
   grade: string;
+  gradeConfirmed: boolean;
   englishLevel: string;
   masteredTopics: string[];
   passedCourses: string[];
@@ -51,6 +52,7 @@ export interface UserProfileState {
   setNickname: (nickname: string) => void;
   setBio: (bio: string) => void;
   setGrade: (grade: string) => void;
+  setGradeConfirmed: (confirmed: boolean) => void;
   setEnglishLevel: (level: string) => void;
   addMasteredTopic: (topic: string) => void;
   addPassedCourse: (stageId: string) => void;
@@ -69,6 +71,7 @@ export const useUserProfileStore = create<UserProfileState>()(
       nickname: '',
       bio: '',
       grade: '5º Grado de EGB',
+      gradeConfirmed: false,
       englishLevel: 'A1',
       masteredTopics: [],
       passedCourses: [],
@@ -81,6 +84,7 @@ export const useUserProfileStore = create<UserProfileState>()(
       setNickname: (nickname) => set({ nickname }),
       setBio: (bio) => set({ bio }),
       setGrade: (grade) => set({ grade }),
+      setGradeConfirmed: (gradeConfirmed) => set({ gradeConfirmed }),
       setEnglishLevel: (englishLevel) => set({ englishLevel }),
       incrementCourseAttempt: (stageId) => set((state) => ({
         courseAttempts: {

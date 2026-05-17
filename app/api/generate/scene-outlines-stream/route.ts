@@ -32,6 +32,7 @@ import type {
 } from '@/lib/types/generation';
 import { apiError } from '@/lib/server/api-response';
 import { createLogger } from '@/lib/logger';
+import { logTokenUsage } from '@/lib/server/token-logger';
 import { resolveModelFromHeaders, getThinkingConfigFromBody } from '@/lib/server/resolve-model';
 import { validatePromptSafety } from '@/lib/server/safety-guard';
 import { authenticateRequest } from '@/lib/server/auth';
@@ -137,6 +138,7 @@ export async function POST(req: NextRequest) {
 
     // Extraer solo la solicitud original del usuario para validación y auditoría
     let pureUserPrompt = requirements.requirement.split('\n\n[System Note:')[0];
+    const stageId = (body as any).stageId || 'unknown';
     pureUserPrompt = pureUserPrompt.split('\n\n[CONTEXTO NORMATIVO')[0];
     pureUserPrompt = pureUserPrompt.trim();
 
@@ -224,7 +226,11 @@ export async function POST(req: NextRequest) {
       availableImages: availableImagesText,
       researchContext: researchContext || 'None',
       mediaGenerationPolicy,
+      imageEnabled: imageGenerationEnabled,
+      videoEnabled: videoGenerationEnabled,
+      mediaEnabled: imageGenerationEnabled || videoGenerationEnabled,
       teacherContext,
+      explicitLanguage: requirements.subject === 'ingles' ? 'en-US' : requirements.language,
     });
 
     if (!prompts) {
@@ -323,7 +329,23 @@ export async function POST(req: NextRequest) {
               }
 
               // Validate: got outlines?
-              if (parsedOutlines.length > 0) break;
+              if (parsedOutlines.length > 0) {
+                try {
+                  const usage = await result.usage;
+                  logTokenUsage({
+                    uid: authUser.uid,
+                    email: authUser.email || undefined,
+                    modelString,
+                    promptTokens: (usage as any).promptTokens,
+                    completionTokens: (usage as any).completionTokens,
+                    stageId,
+                    source: 'outline',
+                  });
+                } catch (e) {
+                  log.error('Failed to log outline token usage', e);
+                }
+                break;
+              }
 
               // If the textStream completed without yielding anything, it often means the AI SDK
               // encountered a backend HTTP error (like 403 API Key Leaked). Awaiting the full text

@@ -37,7 +37,8 @@ import {
   TrendingUp,
   Play,
   ClipboardList,
-  Brain
+  Brain,
+  Activity
 } from 'lucide-react';
 import { signOut } from 'firebase/auth';
 import { useAuth } from '@/lib/hooks/use-auth';
@@ -539,7 +540,7 @@ function HomePage() {
 
       const requirements: UserRequirements = {
         requirement: form.requirement + personaHint + curriculumContext + deepInteractionHint,
-        language: form.language,
+        language: form.subject === 'ingles' ? 'en-US' : form.language,
         userNickname: userProfile.nickname || undefined,
         userBio: userProfile.bio || undefined,
         webSearch: form.webSearch || undefined,
@@ -808,6 +809,28 @@ function HomePage() {
           </button>
         )}
 
+        {/* Users Button */}
+        {(role === 'admin' || role === 'tutor') && (
+          <button
+            onClick={() => router.push('/admin/users')}
+            className="p-2 rounded-full text-gray-400 dark:text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-emerald-600 dark:hover:text-emerald-400 hover:shadow-sm transition-all"
+            title="Gestión de Usuarios"
+          >
+            <Users className="w-4 h-4" />
+          </button>
+        )}
+
+        {/* Usage & Cost Button */}
+        {role === 'admin' && (
+          <button
+            onClick={() => router.push('/admin/usage')}
+            className="p-2 rounded-full text-gray-400 dark:text-gray-500 hover:bg-white dark:hover:bg-gray-700 hover:text-rose-500 dark:hover:text-rose-400 hover:shadow-sm transition-all"
+            title={t('adminToolbar.usage')}
+          >
+            <Activity className="w-4 h-4" />
+          </button>
+        )}
+
         {role === 'admin' && <div className="w-[1px] h-4 bg-gray-200 dark:bg-gray-700" />}
 
         {/* Settings Button */}
@@ -952,7 +975,7 @@ function HomePage() {
             <div className="relative z-20 flex items-stretch justify-between">
               <div className="flex items-stretch">
                 <GreetingBar />
-                {role === 'student' && (
+                {(role === 'student' || role === 'admin' || role === 'tutor') && (
                   <div className="pt-3.5 pb-1 pr-2 flex items-stretch">
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -1730,11 +1753,12 @@ function isCustomAvatar(src: string) {
 
 function GreetingBar() {
   const { t } = useI18n();
-  const { user } = useAuth();
+  const { user, role } = useAuth();
   const avatar = useUserProfileStore((s) => s.avatar);
   const nickname = useUserProfileStore((s) => s.nickname);
   const bio = useUserProfileStore((s) => s.bio);
   const grade = useUserProfileStore((s) => s.grade);
+  const gradeConfirmed = useUserProfileStore((s) => s.gradeConfirmed);
   const englishLevel = useUserProfileStore((s) => s.englishLevel);
   const setAvatar = useUserProfileStore((s) => s.setAvatar);
   const setNickname = useUserProfileStore((s) => s.setNickname);
@@ -2029,13 +2053,21 @@ function GreetingBar() {
                 {/* Global Grade Settings */}
                 <div className="pt-2 border-t border-border/40 mt-1 flex gap-2">
                   <div className="flex-1">
-                    <label className="text-[11px] font-semibold text-muted-foreground block mb-1">
-                      Grado Actual
-                    </label>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-[11px] font-semibold text-muted-foreground block">
+                        Grado Actual
+                      </label>
+                      {role === 'student' && gradeConfirmed && (
+                        <div className="flex items-center gap-1 text-[10px] text-emerald-600 dark:text-emerald-400" title="Usuario Confirmado">
+                          <Lock className="w-3 h-3" />
+                        </div>
+                      )}
+                    </div>
                     <select
-                      className="w-full text-[13px] bg-slate-50 dark:bg-slate-900 border border-border/40 rounded-lg px-2 py-1.5 outline-none focus:ring-1 ring-sky-400"
+                      className="w-full text-[13px] bg-slate-50 dark:bg-slate-900 border border-border/40 rounded-lg px-2 py-1.5 outline-none focus:ring-1 ring-sky-400 disabled:opacity-60 disabled:cursor-not-allowed"
                       value={grade}
                       onChange={(e) => setGrade(e.target.value)}
+                      disabled={role === 'student' && gradeConfirmed}
                     >
                       <optgroup label="Educación Inicial">
                         <option value="Inicial 1">Inicial 1</option>

@@ -12,6 +12,12 @@ Generate an Ultra Mode course outline based on the following requirements.
 
 ## Language Context
 
+{{#if explicitLanguage}}
+**CRITICAL LANGUAGE OVERRIDE**: The user has explicitly selected "{{explicitLanguage}}" as the course language via the UI settings.
+You MUST completely ignore the language of the requirement text. You MUST generate ALL course content, speeches, descriptions, and outlines strictly in {{explicitLanguage}}.
+The `languageDirective` MUST reflect this explicit instruction.
+{{/if}}
+
 Infer the course language directive by applying the decision rules from the system prompt. Key reminders:
 - Requirement language = teaching language (unless overridden by explicit request or learner context)
 - Foreign language learning → teach in user's native language, not the target language

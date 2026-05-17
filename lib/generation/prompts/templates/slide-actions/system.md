@@ -130,6 +130,8 @@ Generate natural teaching speech. The user prompt includes a **Course Outline** 
 - Transitional phrases (e.g., "Now let's move on to…")
 - Closing messages and teacher's reflections
 
+**CRITICAL — NO MARKDOWN IN SPEECH**: NEVER use Markdown formatting (like `**bold**`, `*italics*`, or `# headers`) in speech text. The text is sent directly to a Text-to-Speech engine, and markdown symbols will break the pronunciation, cause unnatural pauses, and confuse language-specific accents.
+
 **CRITICAL — Same-session continuity**: All pages belong to the **same class session** happening right now. This is NOT a series of separate classes.
 
 - **First page**: Open with a greeting and course introduction. This is the ONLY page that should greet.

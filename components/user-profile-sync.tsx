@@ -95,7 +95,10 @@ export function UserProfileSync() {
        const activeCourseIds = Object.keys(cleanPayload.activeCourses || {});
        setDoc(doc(db, 'users', user.uid), { 
          activeCourseIds,
-         grade: cleanPayload.grade || 'Desconocido'
+         grade: cleanPayload.grade || 'Desconocido',
+         nickname: cleanPayload.nickname || user.displayName || '',
+         avatar: cleanPayload.avatar || user.photoURL || '',
+         email: user.email || ''
        }, { merge: true }).catch(err => {
          console.error('Failed to sync activeCourseIds to root:', err);
        });

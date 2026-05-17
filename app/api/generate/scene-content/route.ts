@@ -18,6 +18,7 @@ import type { SceneOutline, PdfImage, ImageMapping } from '@/lib/types/generatio
 import { createLogger } from '@/lib/logger';
 import { apiError, apiSuccess } from '@/lib/server/api-response';
 import { resolveModelFromHeaders, getThinkingConfigFromBody } from '@/lib/server/resolve-model';
+import { logTokenUsage } from '@/lib/server/token-logger';
 import { authenticateRequest } from '@/lib/server/auth';
 
 const log = createLogger('Scene Content API');
@@ -93,14 +94,14 @@ export async function POST(req: NextRequest) {
     // Detect vision capability
     const hasVision = !!modelInfo?.capabilities?.vision;
 
-    // Vision-aware AI call function
     const aiCall = async (
       systemPrompt: string,
       userPrompt: string,
       images?: Array<{ id: string; src: string }>,
     ): Promise<string> => {
+      let result;
       if (images?.length && hasVision) {
-        const result = await callLLM(
+        result = await callLLM(
           {
             model: languageModel,
             system: systemPrompt,
@@ -116,19 +117,34 @@ export async function POST(req: NextRequest) {
           undefined,
           thinkingConfig
         );
-        return result.text;
+      } else {
+        result = await callLLM(
+          {
+            model: languageModel,
+            system: systemPrompt,
+            prompt: userPrompt,
+            maxOutputTokens: modelInfo?.outputWindow,
+          },
+          'scene-content',
+          undefined,
+          thinkingConfig
+        );
       }
-      const result = await callLLM(
-        {
-          model: languageModel,
-          system: systemPrompt,
-          prompt: userPrompt,
-          maxOutputTokens: modelInfo?.outputWindow,
-        },
-        'scene-content',
-        undefined,
-        thinkingConfig
-      );
+
+      try {
+        logTokenUsage({
+          uid: authUser.uid,
+          email: authUser.email || undefined,
+          modelString,
+          promptTokens: (result.usage as any)?.promptTokens || 0,
+          completionTokens: (result.usage as any)?.completionTokens || 0,
+          stageId,
+          source: 'content',
+        });
+      } catch (e) {
+        log.error('Failed to log content token usage', e);
+      }
+
       return result.text;
     };
 

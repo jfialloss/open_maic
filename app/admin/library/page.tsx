@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Search, Library, Loader2, DownloadCloud, Trash2, LayoutTemplate } from 'lucide-react';
-import { collection, query, orderBy, getDocs, limit, startAfter, QueryDocumentSnapshot, DocumentData, doc, deleteDoc, where } from 'firebase/firestore';
+import { ArrowLeft, Search, Library, Loader2, DownloadCloud, Trash2, LayoutTemplate, Users, X } from 'lucide-react';
+import { collection, query, orderBy, getDocs, getDoc, limit, startAfter, QueryDocumentSnapshot, DocumentData, doc, deleteDoc, where } from 'firebase/firestore';
 import { db as firestoreDb } from '@/lib/firebase';
 import { useAuth } from '@/lib/hooks/use-auth';
 import { useI18n } from '@/lib/hooks/use-i18n';
@@ -21,6 +21,10 @@ export default function AdminLibraryPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'all' | 'mine' | 'community'>('all');
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  
+  const [inspectingCourse, setInspectingCourse] = useState<{ id: string; name: string } | null>(null);
+  const [activeUsers, setActiveUsers] = useState<any[]>([]);
+  const [loadingUsage, setLoadingUsage] = useState(false);
 
   useEffect(() => {
     if (!authLoading && role !== 'admin' && role !== 'tutor') {
@@ -100,6 +104,67 @@ export default function AdminLibraryPage() {
       toast.error(t('adminLibrary.deleteError'));
     } finally {
       setDeletingId(null);
+    }
+  };
+
+  const handleViewUsage = async (id: string, name: string) => {
+    setInspectingCourse({ id, name });
+    setLoadingUsage(true);
+    setActiveUsers([]);
+    try {
+      const usersQuery = query(
+        collection(firestoreDb, 'users'),
+        where('activeCourseIds', 'array-contains', id)
+      );
+      const snap = await getDocs(usersQuery);
+      
+      const userProfiles = await Promise.all(snap.docs.map(async (d) => {
+        const rootData = d.data();
+        const profileDoc = await getDoc(doc(firestoreDb, 'users', d.id, 'data', 'profile'));
+        const profileData = profileDoc.exists() ? profileDoc.data() : {};
+        
+        let status = 'Desconocido';
+        let statusColor = 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400';
+
+        if (profileData.assignedCourses && profileData.assignedCourses[id]) {
+          const assignedStatus = profileData.assignedCourses[id].status;
+          if (assignedStatus === 'passed') {
+            status = 'Aprobado';
+            statusColor = 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 border border-green-200 dark:border-green-800';
+          } else if (assignedStatus === 'failed') {
+            status = 'Reprobado';
+            statusColor = 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400 border border-red-200 dark:border-red-800';
+          } else {
+            status = 'Asignado';
+            statusColor = 'bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-400 border border-sky-200 dark:border-sky-800';
+          }
+        } else if (profileData.passedCourses && profileData.passedCourses.includes(id)) {
+          status = 'Aprobado';
+          statusColor = 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 border border-green-200 dark:border-green-800';
+        } else if (profileData.activeCourses && profileData.activeCourses[id]) {
+          status = 'En Curso';
+          statusColor = 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800';
+        } else {
+          status = 'En Historial';
+          statusColor = 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700';
+        }
+
+        return {
+          id: d.id,
+          email: rootData.email || profileData.email || '',
+          grade: rootData.grade || profileData.grade || '',
+          nickname: profileData.nickname || rootData.nickname || rootData.displayName || '',
+          avatar: profileData.avatar || rootData.avatar || '',
+          status,
+          statusColor
+        };
+      }));
+      setActiveUsers(userProfiles);
+    } catch (e) {
+      console.error(e);
+      toast.error('Error al cargar usuarios');
+    } finally {
+      setLoadingUsage(false);
     }
   };
 
@@ -238,6 +303,13 @@ export default function AdminLibraryPage() {
                     <td className="px-6 py-4 whitespace-nowrap text-right">
                       <div className="flex justify-end gap-2">
                         <button
+                          onClick={() => handleViewUsage(gc._id, gc.stage?.name || t('adminLibrary.untitled'))}
+                          className="p-1.5 rounded-md bg-amber-50 text-amber-600 hover:bg-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:hover:bg-amber-900/40 transition-colors"
+                          title="Ver uso del curso"
+                        >
+                          <Users className="size-4" />
+                        </button>
+                        <button
                           onClick={() => handleDownload(gc._id, gc)}
                           className="p-1.5 rounded-md bg-sky-50 text-sky-600 hover:bg-sky-100 dark:bg-sky-900/20 dark:text-sky-400 dark:hover:bg-sky-900/40 transition-colors"
                           title={t('adminLibrary.cloneTitle')}
@@ -284,6 +356,63 @@ export default function AdminLibraryPage() {
           </div>
         </div>
       </div>
+
+      {/* Usage Modal */}
+      {inspectingCourse && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-md overflow-hidden flex flex-col max-h-[80vh] border border-slate-200 dark:border-slate-700">
+            <div className="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+              <h3 className="font-semibold text-slate-800 dark:text-slate-200 truncate pr-4 flex items-center gap-2">
+                <Users className="size-5 text-amber-500" />
+                Uso: {inspectingCourse.name}
+              </h3>
+              <button
+                onClick={() => setInspectingCourse(null)}
+                className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+              >
+                <X className="size-5" />
+              </button>
+            </div>
+            <div className="p-4 overflow-y-auto">
+              {loadingUsage ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="size-6 animate-spin text-sky-500" />
+                </div>
+              ) : activeUsers.length === 0 ? (
+                <div className="text-center py-8 text-slate-500 dark:text-slate-400 text-sm">
+                  Ningún alumno está usando este curso actualmente.
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {activeUsers.map(u => (
+                    <div key={u.id} className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-700/50">
+                      {u.avatar ? (
+                        <img src={u.avatar} alt={u.nickname} className="size-10 rounded-full bg-slate-200 dark:bg-slate-800 object-cover" />
+                      ) : (
+                        <div className="size-10 rounded-full bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center text-sky-600 dark:text-sky-400 font-bold">
+                          {(u.nickname || u.email || '?')[0].toUpperCase()}
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-sm text-slate-800 dark:text-slate-200 truncate">
+                          {u.nickname || 'Sin nombre'}
+                        </div>
+                        <div className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                          {u.email || u.grade || 'Alumno'}
+                        </div>
+                      </div>
+                      <div className={`shrink-0 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md ${u.statusColor}`}>
+                        {u.status}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

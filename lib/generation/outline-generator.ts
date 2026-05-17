@@ -112,6 +112,9 @@ export async function generateSceneOutlinesFromRequirements(
     availableImages: availableImagesText,
     userProfile: userProfileText,
     mediaGenerationPolicy,
+    imageEnabled,
+    videoEnabled,
+    mediaEnabled: imageEnabled || videoEnabled,
     researchContext: options?.researchContext || 'None',
     // Server-side generation populates this via options; client-side populates via formatTeacherPersonaForPrompt
     teacherContext: options?.teacherContext || '',

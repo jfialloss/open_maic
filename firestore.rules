@@ -60,6 +60,12 @@ service cloud.firestore {
       allow write: if false; // Solo el backend (Admin SDK) escribe aquí
     }
 
+    // Auditoría de Uso de IA (Tokens y Costos)
+    match /usage_logs/{document=**} {
+      allow read: if isStaff();
+      allow write: if false; // Solo el backend (Admin SDK) escribe aquí
+    }
+
     // Rastreo de Sesiones de Usuario
     match /user_sessions/{sessionId} {
       // El dueño de la sesión puede crearla y actualizarla

@@ -111,6 +111,8 @@ When comparing or listing information, specify in keyPoints:
 ]
 ```
 
+{{mediaGenerationPolicy}}
+
 {{#if imageEnabled}}
 {{snippet:image-instructions}}
 {{/if}}

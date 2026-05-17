@@ -26,6 +26,7 @@ import type { SpeechAction } from '@/lib/types/action';
 import { createLogger } from '@/lib/logger';
 import { apiError, apiSuccess } from '@/lib/server/api-response';
 import { resolveModelFromHeaders } from '@/lib/server/resolve-model';
+import { logTokenUsage } from '@/lib/server/token-logger';
 import { authenticateRequest } from '@/lib/server/auth';
 
 const log = createLogger('Scene Actions API');
@@ -82,14 +83,14 @@ export async function POST(req: NextRequest) {
     // Detect vision capability
     const hasVision = !!modelInfo?.capabilities?.vision;
 
-    // AI call function (actions typically don't use vision, but kept for consistency)
     const aiCall = async (
       systemPrompt: string,
       userPrompt: string,
       images?: Array<{ id: string; src: string }>,
     ): Promise<string> => {
+      let result;
       if (images?.length && hasVision) {
-        const result = await callLLM(
+        result = await callLLM(
           {
             model: languageModel,
             system: systemPrompt,
@@ -103,17 +104,32 @@ export async function POST(req: NextRequest) {
           },
           'scene-actions',
         );
-        return result.text;
+      } else {
+        result = await callLLM(
+          {
+            model: languageModel,
+            system: systemPrompt,
+            prompt: userPrompt,
+            maxOutputTokens: modelInfo?.outputWindow,
+          },
+          'scene-actions',
+        );
       }
-      const result = await callLLM(
-        {
-          model: languageModel,
-          system: systemPrompt,
-          prompt: userPrompt,
-          maxOutputTokens: modelInfo?.outputWindow,
-        },
-        'scene-actions',
-      );
+
+      try {
+        logTokenUsage({
+          uid: authUser.uid,
+          email: authUser.email || undefined,
+          modelString,
+          promptTokens: (result.usage as any)?.promptTokens || 0,
+          completionTokens: (result.usage as any)?.completionTokens || 0,
+          stageId,
+          source: 'actions',
+        });
+      } catch (e) {
+        log.error('Failed to log actions token usage', e);
+      }
+
       return result.text;
     };
 
