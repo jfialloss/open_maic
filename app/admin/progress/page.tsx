@@ -69,7 +69,9 @@ function computeSubjectProgress(syllabusMap: any, masteredTopics: string[]): Sub
   const units: UnitProgress[] = [];
 
   for (const [unitName, unitData] of Object.entries(syllabusMap)) {
-    const temas = (unitData as any).temas || [];
+    if (unitName === 'objetivos_oficiales') continue;
+    const rawTemas = (unitData as any).temas || [];
+    const temas = rawTemas.map((t: any) => typeof t === 'object' ? t.titulo : t);
     const unitProgress: UnitProgress = { unitName, temas: [] };
     
     for (const tema of temas) {

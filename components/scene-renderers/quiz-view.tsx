@@ -26,7 +26,7 @@ import { useStageStore } from '@/lib/store/stage';
 import { useUserProfileStore } from '@/lib/store/user-profile';
 import syllabusDataRaw from '@/lib/data/syllabus.json';
 
-const syllabusData = syllabusDataRaw as Record<string, Record<string, Record<string, { objetivos: string[], temas: string[] }>>>;
+const syllabusData = syllabusDataRaw as any;
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -826,9 +826,13 @@ export function QuizView({ questions, sceneId }: QuizViewProps) {
             // Legacy fallback for old courses generated before topic metadata
             let matchedTopic: string | null = null;
             for (const subjectGrades of Object.values(syllabusData)) {
-              for (const units of Object.values(subjectGrades)) {
-                for (const unit of Object.values(units)) {
-                  for (const topic of unit.temas) {
+              for (const units of Object.values(subjectGrades as any)) {
+                for (const [unitName, unit] of Object.entries(units as any)) {
+                  if (unitName === 'objetivos_oficiales') continue;
+                  const isNewFormat = (unit as any).temas && typeof (unit as any).temas[0] === 'object';
+                  const topicArray = isNewFormat ? (unit as any).temas.map((t: any) => t.titulo) : (unit as any).temas;
+                  if (!topicArray) continue;
+                  for (const topic of topicArray) {
                     if (stageName === topic || stageName.includes(topic)) {
                       matchedTopic = topic;
                       break;

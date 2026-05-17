@@ -50,7 +50,7 @@ export function PracticeModal({ onClose }: PracticeModalProps) {
   const [isGenerating, setIsGenerating] = useState(false);
 
   // Derived data for syllabus
-  const syllabus = syllabusData as Record<string, Record<string, Record<string, { temas: string[] }>>>;
+  const syllabus = syllabusData as any;
   const subjects = Object.keys(syllabus);
 
   const availableTopics = useMemo(() => {
@@ -61,8 +61,13 @@ export function PracticeModal({ onClose }: PracticeModalProps) {
     
     // Flatten all topics from all units
     let topics: string[] = [];
-    Object.values(units).forEach((u: any) => {
-      topics = [...topics, ...(u.temas || [])];
+    Object.entries(units).forEach(([unitName, u]: [string, any]) => {
+      if (unitName === 'objetivos_oficiales') return;
+      const isNewFormat = u.temas && typeof u.temas[0] === 'object';
+      const extractedTopics = isNewFormat ? u.temas.map((t: any) => t.titulo) : u.temas;
+      if (extractedTopics) {
+        topics = [...topics, ...extractedTopics];
+      }
     });
     return topics;
   }, [selectedSubject, sublevel, englishLevel, syllabus]);

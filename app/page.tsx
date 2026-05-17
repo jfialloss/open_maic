@@ -113,6 +113,27 @@ function getSublevelFromGrade(grade: string): string | null {
   return null;
 }
 
+function getAgeFromGrade(grade: string): string {
+  const ageMap: Record<string, string> = {
+    'Inicial 1': '3 años',
+    'Inicial 2': '4 años',
+    '1º Grado de EGB': '5 años',
+    '2º Grado de EGB': '6 años',
+    '3º Grado de EGB': '7 años',
+    '4º Grado de EGB': '8 años',
+    '5º Grado de EGB': '9 años',
+    '6º Grado de EGB': '10 años',
+    '7º Grado de EGB': '11 años',
+    '8º Grado de EGB': '12 años',
+    '9º Grado de EGB': '13 años',
+    '10º Grado de EGB': '14 años',
+    '1º de Bachillerato': '15 años',
+    '2º de Bachillerato': '16 años',
+    '3º de Bachillerato': '17 años',
+  };
+  return ageMap[grade] || 'edad promedio para este nivel';
+}
+
 function getSyllabusContext(subject?: string, grade?: string, topic?: string, englishLevel?: string) {
   if (!subject || subject === 'none' || !topic || topic === 'LIBRE') return null;
   const mappedSubject = subject === 'matematicas' ? 'Matemática' : subject === 'ciencias' ? 'Ciencias Naturales' : subject === 'lengua' ? 'Lengua y Literatura' : subject === 'ingles' ? 'Inglés' : 'Ciencias Sociales';
@@ -132,8 +153,17 @@ function getSyllabusContext(subject?: string, grade?: string, topic?: string, en
   let unitIndex = 0;
   for (const [unitName, unitData] of Object.entries(subjectData)) {
     const uData = unitData as any;
-    if (uData.temas && uData.temas.includes(topic)) {
-      return { unitName, block: unitIndex + 1 };
+    if (uData.temas) {
+      const isNewFormat = typeof uData.temas[0] === 'object';
+      const topicExists = isNewFormat 
+        ? uData.temas.some((t: any) => t.titulo === topic)
+        : uData.temas.includes(topic);
+        
+      if (topicExists) {
+        const dcd = isNewFormat ? uData.temas.find((t: any) => t.titulo === topic)?.dcd : null;
+        const officialObjectives = subjectData["objetivos_oficiales"] || [];
+        return { unitName, block: unitIndex + 1, dcd, officialObjectives };
+      }
     }
     unitIndex++;
   }
@@ -513,21 +543,40 @@ function HomePage() {
         personaHint = `\n\n[System Note: The TTS voice selected for the AI teacher is "${settings.ttsVoice}". Analyze this voice ID to determine the appropriate gender/persona, and ensure all generated scripts, introductions, and pronouns align with it (e.g., do not present as female if using a male voice).]`;
       }
 
+      const syllabusContext = getSyllabusContext(form.subject, globalGrade, form.topic);
       let curriculumContext = '';
-      if (form.subject && form.subject !== 'none') {
-        if (form.subject === 'ingles') {
-          curriculumContext = `\n\n[CRITICAL INSTRUCTION]: The subject is English. YOU MUST IGNORE the UI language directive. ALL content, teacher dialogues, interactive elements, activities, text, and quizzes MUST be generated STRICTLY in English. Do NOT use Spanish or any other language. Make sure that the level of English and vocabulary aligns with the CEFR level ${globalEnglishLevel}.`;
+
+      if (syllabusContext) {
+        let curriculumBody = '';
+        if (syllabusContext.dcd) {
+          // New optimized format!
+          const objText = syllabusContext.officialObjectives.length > 0
+            ? `\nObjetivos del Subnivel:\n- ${syllabusContext.officialObjectives.join('\n- ')}`
+            : '';
+          curriculumBody = `[DCD ESPECÍFICA A DESARROLLAR]:\n${syllabusContext.dcd}${objText}`;
         } else {
+          // Old legacy format
           try {
-            const res = await fetch(`/curriculums/${form.subject}.txt`);
+            const res = await fetch(`/curriculums/MINEDU - ${form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'sociales' ? 'Estudios Sociales' : form.subject === 'lengua' ? 'Lengua & Literatura' : 'Matemáticas'}.txt`);
             if (res.ok) {
               const rawBody = await res.text();
-              curriculumContext = `\n\n[CONTEXTO NORMATIVO - CURRICULO DEL MINISTERIO DE EDUCACION]:\nLa asignatura de esta clase es "${form.subject.toUpperCase()}". A continuacion se anexa el documento del currículo oficial:\n\n${rawBody}\n\n[INSTRUCCION ESTRATEGICA]: Tienes la VENTAJA arquitectonica de poseer todo el curriculo insertado en el contexto. Debes asegurar obligatoriamente que la estructura de la clase y el contenido academico esten estrechamente alineados con las Destrezas con Criterio de Desempeno y objetivos mencionados en el curriculo adjunto.`;
+              curriculumBody = `\n\nA continuacion se anexa el documento del currículo oficial:\n\n${rawBody.substring(0, 50000)}...`; // limited to avoid giant context if not mapped yet
             }
-          } catch (e) {
-            log.error('Failed to fetch curriculum context:', e);
+          } catch (err) {
+            console.error('Failed to fetch curriculum context', err);
           }
         }
+
+        curriculumContext = `
+[CONTEXTO DEL CURRÍCULO NACIONAL]
+Estás preparando una clase basada en el currículo oficial del Ministerio de Educación.
+Unidad / Bloque: ${syllabusContext.unitName} (Bloque ${syllabusContext.block})
+Tema Seleccionado: ${form.topic}
+
+${curriculumBody}
+
+INSTRUCCIÓN CRÍTICA: Debes garantizar que la clase enseñe EXACTAMENTE la Destreza con Criterio de Desempeño (DCD) especificada, adaptando el lenguaje y la dificultad pedagógica exclusivamente a un estudiante de ${getAgeFromGrade(globalGrade)} (${globalGrade}). No te desvíes del tema.
+`;
       }
 
       let deepInteractionHint = '';
@@ -968,7 +1017,6 @@ function HomePage() {
         >
           <div className="w-full rounded-2xl border border-border/60 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-xl shadow-black/[0.03] dark:shadow-black/20 transition-shadow focus-within:shadow-2xl focus-within:shadow-sky-500/[0.06]">
             {/* ── Greeting + Profile + Agents ── */}
-            {/* ── Greeting + Profile + Agents ── */}
             <div className="relative z-20 flex items-stretch justify-between">
               <div className="flex items-stretch">
                 <GreetingBar />
@@ -1080,8 +1128,12 @@ function HomePage() {
                   const subData = syllabusData[form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : form.subject === 'ingles' ? 'Inglés' : 'Ciencias Sociales'][mappedSublevel];
                   const lockedTopics = new Set<string>();
                   let firstUnmasteredFound = false;
-                  Object.values(subData).forEach((uData: any) => {
-                    uData.temas.forEach((t: string) => {
+                  Object.entries(subData).forEach(([uName, uData]: [string, any]) => {
+                    if (uName === 'objetivos_oficiales') return;
+                    const isNewFormat = uData.temas && typeof uData.temas[0] === 'object';
+                    const topicArray = isNewFormat ? uData.temas.map((t: any) => t.titulo) : uData.temas;
+                    if (!topicArray) return;
+                    topicArray.forEach((t: string) => {
                       if (!masteredTopics?.includes(t)) {
                         if (firstUnmasteredFound) lockedTopics.add(t);
                         firstUnmasteredFound = true;
@@ -1091,7 +1143,9 @@ function HomePage() {
 
                   return (
                     <div className="flex flex-col gap-4 mt-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                      {Object.entries(subData).map(([unitName, unitData]: [string, any], unitIndex) => (
+                      {Object.entries(subData).map(([unitName, unitData]: [string, any], unitIndex) => {
+                        if (unitName === 'objetivos_oficiales') return null;
+                        return (
                         <div key={unitName} className="flex flex-col gap-1.5 p-2.5 rounded-xl bg-white/50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-800/50">
                           <div className="flex items-start justify-between gap-2">
                             <h4 className="text-[13px] font-bold text-slate-700 dark:text-slate-200 leading-tight">
@@ -1107,84 +1161,89 @@ function HomePage() {
                             </div>
                           )}
                           <div className="flex flex-col gap-1.5 mt-0.5">
-                            {unitData.temas.map((topic: string, i: number) => {
-                              const isMastered = masteredTopics?.includes(topic) || false;
-                              const isLocked = lockedTopics.has(topic);
-                              const prefix = `${unitIndex + 1}.${i + 1}`;
-                              const inProgressClassroom = !isMastered && !isLocked ? classrooms.find((c) => (c.topic === topic || c.name === topic) && !passedCourses.includes(c.id)) : null;
-                              return (
-                                <button
-                                  key={topic}
-                                  disabled={isLocked}
-                                  onClick={() => {
-                                    if (isLocked) return;
-                                    if (inProgressClassroom) {
-                                      if (window.confirm(`Tienes un curso a medias sobre este tema.\n¿Deseas continuar donde te quedaste en lugar de crear uno nuevo?`)) {
-                                        router.push(`/classroom/${inProgressClassroom.id}`);
+                            {(() => {
+                              const isNewFormat = unitData.temas && typeof unitData.temas[0] === 'object';
+                              const topicArray = isNewFormat ? unitData.temas.map((t: any) => t.titulo) : unitData.temas;
+                              return topicArray.map((topic: string, i: number) => {
+                                const isMastered = masteredTopics?.includes(topic) || false;
+                                const isLocked = lockedTopics.has(topic);
+                                const prefix = `${unitIndex + 1}.${i + 1}`;
+                                const inProgressClassroom = !isMastered && !isLocked ? classrooms.find((c) => (c.topic === topic || c.name === topic) && !passedCourses.includes(c.id)) : null;
+                                return (
+                                  <button
+                                    key={topic}
+                                    disabled={isLocked}
+                                    onClick={() => {
+                                      if (isLocked) return;
+                                      if (inProgressClassroom) {
+                                        if (window.confirm(`Tienes un curso a medias sobre este tema.\n¿Deseas continuar donde te quedaste en lugar de crear uno nuevo?`)) {
+                                          router.push(`/classroom/${inProgressClassroom.id}`);
+                                        }
+                                        return;
                                       }
-                                      return;
-                                    }
-                                    // Injecting topic and its objective to help the AI structure the class better
-                                    const humanPrompt = form.subject === 'ingles'
-                                      ? `I want a class about the topic: "${topic}".\nThe main learning objective should be: "${unitData.objetivos ? unitData.objetivos[0] : ''}".`
-                                      : `Quiero que me des una clase sobre el tema: "${topic}".\nEl objetivo de aprendizaje principal debe ser: "${unitData.objetivos ? unitData.objetivos[0] : ''}".`;
-                                    if (form.subject === 'ingles') {
-                                      updateForm('language', 'en-US');
-                                    }
-                                    updateForm('requirement', humanPrompt);
-                                    updateForm('topic', topic);
-                                  }}
-                                  className={cn(
-                                    "w-full text-[12px] px-3 py-2 rounded-lg border transition-all flex items-start gap-2 text-left group",
-                                    isLocked
-                                      ? "bg-slate-50/50 text-slate-400 border-slate-100 dark:bg-slate-900/20 dark:text-slate-600 dark:border-slate-800/30 cursor-not-allowed opacity-70"
-                                      : "hover:shadow-sm active:scale-[0.99]",
-                                    isMastered 
-                                      ? "bg-emerald-50/70 text-emerald-800 border-emerald-200/60 dark:bg-emerald-950/20 dark:text-emerald-300 dark:border-emerald-800/50" 
-                                      : inProgressClassroom
-                                      ? "bg-amber-50/70 text-amber-900 border-amber-200/80 dark:bg-amber-950/30 dark:text-amber-300 dark:border-amber-800/60"
-                                      : !isLocked ? "bg-white text-slate-700 border-slate-200 hover:border-sky-300 hover:bg-sky-50/50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:border-sky-700 dark:hover:bg-slate-800/80" : ""
-                                  )}
-                                >
-                                  {isLocked ? (
-                                    <div className="shrink-0 mt-0.5 size-4 rounded-full bg-slate-200/50 dark:bg-slate-800/50 flex items-center justify-center">
-                                      <Lock className="size-2.5 text-slate-400 dark:text-slate-500" />
-                                    </div>
-                                  ) : isMastered ? (
-                                    <div className="shrink-0 mt-0.5 size-4 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
-                                      <Check className="size-2.5 text-emerald-600 dark:text-emerald-400" />
-                                    </div>
-                                  ) : inProgressClassroom ? (
-                                    <div className="shrink-0 mt-0.5 size-4 rounded-full bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center">
-                                      <Clock className="size-2.5 text-amber-600 dark:text-amber-400" />
-                                    </div>
-                                  ) : (
-                                    <div className="shrink-0 mt-0.5 w-4 font-bold text-[10px] text-slate-400 dark:text-slate-500 text-center">
-                                      {prefix}
-                                    </div>
-                                  )}
-                                  
-                                  <span className="flex-1 leading-snug">{topic}</span>
-                                  
-                                  {isLocked ? (
-                                    <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-slate-400/70 dark:text-slate-500/70 mt-0.5">
-                                      Bloqueado
-                                    </span>
-                                  ) : isMastered ? (
-                                    <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-emerald-600/70 dark:text-emerald-400/70 mt-0.5 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                                      Superado
-                                    </span>
-                                  ) : inProgressClassroom ? (
-                                    <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-amber-600/80 dark:text-amber-400/80 mt-0.5 group-hover:text-amber-700 dark:group-hover:text-amber-300 transition-colors">
-                                      En Curso
-                                    </span>
-                                  ) : null}
-                                </button>
-                              );
-                            })}
+
+                                      const humanPrompt = form.subject === 'ingles'
+                                        ? `I want a class about the topic: "${topic}".\nThe main learning objective should be: "${unitData.objetivos ? unitData.objetivos[0] : ''}".`
+                                        : `Quiero que me des una clase sobre el tema: "${topic}".\nEl objetivo de aprendizaje principal debe ser: "${unitData.objetivos ? unitData.objetivos[0] : ''}".`;
+                                      if (form.subject === 'ingles') {
+                                        updateForm('language', 'en-US');
+                                      }
+                                      updateForm('requirement', humanPrompt);
+                                      updateForm('topic', topic);
+                                    }}
+                                    className={cn(
+                                      "w-full text-[12px] px-3 py-2 rounded-lg border transition-all flex items-start gap-2 text-left group",
+                                      isLocked
+                                        ? "bg-slate-50/50 text-slate-400 border-slate-100 dark:bg-slate-900/20 dark:text-slate-600 dark:border-slate-800/30 cursor-not-allowed opacity-70"
+                                        : "hover:shadow-sm active:scale-[0.99]",
+                                      isMastered 
+                                        ? "bg-emerald-50/70 text-emerald-800 border-emerald-200/60 dark:bg-emerald-950/20 dark:text-emerald-300 dark:border-emerald-800/50" 
+                                        : inProgressClassroom
+                                        ? "bg-amber-50/70 text-amber-900 border-amber-200/80 dark:bg-amber-950/30 dark:text-amber-300 dark:border-amber-800/60"
+                                        : !isLocked ? "bg-white text-slate-700 border-slate-200 hover:border-sky-300 hover:bg-sky-50/50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:border-sky-700 dark:hover:bg-slate-800/80" : ""
+                                    )}
+                                  >
+                                    {isLocked ? (
+                                      <div className="shrink-0 mt-0.5 size-4 rounded-full bg-slate-200/50 dark:bg-slate-800/50 flex items-center justify-center">
+                                        <Lock className="size-2.5 text-slate-400 dark:text-slate-500" />
+                                      </div>
+                                    ) : isMastered ? (
+                                      <div className="shrink-0 mt-0.5 size-4 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
+                                        <Check className="size-2.5 text-emerald-600 dark:text-emerald-400" />
+                                      </div>
+                                    ) : inProgressClassroom ? (
+                                      <div className="shrink-0 mt-0.5 size-4 rounded-full bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center">
+                                        <Clock className="size-2.5 text-amber-600 dark:text-amber-400" />
+                                      </div>
+                                    ) : (
+                                      <div className="shrink-0 mt-0.5 w-4 font-bold text-[10px] text-slate-400 dark:text-slate-500 text-center">
+                                        {prefix}
+                                      </div>
+                                    )}
+                                    
+                                    <span className="flex-1 leading-snug">{topic}</span>
+                                    
+                                    {isLocked ? (
+                                      <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-slate-400/70 dark:text-slate-500/70 mt-0.5">
+                                        Bloqueado
+                                      </span>
+                                    ) : isMastered ? (
+                                      <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-emerald-600/70 dark:text-emerald-400/70 mt-0.5 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                                        Superado
+                                      </span>
+                                    ) : inProgressClassroom ? (
+                                      <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-amber-600/80 dark:text-amber-400/80 mt-0.5 group-hover:text-amber-700 dark:group-hover:text-amber-300 transition-colors">
+                                        En Curso
+                                      </span>
+                                    ) : null}
+                                  </button>
+                                );
+                              });
+                            })()}
                           </div>
                         </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   );
                 })()}
@@ -1376,9 +1435,13 @@ function HomePage() {
                         const lockedTopics = new Set<string>();
                         let firstUnmasteredFound = false;
 
-                        units.forEach(([_, uData]: any) => {
-                          totalTopics += uData.temas.length;
-                          uData.temas.forEach((t: string) => {
+                        units.forEach(([uName, uData]: any) => {
+                          if (uName === 'objetivos_oficiales') return;
+                          const isNewFormat = uData.temas && typeof uData.temas[0] === 'object';
+                          const topicArray = isNewFormat ? uData.temas.map((t: any) => t.titulo) : uData.temas;
+                          if (!topicArray) return;
+                          totalTopics += topicArray.length;
+                          topicArray.forEach((t: string) => {
                             if (masteredTopics?.includes(t)) {
                               mCount++;
                             } else {
@@ -1403,13 +1466,18 @@ function HomePage() {
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                              {units.map(([uName, uData]: any, uIdx) => (
+                              {units.map(([uName, uData]: any, uIdx) => {
+                                if (uName === 'objetivos_oficiales') return null;
+                                const isNewFormat = uData.temas && typeof uData.temas[0] === 'object';
+                                const topicArray = isNewFormat ? uData.temas.map((t: any) => t.titulo) : uData.temas;
+                                if (!topicArray) return null;
+                                return (
                                 <div key={uName} className="flex flex-col gap-2">
                                   <h4 className="text-[12px] font-bold text-slate-600 dark:text-slate-300 leading-tight">
                                     Bloque {uIdx + 1}: {uName.split(': ')[1] || uName}
                                   </h4>
                                   <div className="flex flex-col gap-1.5">
-                                    {uData.temas.map((t: string, tIdx: number) => {
+                                    {topicArray.map((t: string, tIdx: number) => {
                                       const isMastered = masteredTopics?.includes(t);
                                       const isLocked = lockedTopics.has(t);
                                       const inProgressClassroom = !isMastered && !isLocked ? classrooms.find((c) => (c.topic === t || c.name === t) && (c.sceneCount && c.sceneCount > 0) && !passedCourses.includes(c.id)) : null;
@@ -1442,7 +1510,8 @@ function HomePage() {
                                     })}
                                   </div>
                                 </div>
-                              ))}
+                                );
+                              })}
                             </div>
                           </div>
                         );
