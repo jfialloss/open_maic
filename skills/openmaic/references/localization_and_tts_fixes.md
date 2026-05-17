@@ -65,3 +65,17 @@ Originalmente, el motor de Outlines infería el idioma basándose en el idioma e
 1. Se extrajo la variable `requirements.language` enviada desde el UI Frontend y se inyectó dinámicamente como `explicitLanguage` en el generador de `buildPrompt` (`app/api/generate/scene-outlines-stream/route.ts`).
 2. Se inyectó una plantilla con `{{#if explicitLanguage}}` en los archivos `user.md` que impone un **CRITICAL LANGUAGE OVERRIDE** sobre el modelo, obligándolo a ignorar el idioma del texto del usuario y a usar exclusivamente el del selector visual.
 3. Se implementó una **regla de excepción estricta para materias**: `explicitLanguage: requirements.subject === 'ingles' ? 'en-US' : requirements.language`. Esto garantiza que la materia de "Inglés" siempre forzará una generación nativa en inglés (y por tanto, activará una voz gringa en el TTS), anulando cualquier otra configuración visual o textual.
+
+## 11. El Bug de la Preposición "en" (Falso Positivo de Inglés)
+**Causa:** En simulaciones y otros cursos, la voz TTS leía los números en inglés a pesar de hablar en español. Esto ocurría porque la expresión regular que detectaba si la directiva de la IA era inglés (`/\b(inglés|ingles|english|en)\b/`) se disparaba accidentalmente con la preposición española "en" (ej. *"El curso será impartido **en** español"*). Esto forzaba a la app a usar una voz nativa gringa, la cual leía el texto español con un acento extraño y los dígitos numéricos estrictamente en inglés.
+**Reparación:** En `lib/hooks/use-scene-generator.ts`, se eliminaron todos los sufijos cortos conflictivos (`en`, `es`, `fr`, `pt`, `zh`) de los regex. Además, se reordenó la cadena de `if/else` para evaluar y priorizar siempre el Español antes que el Inglés.
+
+## 12. Pacing (Ritmo) y Blindaje Ortográfico en TTS
+**Causa:** Ocasionalmente la voz de los profesores se "montaba" (hablaba muy rápido, sin pausas) y no pronunciaba bien algunas tildes a pesar de no haber Markdown.
+**Reparación:** Se amplió la instrucción crítica en todos los prompts de acciones (`slide-actions/system.md`, `quiz`, `pbl`, `interactive`). Ahora la instrucción `CRITICAL — TTS PRONUNCIATION & PACING` obliga a la IA a:
+1. **Pacing:** Romper oraciones largas y usar puntuación generosa (puntos, comas, puntos suspensivos `...`) para forzar al motor TTS a hacer pausas naturales para respirar.
+2. **Ortografía:** Aplicar estrictamente la ortografía y tildes gramaticales del español para garantizar que el motor fonético de TTS asigne la sílaba tónica correcta.
+
+## 13. Hard-Reset del Selector de Idioma Global
+**Problema:** Al volver a la ventana principal de generación (`app/page.tsx`), la app a veces recordaba el último idioma usado (ej. Inglés) desde el `localStorage`.
+**Reparación:** Se eliminó la lectura de `localStorage` para `LANGUAGE_STORAGE_KEY` durante el montaje de la página (el `useEffect` de inicialización), forzando estáticamente `updates.language = 'es-ES'`. Esto asegura que cada vez que el usuario entre o regrese al dashboard de generación, el selector comience siempre y predeterminadamente en Español.

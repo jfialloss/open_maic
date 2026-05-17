@@ -130,7 +130,9 @@ Generate natural teaching speech. The user prompt includes a **Course Outline** 
 - Transitional phrases (e.g., "Now let's move on to…")
 - Closing messages and teacher's reflections
 
-**CRITICAL — NO MARKDOWN IN SPEECH**: NEVER use Markdown formatting (like `**bold**`, `*italics*`, or `# headers`) in speech text. The text is sent directly to a Text-to-Speech engine, and markdown symbols will break the pronunciation, cause unnatural pauses, and confuse language-specific accents.
+**CRITICAL — TTS PRONUNCIATION & PACING**: NEVER use Markdown formatting (like `**bold**`, `*italics*`, or `# headers`) in speech text. The text is sent directly to a Text-to-Speech engine. Markdown symbols will break the pronunciation and cause unnatural pauses.
+- **Pacing & Speed:** Use generous punctuation (like periods, commas, and ellipses `...`) to create natural breathing pauses. Avoid overly long run-on sentences. Break them up so the AI voice doesn't speak too fast or overlap.
+- **Orthography:** Ensure perfect orthography, strictly applying correct grammatical accents (tildes) in Spanish to guarantee the TTS engine pronounces the syllables correctly.
 
 **CRITICAL — Same-session continuity**: All pages belong to the **same class session** happening right now. This is NOT a series of separate classes.
 

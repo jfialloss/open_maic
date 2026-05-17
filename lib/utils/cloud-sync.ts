@@ -190,8 +190,11 @@ export async function publishStageToCloud(
     }
 
     // 3. Update the Firestore document with final URLs and completed status
+    // Re-encode because stageData.scenes was mutated with new Firebase URLs
+    const finalSanitizedClassroom = encodeNestedArrays(JSON.parse(JSON.stringify(cloudClassroom)));
+
     await setDoc(doc(firestoreDb, 'global_classrooms', stageId), {
-      ...sanitizedClassroom,
+      ...finalSanitizedClassroom,
       status: 'completed',
       audioUrlMap,
     }, { merge: true });
@@ -236,7 +239,7 @@ export async function publishBuildingStageToCloud(
     };
     await setDoc(doc(firestoreDb, 'global_classrooms', stageId), stub, { merge: true });
     log.info(`Classroom ${stageId} (Building Stub) published globally successfully.`);
-    toast.success(`🌐 Conectado a la Nube. (ID: ${stageId})`);
+    toast.success('🌐 Conectando a la nube de NEWMAN');
   } catch (err) {
     log.error('Error publishing building stage to cloud:', err);
     // Non-blocking, so we just log

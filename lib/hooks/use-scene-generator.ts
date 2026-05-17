@@ -145,13 +145,13 @@ export function inferTeacherVoice(
     const femaleAvatars = [
       'user.svg', 'assist.png', 'assist-2.png', 'clown.png', 'clown-2.png',
       'explorer.svg', 'learner.svg', 'teacher-2.png', 'thinker.png',
-      'thinker.svg', 'thinker-2.png', '-female'
+      'thinker.svg', 'thinker-2.png', 'curious-2.png', 'note-taker-2.png', '-female'
     ];
     
     const maleAvatars = [
       'assistant.svg', 'builder.svg', 'clown.svg', 'coder.svg', 'creative.svg',
-      'curious.png', 'curious.svg', 'curious-2.png', 'dreamer.svg', 'notes.svg',
-      'note-taker.png', 'note-taker-2.png', 'reader.svg', 'scholar.svg',
+      'curious.png', 'curious.svg', 'dreamer.svg', 'notes.svg',
+      'note-taker.png', 'reader.svg', 'scholar.svg',
       'student1.svg', 'student2.svg', 'student3.svg', 'teacher.png',
       'teacher.svg', 'user.png', '-male'
     ];
@@ -190,19 +190,20 @@ export function inferTeacherVoice(
   
   // 1. Check AI's language directive first (most accurate for the actual generated content)
   const directive = (languageDirective || '').toLowerCase();
-  if (/\b(inglés|ingles|english|en)\b/.test(directive)) {
-    targetCodes = ['en-us', 'en-gb', 'en'];
-    langPrefix = 'en';
-  } else if (/\b(español|spanish|es)\b/.test(directive)) {
+  
+  if (/\b(español|spanish)\b/.test(directive)) {
     targetCodes = ['es-us', 'es-419', 'es-mx', 'es-es', 'es'];
     langPrefix = 'es';
-  } else if (/\b(portugués|portugues|portuguese|pt)\b/.test(directive)) {
+  } else if (/\b(inglés|ingles|english)\b/.test(directive)) {
+    targetCodes = ['en-us', 'en-gb', 'en'];
+    langPrefix = 'en';
+  } else if (/\b(portugués|portugues|portuguese)\b/.test(directive)) {
     targetCodes = ['pt-br', 'pt-pt', 'pt'];
     langPrefix = 'pt';
-  } else if (/\b(chino|chinese|zh|mandarin)\b/.test(directive)) {
+  } else if (/\b(chino|chinese|mandarin)\b/.test(directive)) {
     targetCodes = ['zh-cn', 'zh-tw', 'zh-hk', 'zh'];
     langPrefix = 'zh';
-  } else if (/\b(francés|frances|french|fr)\b/.test(directive)) {
+  } else if (/\b(francés|frances|french)\b/.test(directive)) {
     targetCodes = ['fr-fr', 'fr-ca', 'fr'];
     langPrefix = 'fr';
   } else {

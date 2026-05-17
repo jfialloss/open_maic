@@ -183,17 +183,14 @@ function HomePage() {
     }
     try {
       const savedWebSearch = localStorage.getItem(WEB_SEARCH_STORAGE_KEY);
-      const savedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY);
       const updates: Partial<FormState> = {};
       if (savedWebSearch !== null) {
         updates.webSearch = savedWebSearch === 'true';
       }
-      if (savedLanguage === 'en-US' || savedLanguage === 'es-ES') {
-        updates.language = savedLanguage;
-      } else {
-        const detected = navigator.language?.startsWith('en') ? 'en-US' : 'es-ES';
-        updates.language = detected;
-      }
+      
+      // Siempre forzamos a español al inicio o al regresar a esta ventana
+      updates.language = 'es-ES';
+      
       if (Object.keys(updates).length > 0) {
         setForm((prev) => ({ ...prev, ...updates }));
       }

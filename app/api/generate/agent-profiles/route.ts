@@ -93,13 +93,12 @@ Requirements:
 - Exactly 1 agent must have role "teacher", the rest can be "assistant" or "student"
 - Priority values: teacher=10 (highest), assistant=7, student=4-6
 - Each agent needs: name, role, persona (2-3 sentences describing personality and teaching/learning style)
-- For the "teacher" role, use a generic name like "Profesor" (or "Teacher" in English) without any personal name, and explicitly state in their persona that they NEVER introduce themselves by name.
+- For the "teacher" role, use a generic name like "Profesor / Profesora" (or "Teacher" in English) depending on the assigned gender, without any personal name, and explicitly state in their persona that they NEVER introduce themselves by name.
 - Names and personas must be in language: ${language}
 - Each agent must be assigned one avatar from this list: ${JSON.stringify(availableAvatars)}
-  - CRITICAL: Match the avatar strictly to the agent's gender based on the following visual genders:
-    FEMALE avatars: user.svg, assist.png, assist-2.png, clown.png, clown-2.png, explorer.svg, learner.svg, teacher-2.png, thinker.png, thinker.svg, thinker-2.png
-    MALE avatars: assistant.svg, builder.svg, clown.svg, coder.svg, creative.svg, curious.png, curious.svg, curious-2.png, dreamer.svg, notes.svg, note-taker.png, note-taker-2.png, reader.svg, scholar.svg, student1.svg, student2.svg, student3.svg, teacher.png, teacher.svg, user.png
-  - CRITICAL: You MUST balance the genders! Do NOT default to male avatars. Specifically, you MUST frequently assign female avatars to the teacher role!
+  - CRITICAL: The "teacher" role MUST use ONLY an avatar with "teacher" in its name (e.g., teacher.png or teacher-2.png).
+  - CRITICAL: Match the avatar strictly to the agent's gender. If an avatar has "-2.png" in its name, it is a FEMALE avatar (e.g., teacher-2.png, assist-2.png). Otherwise, it is a MALE avatar.
+  - Make sure the name (e.g. Profesor vs Profesora) and persona match the gender of the assigned avatar.
   - Try to use different avatars for each agent
 - Each agent must be assigned one color from this list: ${JSON.stringify(COLOR_PALETTE)}
   - Each agent must have a different color
