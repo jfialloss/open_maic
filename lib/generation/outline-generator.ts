@@ -153,32 +153,54 @@ export async function generateSceneOutlinesFromRequirements(
       return { success: false, error: 'Failed to parse scene outlines response' };
     }
 
+    // Intercept Spanish to enforce Latin American dialect and avoid 'os/vosotros'
+    const isSpanish = options?.explicitLanguage?.startsWith('es') || languageDirective.toLowerCase().includes('spanish') || languageDirective.toLowerCase().includes('español');
+    if (isSpanish) {
+      languageDirective += '\n\n**CRITICAL DIALECT RULE**: You MUST use Latin American Spanish (Español Latinoamericano). Use "ustedes" instead of "vosotros". NEVER use "os", "fijaos", "mirad", or any Spain-specific conjugations. Maintain a professional, accessible Latin American tone.';
+    }
+
     if (!Array.isArray(rawOutlines)) {
       return { success: false, error: 'Failed to parse scene outlines response' };
     }
 
-    // Programmatically enforce a mandatory final evaluation quiz
-    const hasQuiz = rawOutlines.some((o) => o.type === 'quiz');
-    if (!hasQuiz && rawOutlines.length > 0) {
-      log.info('LLM failed to generate a quiz. Programmatically injecting one at the end.');
-      rawOutlines.push({
-        id: `scene_${nanoid()}`,
-        type: 'quiz',
-        title: 'Evaluación Final / Final Evaluation',
-        description: 'Evaluación final para comprobar los conocimientos adquiridos. / Final evaluation to check acquired knowledge.',
-        keyPoints: ['Verificar comprensión / Verify understanding', 'Reforzar conceptos clave / Reinforce key concepts'],
-        order: rawOutlines.length + 1,
-        languageDirective: languageDirective,
-        quizConfig: {
-          questionCount: 3,
-          difficulty: 'easy',
-          questionTypes: ['single', 'multiple'],
-        },
-      } as SceneOutline);
+    // Programmatically enforce exactly ONE mandatory final evaluation quiz
+    // 1. Mutate any intermediate quizzes to slides to preserve knowledge check content without breaking evaluation logic
+    let processedOutlines = rawOutlines.map((outline, index) => {
+      if (outline.type === 'quiz' && index < rawOutlines.length - 1) {
+        log.info(`Mutating intermediate quiz to slide: "${outline.title}"`);
+        return {
+          ...outline,
+          type: 'slide',
+          title: `Repaso: ${outline.title}`,
+        } as SceneOutline;
+      }
+      return outline;
+    });
+
+    // 2. Ensure the last scene is always a quiz
+    if (processedOutlines.length > 0) {
+      const lastScene = processedOutlines[processedOutlines.length - 1];
+      if (lastScene.type !== 'quiz') {
+        log.info('Programmatically injecting final quiz at the end of the course.');
+        processedOutlines.push({
+          id: `scene_${nanoid()}`,
+          type: 'quiz',
+          title: 'Evaluación Final / Final Evaluation',
+          description: 'Evaluación final para comprobar los conocimientos adquiridos. / Final evaluation to check acquired knowledge.',
+          keyPoints: ['Verificar comprensión / Verify understanding', 'Reforzar conceptos clave / Reinforce key concepts'],
+          order: processedOutlines.length + 1,
+          languageDirective: languageDirective,
+          quizConfig: {
+            questionCount: 3,
+            difficulty: 'easy',
+            questionTypes: ['single', 'multiple'],
+          },
+        } as SceneOutline);
+      }
     }
 
     // Ensure IDs, order, and pass down languageDirective
-    const enriched = rawOutlines.map((outline, index) => {
+    const enriched = processedOutlines.map((outline, index) => {
       // Bulletproof fix for title duplication: programmatically strip the title from keyPoints
       let cleanedKeyPoints = outline.keyPoints;
       if (cleanedKeyPoints && Array.isArray(cleanedKeyPoints) && outline.title) {

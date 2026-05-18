@@ -309,10 +309,34 @@ export async function POST(req: NextRequest) {
                 const directiveMatch = fullText.match(/"languageDirective"\s*:\s*"([^"]+)"/);
                 const languageDirective = directiveMatch ? directiveMatch[1] : 'Teach in the language that matches the user requirement.';
 
-                for (const outline of newOutlines) {
+                for (let outline of newOutlines) {
+                  // 1. Mutate intermediate quiz to slide on the fly!
+                  if (outline.type === 'quiz') {
+                    log.info(`Mutating intermediate quiz to slide on the fly: "${outline.title}"`);
+                    outline = {
+                      ...outline,
+                      type: 'slide',
+                      title: `Repaso: ${outline.title}`,
+                    } as SceneOutline;
+                  }
+
+                  // 2. Clean keyPoints on the fly
+                  let cleanedKeyPoints = outline.keyPoints;
+                  if (cleanedKeyPoints && Array.isArray(cleanedKeyPoints) && outline.title) {
+                    const titleLower = outline.title.trim().toLowerCase();
+                    cleanedKeyPoints = cleanedKeyPoints.filter((p) => {
+                      const ptLower = p.trim().toLowerCase();
+                      return ptLower !== titleLower && !ptLower.includes(titleLower);
+                    });
+                    if (cleanedKeyPoints.length === 0) {
+                      cleanedKeyPoints = outline.keyPoints;
+                    }
+                  }
+
                   // Ensure ID, order, and language directive
                   const enriched = {
                     ...outline,
+                    keyPoints: cleanedKeyPoints,
                     id: outline.id || nanoid(),
                     order: parsedOutlines.length + 1,
                     languageDirective: outline.languageDirective || languageDirective,
@@ -393,6 +417,24 @@ export async function POST(req: NextRequest) {
           }
 
           if (parsedOutlines.length > 0) {
+            // Append the programmatic final quiz at the very end
+            log.info('Programmatically injecting final quiz at the end of the course.');
+            const langDir = parsedOutlines[0].languageDirective || 'Teach in the language that matches the user requirement.';
+            parsedOutlines.push({
+              id: `scene_${nanoid()}`,
+              type: 'quiz',
+              title: 'Evaluación Final / Final Evaluation',
+              description: 'Evaluación final para comprobar los conocimientos adquiridos. / Final evaluation to check acquired knowledge.',
+              keyPoints: ['Verificar comprensión / Verify understanding', 'Reforzar conceptos clave / Reinforce key concepts'],
+              order: parsedOutlines.length + 1,
+              languageDirective: langDir,
+              quizConfig: {
+                questionCount: 3,
+                difficulty: 'easy',
+                questionTypes: ['single', 'multiple'],
+              },
+            } as SceneOutline);
+
             // Replace sequential gen_img_N/gen_vid_N with globally unique IDs
             const uniquifiedOutlines = uniquifyMediaElementIds(parsedOutlines);
             // Send done event with all outlines

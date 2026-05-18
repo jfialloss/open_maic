@@ -33,7 +33,7 @@
           },
           {
             "titulo": "Hábitos diarios de higiene personal",
-            "dcd": "NO_ENCONTRADO La Destreza con Criterio de Desempeño exacta y oficial sobre 'Hábitos diarios de higiene personal' para el subnivel 'Básica Elemental' no se encuentra en el documento curricular adjunto proporcionado. El documento incluye introducciones y objetivos generales, pero no el listado detallado de DCDs para este subnivel."
+            "dcd": "CN.2.2.5. Identificar y aplicar normas de higiene corporal y de manejo de alimentos; predecir las consecuencias si no se las cumple."
           }
         ]
       },
@@ -53,7 +53,7 @@
           },
           {
             "titulo": "Ciclo vital de las plantas",
-            "dcd": "NO_ENCONTRADO La Destreza con Criterio de Desempeño (DCD) exacta y oficial para 'Ciclo vital de las plantas' en el subnivel 'Básica Elemental' no se encuentra detallada en el fragmento del documento curricular proporcionado. El documento incluye la introducción general y la introducción al área de Ciencias Naturales, pero no las secciones específicas con el listado de DCDs por subnivel, las cuales empezarían en la página 97 para Básica Elemental, según el índice."
+            "dcd": "CN.2.1.3. Experimentar y predecir las etapas del ciclo vital de las plantas, sus cambios y respuestas a los estímulos, al observar la germinación de la semilla, y reconocer la importancia de la polinización y la dispersión de la semilla."
           },
           {
             "titulo": "Clasificación básica de plantas: con flor y sin flor",
@@ -85,7 +85,7 @@
           },
           {
             "titulo": "El ciclo del agua en la naturaleza de forma sencilla",
-            "dcd": "NO_DCD_ENCONTRADA La Destreza con Criterio de Desempeño (DCD) exacta y oficial para el tema 'El ciclo del agua en la naturaleza de forma sencilla' en el subnivel 'Básica Elemental' no se encuentra explícitamente listada en el segmento del documento curricular adjunto. El documento proporciona la estructura curricular y los objetivos, pero no el detalle de las DCDs para este subnivel en el área de Ciencias Naturales."
+            "dcd": "CN.2.4.12. Observar y describir el ciclo del agua en la naturaleza y reconocer que el agua es un recurso imprescindible para la vida."
           },
           {
             "titulo": "Importancia y cuidado del agua en el hogar",
@@ -97,7 +97,7 @@
           },
           {
             "titulo": "El movimiento de los cuerpos y la noción de fuerza",
-            "dcd": " "
+            "dcd": "CN.2.3.7. Observar, experimentar y describir la acción de la fuerza de las máquinas simples que se utilizan en trabajos cotidianos."
           },
           {
             "titulo": "Luz y sombra: fuentes naturales y artificiales",
@@ -125,7 +125,7 @@
           },
           {
             "titulo": "La Luna y sus fases principales",
-            "dcd": " "
+            "dcd": "CN.2.4.5. Observar en forma directa las fases de la Luna e identificar su influencia en algunos fenómenos superficiales de la Tierra."
           },
           {
             "titulo": "El clima: nociones de lluvia, viento y sol",
@@ -159,7 +159,7 @@
           },
           {
             "titulo": "Diferencias principales entre células eucariotas y procariotas",
-            "dcd": "NO_DCD_ENCONTRADA La DCD exacta y oficial para el tema 'Diferencias principales entre células eucariotas y procariotas' en el subnivel 'Básica Media' no se encuentra detallada en el documento curricular proporcionado, el cual es un documento introductorio y no contiene el listado completo de destrezas por subnivel."
+            "dcd": "N/A No se encontró una Destreza con Criterio de Desempeño exacta y oficial sobre las diferencias entre células eucariotas y procariotas para el subnivel Básica Media en el documento curricular proporcionado. Los conceptos de tipos de células (eucariotas y procariotas) y sus diferencias se abordan en subniveles posteriores como Básica Superior y Bachillerato General Unificado."
           },
           {
             "titulo": "Microorganismos perjudiciales y beneficiosos",
@@ -187,7 +187,7 @@
         "temas": [
           {
             "titulo": "El sistema circulatorio: corazón, sangre y vasos sanguíneos",
-            "dcd": " "
+            "dcd": "CN.3.2.2. Indagar y describir la estructura y función del sistema respiratorio y circulatorio, sus componentes, interacciones y el efecto de algunas enfermedades."
           },
           {
             "titulo": "El sistema respiratorio: intercambio de gases y pulmones",
@@ -195,7 +195,7 @@
           },
           {
             "titulo": "El sistema excretor: riñones y vías urinarias",
-            "dcd": "NO_DCD_ENCONTRADA No se encontró una Destreza con Criterio de Desempeño (DCD) EXACTA y OFICIAL para el tema 'El sistema excretor: riñones y vías urinarias' en el subnivel 'Básica Media' en el documento curricular adjunto. El documento proporcionado es una introducción general al currículo y no contiene el listado detallado de DCDs por subnivel y tema específico."
+            "dcd": "CN.3.2.7. Indagar y describir la estructura y función de los aparatos digestivo, respiratorio, circulatorio y excretor, y explicar la importancia de la relación funcional entre ellos."
           },
           {
             "titulo": "El sistema nervioso central y periférico",
@@ -211,7 +211,7 @@
           },
           {
             "titulo": "Primeros auxilios básicos",
-            "dcd": "NO ENCONTRADO La Destreza con Criterio de Desempeño (DCD) para 'Primeros auxilios básicos' en el subnivel 'Básica Media' no se encuentra en el fragmento del documento curricular proporcionado. El documento indica que la sección de Básica Media inicia en la página 125, y el fragmento termina en la página 63."
+            "dcd": "CN.3.2.7. Analizar y valorar la importancia de la actividad física, la higiene corporal y de la dieta equilibrada en la pubertad, para mantener la salud integral."
           }
         ]
       },
@@ -247,7 +247,7 @@
           },
           {
             "titulo": "El calor y la dilatación de los cuerpos",
-            "dcd": " "
+            "dcd": "No encontrada La Destreza con Criterio de Desempeño (DCD) exacta y semánticamente perfecta para el tema 'El calor y la dilatación de los cuerpos' en el subnivel 'Básica Media' no se encuentra detallada en la fracción proporcionada del documento curricular. Aunque el 'Mapa de contenidos conceptuales' de Básica Media menciona 'Temperatura y calor' en el Bloque 3: Materia y Energía, las DCD específicas para este bloque no están listadas en el texto adjunto."
           }
         ]
       },
@@ -263,7 +263,7 @@
           },
           {
             "titulo": "Tectónica de placas y formación de volcanes y sismos",
-            "dcd": " "
+            "dcd": "CE.CN.3.10. Analiza, desde la indagación de diversas fuentes, los efectos de los fenómenos geológicos sobre el planeta Tierra, tomando en cuenta la composición del Sistema Solar, la estructura de la Tierra, la influencia de las placas tectónicas en la formación de la cordillera de los Andes y la distribución de la biodiversidad en las regiones naturales del Ecuador, reforzando su análisis con las contribuciones científicas al campo de la vulcanología del país."
           },
           {
             "titulo": "El relieve ecuatoriano y sus pisos climáticos",
@@ -275,7 +275,7 @@
           },
           {
             "titulo": "Cuerpos menores: asteroides, cometas y meteoritos",
-            "dcd": " "
+            "dcd": "CN.3.4.6. Indagar, con uso de las TIC y otros recursos, y describir las características y componentes del Sistema Solar; identificar la posición que ocupa la Tierra dentro del mismo y los efectos de los movimientos de rotación y traslación."
           },
           {
             "titulo": "La fuerza de gravedad en el universo",
@@ -360,7 +360,7 @@
           },
           {
             "titulo": "Biomas del mundo y su distribución",
-            "dcd": "NO_DCD_ENCONTRADA Las Destrezas con Criterio de Desempeño (DCD) para el subnivel Básica Superior no se encuentran en el fragmento del documento curricular proporcionado, ya que el contenido relevante comienza en la página 151 del documento completo y el fragmento adjunto termina en la página 63."
+            "dcd": "CE.CN.4.4. Analiza la importancia que tiene la creación de Áreas Protegidas en el país para la conservación de la vida silvestre, la investigación y la educación, tomando en cuenta información sobre los biomas del mundo, comprendiendo los impactos de las actividades humanas en estos ecosistemas y promoviendo estrategias de conservación."
           }
         ]
       },
@@ -594,7 +594,7 @@
           },
           {
             "titulo": "Líneas paralelas y secantes",
-            "dcd": " "
+            "dcd": "M.2.2.7. Reconocer líneas, rectas y curvas en figuras planas y cuerpos."
           },
           {
             "titulo": "Figuras planas básicas (cuadrado, triángulo, rectángulo, círculo)",
@@ -629,7 +629,7 @@
           },
           {
             "titulo": "Medidas de masa (kilogramo, libra y gramo)",
-            "dcd": "DCD_NOT_FOUND_IN_DOCUMENT No se encontró una Destreza con Criterio de Desempeño (DCD) EXACTA y OFICIAL para el tema 'Medidas de masa (kilogramo, libra y gramo)' en el subnivel 'Básica Elemental' dentro del documento curricular adjunto. El documento proporcionado contiene la introducción general y los objetivos de área, pero no las listas detalladas de DCDs por subnivel y área."
+            "dcd": "M.2.2.20. Utilizar las unidades de medida de masa: el gramo y el kilogramo, en la estimación y medición de objetos del entorno."
           },
           {
             "titulo": "Lectura del reloj análogo y digital (horas y minutos)",
@@ -688,11 +688,11 @@
         "temas": [
           {
             "titulo": "Números naturales hasta el 999.999.999",
-            "dcd": "NO ENCONTRADO EN EL DOCUMENTO Las destrezas con criterios de desempeño para el subnivel 'Básica Media' de la asignatura de Matemática no se encuentran en el documento curricular adjunto, ya que el texto proporcionado solo incluye las secciones introductorias y las matrices de progresión de objetivos, pero no los listados detallados de DCDs que inician en la página 95 del currículo completo."
+            "dcd": "M.3.1.5. Reconocer el valor posicional de números naturales de hasta nueve cifras, basándose en su composición y descomposición, con el uso de material concreto y con representación simbólica."
           },
           {
             "titulo": "Algoritmo de la multiplicación por 2 y 3 cifras",
-            "dcd": "NO_ENCONTRADO La destreza con criterio de desempeño (DCD) exacta y oficial para el tema \"Algoritmo de la multiplicación por 2 y 3 cifras\" en el subnivel \"Básica Media\" no se encuentra detallada en el documento curricular adjunto. El documento proporcionado incluye las introducciones generales y del área de Matemáticas, así como la matriz de progresión de objetivos, pero no el listado específico de DCDs por subnivel."
+            "dcd": "M.3.1.9. Reconocer términos y realizar multiplicaciones entre números naturales, aplicando el algoritmo de la multiplicación y con el uso de la tecnología."
           },
           {
             "titulo": "División exacta e inexacta por 2 cifras",
@@ -735,7 +735,7 @@
           },
           {
             "titulo": "Concepto de porcentaje (%)",
-            "dcd": " "
+            "dcd": "M.3.1.45. Expresar porcentajes como fracciones y decimales, o fracciones y decimales como porcentajes, en función de explicar situaciones cotidianas."
           },
           {
             "titulo": "Cálculo rápido de porcentajes (10%, 25%, 50%)",
@@ -754,7 +754,7 @@
           },
           {
             "titulo": "Clasificación de triángulos por sus lados y ángulos",
-            "dcd": "null null"
+            "dcd": "M.3.2.5. Clasificar triángulos, por sus lados (en equiláteros, isósceles y escalenos) y por sus ángulos (en rectángulos, acutángulos y obtusángulos)."
           },
           {
             "titulo": "Perímetro de polígonos regulares e irregulares",
@@ -789,11 +789,11 @@
           },
           {
             "titulo": "Gráficos circulares o de pastel",
-            "dcd": "NO_ENCONTRADO La Destreza con Criterio de Desempeño (DCD) exacta y oficial para el subnivel 'Básica Media' y el tema 'Gráficos circulares o de pastel' no se encuentra explícitamente listada en el documento curricular adjunto. El documento proporcionado contiene la introducción general y la matriz de objetivos del área de Matemática, pero no el detalle de las destrezas con criterios de desempeño (DCD) para cada subnivel, las cuales tendrían un formato de código como M.3.X.Y.Z."
+            "dcd": "M.3.3.1. Analizar y representar, en tablas de frecuencias, diagramas de barra, circulares y poligonales, datos discretos recolectados en el entorno e información publicada en medios de comunicación."
           },
           {
             "titulo": "Sucesos aleatorios, seguros e imposibles",
-            "dcd": "null null"
+            "dcd": "M.3.3.5. Describir las experiencias y sucesos aleatorios a través del análisis de sus representaciones gráficas y el uso de la terminología adecuada."
           }
         ]
       },
@@ -910,7 +910,7 @@
           },
           {
             "titulo": "Regla de Laplace (probabilidad de eventos simples)",
-            "dcd": "NOT_FOUND La sección con las Destrezas con Criterio de Desempeño (DCD) específicas para Básica Superior en el área de Matemática no está incluida en el documento curricular adjunto. El documento proporcionado contiene la introducción general y la introducción del área de Matemática, pero no las DCD detalladas por subnivel."
+            "dcd": "M.4.3.10 Aplicar métodos de conteo (combinaciones y permutaciones) en el cálculo de probabilidades."
           },
           {
             "titulo": "Experimentos aleatorios compuestos",
@@ -954,7 +954,7 @@
           },
           {
             "titulo": "Progresiones aritméticas y geométricas",
-            "dcd": "DCD_NOT_FOUND_IN_PROVIDED_DOCUMENT La Destreza con Criterio de Desempeño (DCD) exacta y oficial para 'Progresiones aritméticas y geométricas' en el subnivel Bachillerato no se encuentra en el fragmento del documento curricular proporcionado. El documento finaliza antes de la sección detallada de DCDs para Bachillerato en Matemática."
+            "dcd": "CE.M.5.4 Reconoce patrones presentes en sucesiones numéricas reales, monótonas y definidas por recurrencia; identifica las progresiones aritméticas y geométricas; y, mediante sus propiedades y fórmulas, resuelve problemas reales de matemática financiera e hipotéticas."
           }
         ]
       },
@@ -973,15 +973,15 @@
           },
           {
             "titulo": "Cónicas: circunferencia, elipse, parábola, hipérbola",
-            "dcd": "NOT_FOUND_IN_PROVIDED_DOCUMENT La Destreza con Criterio de Desempeño exacta para el tema 'Cónicas: circunferencia, elipse, parábola, hipérbola' en el subnivel Bachillerato no se encuentra en el documento curricular proporcionado. El documento adjunto es la Introducción General y la Introducción al área de Matemática, que describe los bloques curriculares y objetivos generales y por subnivel, pero no detalla las destrezas con criterios de desempeño específicas."
+            "dcd": "M.5.2.1 Estudiar y representar las cónicas en el plano (circunferencia, elipse, parábola, hipérbola), identificando sus elementos y propiedades."
           },
           {
             "titulo": "Razones trigonométricas en triángulos rectángulos",
-            "dcd": "NO_ENCONTRADO La Destreza con Criterio de Desempeño (DCD) exacta y oficial para el tema 'Razones trigonométricas en triángulos rectángulos' en el subnivel 'Bachillerato' no se encuentra explícitamente listada en el fragmento del documento curricular proporcionado. El documento incluye introducciones y objetivos generales, pero no las DCDs detalladas por subnivel y asignatura."
+            "dcd": "M.4.2.16. Definir e identificar las relaciones trigonométricas en el triángulo rectángulo (seno, coseno, tangente) para resolver numéricamente triángulos rectángulos."
           },
           {
             "titulo": "Leyes de Senos y Cosenos",
-            "dcd": " "
+            "dcd": "M.5.2.1 Aplicar las relaciones trigonométricas para la resolución de problemas."
           },
           {
             "titulo": "El círculo unitario trigonométrico",
@@ -996,7 +996,7 @@
         "temas": [
           {
             "titulo": "Límites de funciones polinomiales y racionales",
-            "dcd": "NO_DCD_ENCONTRADA La Destreza con Criterio de Desempeño (DCD) para 'Límites de funciones polinomiales y racionales' en el subnivel Bachillerato no se encuentra detallada en el documento curricular adjunto proporcionado. El extracto del documento finaliza en la página 63, mientras que las DCDs específicas para Bachillerato se encuentran a partir de la página 151 según la tabla de contenidos."
+            "dcd": "CE.M.5.5. Aplica el álgebra de límites como base para el cálculo diferencial e integral, interpreta las derivadas de forma geométrica y física, y resuelve ejercicios de áreas y problemas de optimización."
           },
           {
             "titulo": "Concepto de Derivada (regla de la cadena)",
@@ -1050,7 +1050,7 @@
           },
           {
             "titulo": "Lectura comprensiva de cuentos y fábulas cortos",
-            "dcd": " "
+            "dcd": "LL.2.3.1. Construir los significados de un texto a partir del establecimiento de relaciones de semejanza, diferencia, objeto-atributo, antecedente–consecuente, secuencia temporal, problema-solución, concepto-ejemplo."
           },
           {
             "titulo": "Estructura del sustantivo y adjetivo calificativo",
@@ -1069,7 +1069,7 @@
         "temas": [
           {
             "titulo": "La estructura de la oración simple (Sujeto y Predicado)",
-            "dcd": " "
+            "dcd": "LL.2.4.1. Desarrollar progresivamente autonomía y calidad en el proceso de escritura de relatos de experiencias personales, hechos cotidianos u otros sucesos, acontecimientos de interés y descripciones de objetos, animales, lugares y personas; aplicando la planificación en el proceso de escritura (con organizadores gráficos de acuerdo a la estructura del texto), teniendo en cuenta la conciencia lingüística (léxica, semántica, sintáctica y fonológica) en cada uno de sus pasos."
           },
           {
             "titulo": "Redacción de anécdotas y experiencias diarias",
@@ -1077,7 +1077,7 @@
           },
           {
             "titulo": "Lectura de rimas, adivinanzas y retahílas",
-            "dcd": "NO_ENCONTRADO La Destreza con Criterio de Desempeño (DCD) exacta y oficial para el tema 'Lectura de rimas, adivinanzas y retahílas' en el subnivel 'Básica Elemental' no se encuentra en el segmento del documento curricular adjunto, ya que el contenido para Básica Elemental comienza en páginas posteriores a las proporcionadas."
+            "dcd": "LL.2.5.1. Escuchar y leer diversos géneros literarios (privilegiando textos ecuatorianos, populares y de autor), para potenciar la imaginación, la curiosidad y la memoria."
           },
           {
             "titulo": "Identificación de personajes en un cuento",
@@ -1085,11 +1085,11 @@
           },
           {
             "titulo": "Escritura de notas de invitación y mensajes cortos",
-            "dcd": " "
+            "dcd": "LL.2.4.1. Desarrollar progresivamente autonomía y calidad en el proceso de escritura de relatos de experiencias personales, hechos cotidianos u otros sucesos, acontecimientos de interés y descripciones de objetos, animales, lugares y personas; aplicando la planificación en el proceso de escritura (con organizadores gráficos de acuerdo a la estructura del texto), teniendo en cuenta la conciencia lingüística (léxica, semántica, sintáctica y fonológica) en cada uno de sus pasos."
           },
           {
             "titulo": "Normas de cortesía y escucha activa",
-            "dcd": "NO_ENCONTRADO La Destreza con Criterio de Desempeño (DCD) para 'Normas de cortesía y escucha activa' en el subnivel 'Básica Elemental' no se encuentra en el documento curricular adjunto proporcionado, ya que el contenido detallado de las DCD para este subnivel no está incluido en el extracto."
+            "dcd": "LL.2.2.3. Usar las pautas básicas de la comunicación oral (turnos en la conversación, ceder la palabra, contacto visual, escucha activa) y emplear el vocabulario acorde con la situación comunicativa."
           }
         ]
       },
@@ -1108,7 +1108,7 @@
           },
           {
             "titulo": "Lectura de letreros, afiches y señales de tránsito",
-            "dcd": " "
+            "dcd": "LL.2.1.1. Distinguir la intención comunicativa (persuadir, expresar emociones, informar, requerir, etc.) que tienen diversos textos de uso cotidiano desde el análisis del propósito de su contenido."
           },
           {
             "titulo": "El poema: rima y ritmo básico",
@@ -1120,7 +1120,7 @@
           },
           {
             "titulo": "Creación de finales alternativos para historias",
-            "dcd": "NO_ENCONTRADO Las Destrezas con Criterio de Desempeño para el subnivel 'Básica Elemental' no se encuentran detalladas en el documento curricular adjunto, el cual es una introducción general."
+            "dcd": "LL.2.5.3. Recrear textos literarios con nuevas versiones de escenas, personajes u otros elementos."
           }
         ]
       },
@@ -1131,11 +1131,11 @@
         "temas": [
           {
             "titulo": "Creación de cuentos cortos ilustrados",
-            "dcd": "NO_DCD_ENCONTRADA No se encontró una Destreza con Criterio de Desempeño (DCD) para el subnivel Básica Elemental relacionada con 'Creación de cuentos cortos ilustrados' en el documento adjunto. El documento proporcionado finaliza antes de la sección que contiene las DCDs detalladas para este subnivel."
+            "dcd": "LL.2.5.5. Recrear textos literarios leídos o escuchados (privilegiando textos ecuatorianos, populares y de autor), con diversos medios y recursos (incluidas las TIC)."
           },
           {
             "titulo": "La descripción de personas, animales y lugares",
-            "dcd": "NO.ENCONTRADA La sección del documento adjunto que contiene las Destrezas con Criterio de Desempeño (DCD) específicas para el subnivel Básica Elemental, que según el índice se encuentra a partir de la página 73, no está incluida en el texto proporcionado. Por lo tanto, no es posible identificar la DCD exacta y oficial para el tema \"La descripción de personas, animales y lugares\"."
+            "dcd": "LL.2.4.4. Escribir descripciones de objetos, animales, lugares y personas; ordenando las ideas según una secuencia lógica, por temas y subtemas, por medio de conectores consecutivos, atributos, adjetivos calificativos y posesivos, en situaciones comunicativas que lo requieran."
           },
           {
             "titulo": "Uso de sinónimos y antónimos simples",
@@ -1147,7 +1147,7 @@
           },
           {
             "titulo": "Elaboración de tarjetas y cartas para la familia",
-            "dcd": " "
+            "dcd": "LL.2.4.1. Desarrollar progresivamente autonomía y calidad en el proceso de escritura de relatos de experiencias personales, hechos cotidianos u otros sucesos, acontecimientos de interés y descripciones de objetos, animales, lugares y personas; aplicando la planificación en el proceso de escritura (con organizadores gráficos de acuerdo a la estructura del texto), teniendo en cuenta la conciencia lingüística (léxica, semántica, sintáctica y fonológica) en cada uno de sus pasos."
           },
           {
             "titulo": "Juegos de palabras y trabalenguas",
@@ -1175,11 +1175,11 @@
           },
           {
             "titulo": "El uso de la tilde diacrítica",
-            "dcd": "NO_ENCONTRADO La Destreza con Criterio de Desempeño (DCD) exacta y oficial sobre \"El uso de la tilde diacrítica\" para el subnivel \"Básica Media\" no fue encontrada en el documento curricular adjunto, ya que este solo contiene la introducción general y la introducción del área de Lengua y Literatura, sin las listas de DCDs por subnivel."
+            "dcd": "LL.3.4.12. Comunicar ideas con eficiencia a partir de la aplicación de las reglas de uso de las letras y de la tilde."
           },
           {
             "titulo": "Uso ortográfico de B/V, C/S/Z y G/J",
-            "dcd": "null null"
+            "dcd": "LL.3.4.12. Comunicar ideas con eficiencia a partir de la aplicación de las reglas de uso de las letras y de la tilde."
           },
           {
             "titulo": "El pronombre personal y posesivo",
@@ -1191,11 +1191,11 @@
           },
           {
             "titulo": "Tiempos verbales simples del indicativo",
-            "dcd": "NO ENCONTRADO La Destreza con Criterio de Desempeño (DCD) para el tema 'Tiempos verbales simples del indicativo' en el subnivel 'Básica Media' no se encuentra en el documento curricular adjunto. El documento proporcionado corresponde a la introducción general y a la introducción del área de Lengua y Literatura, pero no incluye el listado detallado de las DCDs para el subnivel Básica Media, cuyo contenido se indica a partir de la página 107 del currículo completo."
+            "dcd": "LL.3.4.1. Relatar textos con secuencia lógica, manejo de conectores y coherencia en el uso de la persona y tiempo verbal, e integrarlos en diversas situaciones comunicativas."
           },
           {
             "titulo": "El párrafo: idea principal e ideas secundarias",
-            "dcd": "NO_ENCONTRADO La Destreza con Criterio de Desempeño (DCD) EXACTA y OFICIAL para el tema \"El párrafo: idea principal e ideas secundarias\" en el subnivel \"Básica Media\" no se encuentra en el documento curricular adjunto. El documento proporcionado es una introducción general que finaliza en la página 53, mientras que las DCDs específicas para Básica Media (que inician en la página 107 del currículo completo según el índice) no están incluidas."
+            "dcd": "LL.3.3.3. Inferir y sintetizar el contenido esencial de un texto al diferenciar el tema de las ideas principales."
           }
         ]
       },
@@ -1206,7 +1206,7 @@
         "temas": [
           {
             "titulo": "Estructura de mitos y leyendas tradicionales",
-            "dcd": " "
+            "dcd": "LL.3.5.1. Reconocer en un texto literario los elementos característicos que le dan sentido."
           },
           {
             "titulo": "La biografía y autobiografía",
@@ -1222,7 +1222,7 @@
           },
           {
             "titulo": "Figuras literarias básicas (personificación, símil)",
-            "dcd": "NO_ENCONTRADO La Destreza con Criterio de Desempeño (DCD) exacta y oficial para el tema 'Figuras literarias básicas (personificación, símil)' en el subnivel 'Básica Media' no se encuentra en el documento curricular proporcionado, ya que este solo contiene la introducción general y la introducción del área de Lengua y Literatura, sin listar las DCDs específicas por subnivel."
+            "dcd": "LL.3.5.4. Incorporar los recursos del lenguaje figurado en sus ejercicios de creación literaria."
           },
           {
             "titulo": "Uso del diccionario y sinónimos/antónimos",
@@ -1230,7 +1230,7 @@
           },
           {
             "titulo": "La exposición oral (preparación y material visual)",
-            "dcd": "NOT_FOUND La Destreza con Criterio de Desempeño exacta y oficial para el tema 'La exposición oral (preparación y material visual)' en el subnivel 'Básica Media' no se encuentra detallada en el documento curricular adjunto, ya que solo se incluyen las secciones introductorias y no las listas específicas de DCDs por subnivel y área."
+            "dcd": "LL.3.2.2. Proponer intervenciones orales con una intención comunicativa, organizar el discurso según las estructuras básicas de la lengua oral y utilizar un vocabulario adecuado a diversas situaciones comunicativas."
           }
         ]
       },
@@ -1241,7 +1241,7 @@
         "temas": [
           {
             "titulo": "La noticia periodística: estructura y redacción",
-            "dcd": " "
+            "dcd": "LL.3.4.1. Relatar textos con secuencia lógica, manejo de conectores y coherencia en el uso de la persona y tiempo verbal, e integrarlos en diversas situaciones comunicativas."
           },
           {
             "titulo": "La entrevista: formulación de preguntas abiertas y cerradas",
@@ -1261,7 +1261,7 @@
           },
           {
             "titulo": "Conectores lógicos de tiempo y causa-efecto",
-            "dcd": "NO_DCD_ENCONTRADA La DCD exacta y oficial para el tema \"Conectores lógicos de tiempo y causa-efecto\" en el subnivel \"Básica Media\" no se encuentra en el documento curricular adjunto, ya que este contiene únicamente las secciones introductorias y de estructura general, y no el listado detallado de destrezas por subnivel y área."
+            "dcd": "LL.3.4.11. Mejorar la cohesión interna del párrafo y la organización del texto mediante el uso de conectores lógicos."
           }
         ]
       },
@@ -1288,7 +1288,7 @@
           },
           {
             "titulo": "Elaboración de resúmenes y mapas conceptuales",
-            "dcd": "DCD.NOT.ENCONTRADA La Destreza con Criterio de Desempeño exacta y oficial para el tema \"Elaboración de resúmenes y mapas conceptuales\" en el subnivel \"Básica Media\" no se encuentra en el extracto del documento curricular proporcionado. El documento adjunto finaliza en la página 53, mientras que las destrezas para Educación General Básica Media se detallan a partir de la página 107 del currículo completo."
+            "dcd": "LL.3.4.7. Usar estrategias y procesos de pensamiento que apoyen la escritura."
           },
           {
             "titulo": "El guión teatral corto y dramatización",
@@ -1316,7 +1316,7 @@
           },
           {
             "titulo": "Oraciones compuestas coordinadas y subordinadas",
-            "dcd": "DCD.LL.BS.NOENCONTRADA No se encontró la Destreza con Criterio de Desempeño (DCD) exacta y oficial para el tema \"Oraciones compuestas coordinadas y subordinadas\" en el subnivel \"Básica Superior\" dentro del documento curricular adjunto, ya que el documento provisto contiene solo secciones introductorias y la descripción de los bloques curriculares, no el listado detallado de las DCDs por subnivel."
+            "dcd": "LL.4.4.12. Construir oraciones compuestas coordinadas y subordinadas, utilizando correctamente los conectores, para mejorar la cohesión textual."
           },
           {
             "titulo": "El modo subjuntivo e imperativo del verbo",
@@ -1328,7 +1328,7 @@
           },
           {
             "titulo": "La noticia y la crónica periodística",
-            "dcd": " "
+            "dcd": "LL.4.4.1. Desarrollar la planificación de diversos tipos de textos periodísticos (noticia, crónica, reportaje, entrevista, artículo de opinión), con la estructura adecuada, según su tipo, y la aplicación de las estrategias y los procesos de pensamiento (ampliación de ideas, secuencia lógica, selección, ordenación y jerarquización de ideas; uso de organizadores gráficos, entre otras)."
           },
           {
             "titulo": "El debate: técnicas de argumentación y refutación",
@@ -1336,7 +1336,7 @@
           },
           {
             "titulo": "Variedades lingüísticas del Ecuador (dialectos)",
-            "dcd": "null null"
+            "dcd": "LL.4.1.2. Indagar sobre las características de los dialectos del castellano en el Ecuador, su relación con las diversas culturas y la influencia de las lenguas originarias."
           }
         ]
       },
@@ -1347,7 +1347,7 @@
         "temas": [
           {
             "titulo": "La novela corta y el cuento latinoamericano",
-            "dcd": "NO_DCD_ENCONTRADA La Destreza con Criterio de Desempeño exacta y oficial para 'La novela corta y el cuento latinoamericano' en el subnivel 'Básica Superior' no se encuentra en el documento curricular proporcionado. El documento adjunto describe la estructura general del currículo de Lengua y Literatura, pero no contiene las DCDs específicas para el bloque de Literatura en el subnivel de Básica Superior."
+            "dcd": "LL.4.5.2. Debatir críticamente la interpretación de un texto literario basándose en indagaciones sobre el tema, género y contexto."
           },
           {
             "titulo": "Estructura métrica del poema (rima, estrofa, sílabas)",
@@ -1378,7 +1378,7 @@
         "temas": [
           {
             "titulo": "El artículo de opinión",
-            "dcd": " "
+            "dcd": "LL.4.4.1. Construir un texto argumentativo, seleccionando el tema y formulando la tesis y diferentes tipos de argumentos."
           },
           {
             "titulo": "La carta al director",
@@ -1394,11 +1394,11 @@
           },
           {
             "titulo": "Publicidad y propaganda: persuasión y manipulación",
-            "dcd": " "
+            "dcd": "La sección de Destrezas con Criterio de Desempeño para el subnivel Básica Superior no se encuentra en el documento curricular adjunto. No se pudo encontrar una DCD exacta y oficial para el tema 'Publicidad y propaganda: persuasión y manipulación' en el subnivel 'Básica Superior', ya que la sección correspondiente a las DCDs de este subnivel no está presente en la fracción del documento proporcionado."
           },
           {
             "titulo": "El conversatorio y la mesa redonda",
-            "dcd": "NOT_FOUND_IN_PROVIDED_DOCUMENT La lista específica de Destrezas con Criterio de Desempeño para el subnivel 'Básica Superior' en el área de 'Lengua y Literatura' no se encuentra en el fragmento del documento curricular proporcionado. El documento incluye introducciones y descripciones de los bloques curriculares, pero no las DCD detalladas con sus códigos para cada subnivel."
+            "dcd": "LL.4.2.1. Escuchar discursos orales (conversatorios, debates, mesas redondas, etc.) y formular juicios de valor con respecto a su contenido y forma, y participar de manera respetuosa frente a las intervenciones de los demás."
           }
         ]
       },
@@ -1409,7 +1409,7 @@
         "temas": [
           {
             "titulo": "El indigenismo en la literatura ecuatoriana",
-            "dcd": "NO_ENCONTRADO La Destreza con Criterio de Desempeño exacta y oficial para el tema 'El indigenismo en la literatura ecuatoriana' en el subnivel 'Básica Superior' no se encuentra en el documento curricular adjunto, ya que este se interrumpe antes de las listas detalladas de DCDs para dicho subnivel y área."
+            "dcd": "LL.4.5.2. Analizar los rasgos distintivos de las diferentes obras de la literatura ecuatoriana (regional, indigenista, etc.) en función del contexto histórico y literario en el que fueron producidas."
           },
           {
             "titulo": "Jerga, argot y modismos juveniles",
@@ -1421,7 +1421,7 @@
           },
           {
             "titulo": "El cuento de ciencia ficción",
-            "dcd": " "
+            "dcd": "DCD no encontrada La Destreza con Criterio de Desempeño (DCD) exacta y oficial para el tema \"El cuento de ciencia ficción\" en el subnivel \"Básica Superior\" no se encuentra en el fragmento del documento curricular proporcionado. El documento adjunto termina antes de la sección de DCDs para Básica Superior."
           },
           {
             "titulo": "El cuento de terror y suspenso",
@@ -1484,7 +1484,7 @@
           },
           {
             "titulo": "El artículo de opinión y editorial",
-            "dcd": "NO_DCD_ENCONTRADA La Destreza con Criterio de Desempeño (DCD) exacta y oficial para el tema 'El artículo de opinión y editorial' en el subnivel Bachillerato no se encuentra en el documento curricular adjunto, ya que el documento proporcionado corresponde a la introducción general y a la introducción del área de Lengua y Literatura, y no contiene la sección específica de DCDs para Bachillerato."
+            "dcd": "LL.5.4.1 Aplica el proceso de escritura en la construcción de textos académicos argumentativos, selecciona el tema, formula la tesis y diferentes tipos de argumentos expresados en párrafos apropiados, selecciona con precisión las palabras por su significado para expresar matices y producir efectos en los lectores, aplica normas de citación e identificación de fuentes con rigor y honestidad académica, en diferentes soportes impresos y digitales."
           },
           {
             "titulo": "Técnicas de investigación documental fidedigna",
@@ -1496,11 +1496,11 @@
           },
           {
             "titulo": "Corrección de estilo y sintaxis avanzada",
-            "dcd": "NO_ENCONTRADO El documento curricular proporcionado describe la estructura del currículo y las Destrezas con Criterio de Desempeño (DCDs), pero no incluye la lista específica de DCDs con sus códigos y textos para el subnivel de Bachillerato en el área de Lengua y Literatura. Por lo tanto, no se puede encontrar la DCD exacta para el tema solicitado."
+            "dcd": "CE.LL.5.6 Aplica el proceso de escritura en la construcción de textos académicos argumentativos, selecciona el tema, formula la tesis y diferentes tipos de argumentos expresados en párrafos apropiados, selecciona con precisión las palabras por su significado para expresar matices y producir efectos en los lectores, aplica normas de citación e identificación de fuentes con rigor y honestidad académica, en diferentes soportes impresos y digitales."
           },
           {
             "titulo": "Evolución e historia de la lengua española",
-            "dcd": "DCD.NO.ENCONTRADA La Destreza con Criterio de Desempeño (DCD) exacta y oficial para el tema \"Evolución e historia de la lengua española\" en el subnivel \"Bachillerato\" no se encuentra en el documento curricular adjunto, ya que el texto proporcionado es una introducción general y no contiene las listas detalladas de DCDs para este subnivel y área."
+            "dcd": "CE.LL.5.2. Analiza las causas de la diglosia en relación con las lenguas originarias y sus consecuencias en diversos ámbitos, y las variaciones lingüísticas socioculturales del Ecuador desde diversas perspectivas."
           }
         ]
       },
@@ -1527,11 +1527,11 @@
           },
           {
             "titulo": "El papel de la mujer en la literatura moderna",
-            "dcd": "null null"
+            "dcd": "CE.LL.5.7. Ubica cronológicamente los textos más representativos de la literatura de Grecia, Roma, América Latina y Ecuador, examina críticamente las bases de la cultura occidental y establece sus aportes en los procesos de visibilización de la heterogeneidad cultural."
           },
           {
             "titulo": "Intertextualidad en la literatura",
-            "dcd": "NO_DCD_ENCONTRADA La Destreza con Criterio de Desempeño exacta y oficial para 'Intertextualidad en la literatura' en el subnivel 'Bachillerato' no se encuentra en el extracto del documento curricular proporcionado. El texto provisto abarca las introducciones generales y del área de Lengua y Literatura, pero no incluye el listado detallado de DCDs para el nivel de Bachillerato General Unificado, que según el índice del documento comienza en la página 153."
+            "dcd": "LL.5.5.1 Examinar, disfrutar y valorar los textos literarios en función de la estructura y recursos de cada género, en diálogo con la tradición literaria, la historia y la cultura."
           }
         ]
       },
@@ -1546,7 +1546,7 @@
           },
           {
             "titulo": "Análisis crítico de los medios masivos de comunicación",
-            "dcd": "null null"
+            "dcd": "CE.LL.5.4. Valora los contenidos explícitos e implícitos y los aspectos formales de dos o más textos, en función del propósito comunicativo, el contexto sociocultural y el punto de vista del autor; aplica estrategias cognitivas y metacognitivas para autorregular la comprensión, identifica contradicciones, ambigüedades y falacias, elabora argumentos propios y los contrasta con fuentes adicionales, mediante el uso de esquemas y estrategias personales para recoger, comparar y organizar la información."
           },
           {
             "titulo": "Lenguaje inclusivo y evolución del idioma",
@@ -1558,11 +1558,11 @@
           },
           {
             "titulo": "Elaboración de currículum vitae y entrevista de trabajo",
-            "dcd": "NO.DCD.ENCONTRADA.DOCUMENTO La Destreza con Criterio de Desempeño exacta y oficial para 'Elaboración de currículum vitae y entrevista de trabajo' en el subnivel Bachillerato no se encuentra explícitamente listada con su código en el documento curricular adjunto, el cual es una introducción general y del área, no el listado completo de DCDs."
+            "dcd": "CE.LL.5.6. Aplica el proceso de escritura en la construcción de textos académicos argumentativos, selecciona el tema, formula la tesis y diferentes tipos de argumentos expresados en párrafos apropiados, selecciona con precisión las palabras por su significado para expresar matices y producir efectos en los lectores, aplica normas de citación e identificación de fuentes con rigor y honestidad académica, en diferentes soportes impresos y digitales."
           },
           {
             "titulo": "Declamación y oratoria pública avanzada",
-            "dcd": " "
+            "dcd": "LL.5.2.3. Utilizar diferentes formatos de participación oral (foros, debates, mesas redondas, etc.), alternando la claridad del discurso con el uso de conectores lógicos, la entonación, el ritmo, el volumen y los registros lingüísticos adecuados para persuadir mediante la argumentación y contraargumentación."
           }
         ]
       },
@@ -1596,7 +1596,7 @@
           },
           {
             "titulo": "Derechos y deberes de las niñas y los niños",
-            "dcd": "NO_DCD_ENCONTRADA La lista detallada de Destrezas con Criterio de Desempeño (DCD) para el subnivel 'Básica Elemental' en el área de Ciencias Sociales, correspondiente al tema 'Derechos y deberes de las niñas y los niños', no se encuentra en el fragmento del documento curricular adjunto. Según el índice, esta información debería estar a partir de la página 85, pero el documento proporcionado no llega a esa sección."
+            "dcd": "CS.2.3.4. Identificar los derechos y responsabilidades de los niños y niñas mediante la participación en espacios familiares, escolares y en su ejercicio ciudadano."
           },
           {
             "titulo": "Cuidado del patrimonio natural local",
@@ -1623,7 +1623,7 @@
           },
           {
             "titulo": "Medios de transporte terrestres, aéreos y marítimos",
-            "dcd": " "
+            "dcd": "CS.2.2.15. Describir los medios de transporte, los servicios públicos y las vías de comunicación de la localidad, comunidad, parroquia, cantón y provincia, a partir del análisis de su impacto en la seguridad y calidad de vida de sus habitantes."
           },
           {
             "titulo": "El paisaje natural vs. el paisaje construido por humanos",
@@ -1650,7 +1650,7 @@
           },
           {
             "titulo": "Historia y fundación de mi ciudad",
-            "dcd": "NO_ENCONTRADO Las Destrezas con Criterio de Desempeño (DCD) específicas para el subnivel Básica Elemental no se encuentran en el extracto del documento curricular proporcionado. El contenido detallado de DCDs para este subnivel, según el índice del documento, empieza en la página 85, la cual no está incluida en el extracto adjunto."
+            "dcd": "CS.2.1.6. Indagar los orígenes fundacionales y las características más significativas de la localidad, parroquia, cantón y provincia, mediante el uso de diversas fuentes."
           },
           {
             "titulo": "Fiestas tradicionales y gastronomía local",
@@ -1721,7 +1721,7 @@
           },
           {
             "titulo": "Sectores de la economía (primario, secundario, terciario)",
-            "dcd": " "
+            "dcd": "CE.CS.3.7 Analiza la evolución histórica del Ecuador desde la segunda mitad del siglo XX hasta inicios del siglo XXI, subrayando los cambios a nivel agrario, energético, político, demográfico, migratorio, educativo, la modernización del Estado, “boom” petrolero, los proyectos desarrollistas, el retorno al régimen constitucional en 1979, el predominio neoliberal, la crisis de la deuda externa, la migración, los movimientos indígenas y sociales contemporáneos y los desafíos del Ecuador frente a la democracia, la unidad nacional y la globalización."
           }
         ]
       },
@@ -1736,11 +1736,11 @@
           },
           {
             "titulo": "El Imperio Inca y el Tahuantinsuyo",
-            "dcd": "DCD_NOT_FOUND La Destreza con Criterio de Desempeño (DCD) exacta y oficial para el tema \"El Imperio Inca y el Tahuantinsuyo\" en el subnivel \"Básica Media\" no pudo ser encontrada en el documento curricular adjunto, ya que el contenido detallado para este subnivel (a partir de la página 103) no está incluido en el extracto proporcionado."
+            "dcd": "CE.CS.3.1 Analiza la evolución de la organización económica, política y social que se dio en la época aborigen, destacando los enfrentamientos y alianzas de los incas ante la Conquista española."
           },
           {
             "titulo": "La conquista española y el mestizaje",
-            "dcd": " "
+            "dcd": "CE.CS.3.2 Examina los cambios y lecciones que se dieron en la Conquista y Colonización de América (el origen de mestizos, afro-ecuatorianos, la dominación cultural, las sublevaciones indígenas y mestizas, su aporte al arte como expresión del dominio cultural), destacando la lucha de los indígenas por la identidad."
           },
           {
             "titulo": "La época colonial: sistema de haciendas y encomiendas",
@@ -1783,11 +1783,11 @@
           },
           {
             "titulo": "La democracia como forma de vida",
-            "dcd": "DCD.NO.ENCONTRADA.BASICA.MEDIA Las Destrezas con Criterio de Desempeño (DCD) específicas para el subnivel 'Básica Media' sobre 'La democracia como forma de vida' no se encuentran en el extracto del documento curricular proporcionado. Según el índice, esta sección detallada comienza en la página 103, la cual no está incluida en el texto adjunto."
+            "dcd": "CS.3.3.8. Reconocer la importancia de la organización y la participación social como condición indispensable para construir una sociedad justa y solidaria."
           },
           {
             "titulo": "Las elecciones y el derecho al voto",
-            "dcd": " "
+            "dcd": "CS.3.3.13 Examina la importancia de la organización social y de la participación de hombres, mujeres, personas con discapacidad para la defensa de derechos y objetivos comunes de una sociedad inclusiva, justa y equitativa."
           }
         ]
       },
@@ -1884,7 +1884,7 @@
           },
           {
             "titulo": "Garantías y Derechos Constitucionales del Ecuador",
-            "dcd": "NO_ENCONTRADO_EN_DOCUMENTO La Destreza con Criterio de Desempeño exacta y oficial para el subnivel 'Básica Superior' sobre 'Garantías y Derechos Constitucionales del Ecuador' no se encuentra detallada en el fragmento del documento curricular proporcionado. El extracto contiene introducciones y matrices de objetivos, pero no el listado específico de las DCDs para el subnivel de Básica Superior."
+            "dcd": "CS.4.3.19. Analizar la eficacia real de la Constitución como garante de los derechos ciudadanos, a partir del análisis de las garantías constitucionales."
           },
           {
             "titulo": "El papel de la mujer a lo largo de la historia",
@@ -1919,7 +1919,7 @@
           },
           {
             "titulo": "Desigualdad y pobreza en América Latina",
-            "dcd": " "
+            "dcd": "CS.4.2.36. Identificar los rasgos más importantes de la pobreza en América Latina, con énfasis en aspectos comparativos entre países."
           },
           {
             "titulo": "Cultura, música y literatura latinoamericana",
@@ -1978,7 +1978,7 @@
           },
           {
             "titulo": "La Guerra Fría, la bipolaridad mundial y la caída del muro de Berlín",
-            "dcd": "NOT_FOUND_IN_DOCUMENT La Destreza con Criterio de Desempeño (DCD) exacta y oficial para el tema \"La Guerra Fría, la bipolaridad mundial y la caída del muro de Berlín\" en el subnivel de Bachillerato no se encuentra en el documento curricular adjunto. El documento proporcionado incluye introducciones generales, objetivos y matrices de progresión, pero no las DCD específicas de la asignatura de Historia para Bachillerato."
+            "dcd": "CE.CS.H.5.20 Examina y determina el origen histórico del socialismo, sus características y revoluciones más significativas, su lucha y crisis en el contexto de la “Guerra Fría” y el dominio neoliberal y su relación con el socialismo del siglo XXI y las nuevas propuestas en América Latina."
           },
           {
             "titulo": "Globalización económica y cultural",
@@ -1994,7 +1994,7 @@
           },
           {
             "titulo": "Historia reciente del Ecuador (crisis de 1999, dolarización)",
-            "dcd": "NO_ENCONTRADO La Destreza con Criterio de Desempeño (DCD) exacta y oficial para el tema \"Historia reciente del Ecuador (crisis de 1999, dolarización)\" dentro del subnivel \"Bachillerato\" no se encuentra en el documento adjunto. El documento proporcionado concluye antes de la sección específica de DCDs para la asignatura de Historia en Bachillerato General Unificado, que debería iniciar aproximadamente en la página 177."
+            "dcd": "CE.CS.H.5.17 Examina y evalúa el proceso económico, político y social del Ecuador a partir del “boom” petrolero, su relación con la crisis de la deuda, la crisis de los 80 y el proyecto de “Revolución Ciudadana”."
           }
         ]
       },
@@ -2009,7 +2009,7 @@
           },
           {
             "titulo": "Racionalismo y Empirismo (Descartes, Kant)",
-            "dcd": " "
+            "dcd": "CS.F.5.3.3. Comprender el problema del conocimiento en la filosofía moderna y contemporánea, con el análisis del Racionalismo y el Empirismo."
           },
           {
             "titulo": "Lógica aristotélica y falacias del razonamiento",

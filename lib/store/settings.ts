@@ -142,6 +142,7 @@ export interface SettingsState {
   maxTurns: string;
   agentMode: 'preset' | 'auto';
   autoAgentCount: number;
+  lastTeacherGender?: 'male' | 'female';
 
   // Layout preferences (persisted via localStorage)
   sidebarCollapsed: boolean;
@@ -161,6 +162,7 @@ export interface SettingsState {
   setMaxTurns: (turns: string) => void;
   setAgentMode: (mode: 'preset' | 'auto') => void;
   setAutoAgentCount: (count: number) => void;
+  setLastTeacherGender: (gender: 'male' | 'female') => void;
 
   // Layout actions
   setSidebarCollapsed: (collapsed: boolean) => void;
@@ -450,6 +452,7 @@ export const useSettingsStore = create<SettingsState>()(
         maxTurns: migratedData?.maxTurns?.toString() || '10',
         agentMode: 'auto' as const,
         autoAgentCount: 3,
+        lastTeacherGender: 'male',
 
         // Playback controls
         ttsMuted: false,
@@ -518,6 +521,7 @@ export const useSettingsStore = create<SettingsState>()(
         setMaxTurns: (turns) => set({ maxTurns: turns }),
         setAgentMode: (mode) => set({ agentMode: mode }),
         setAutoAgentCount: (count) => set({ autoAgentCount: count }),
+        setLastTeacherGender: (gender) => set({ lastTeacherGender: gender }),
 
         // Layout actions
         setSidebarCollapsed: (collapsed) => set({ sidebarCollapsed: collapsed }),

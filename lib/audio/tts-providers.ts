@@ -118,6 +118,8 @@ function cleanTextForTTS(text: string): string {
     .replace(/['"]/g, '')
     // Clean up excessive whitespace that might cause unnatural pauses
     .replace(/\s{2,}/g, ' ')
+    // Replace ellipsis (...) with a comma to prevent TTS noise artifacts and force a natural pause
+    .replace(/\.{2,}/g, ',')
     .trim();
 }
 

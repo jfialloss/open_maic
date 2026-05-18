@@ -14,7 +14,19 @@ try {
   console.log('No .env.local found or error parsing it');
 }
 
-
+function sliceCurriculumBySublevel(text, sublevel) {
+  // En lugar de buscar índices que pueden fallar por el Índice o los pies de página,
+  // dividimos el documento por la mitad usando ventanas generosas de 1 millón de caracteres.
+  // Gemini 2.5 Flash soporta hasta 4 millones de caracteres, así que 1 millón es muy seguro y evita el Needle in a Haystack.
+  
+  if (sublevel === 'Bachillerato' || sublevel === 'Básica Superior') {
+    // Tomar el final del documento (último millón de caracteres)
+    return text.substring(Math.max(0, text.length - 1000000));
+  } else {
+    // Tomar el inicio del documento (primer millón de caracteres)
+    return text.substring(0, 1000000);
+  }
+}
 
 const google = createGoogleGenerativeAI({
   apiKey: process.env.GOOGLE_API_KEY,
@@ -61,14 +73,16 @@ async function extractOfficialObjectives(curriculumText, sublevel) {
 
 async function mapTopicToDCD(tema, curriculumText, sublevel) {
   console.log(`  Buscando DCD para el tema: "${tema}"`);
+  const focusedText = sliceCurriculumBySublevel(curriculumText, sublevel);
+  
   try {
     const { object } = await generateObject({
       model: google('gemini-2.5-flash'),
       system: `Eres un experto en el currículo del Ministerio de Educación del Ecuador. 
 Tu tarea es encontrar la Destreza con Criterio de Desempeño (DCD) EXACTA y OFICIAL que mejor corresponda al TEMA dado, asegurándote que pertenezca al subnivel "${sublevel}".
 La DCD debe tener su código oficial (Ej: M.2.1.1., CN.3.2.1., LL.4.1.2.).
-Busca en el documento adjunto la DCD cuyo texto encaje semánticamente de manera perfecta con el Tema.`,
-      prompt: `SUBNIVEL: ${sublevel}\nTEMA A ENSEÑAR: "${tema}"\n\nDOCUMENTO CURRICULAR:\n${curriculumText}`,
+Busca exhaustivamente hasta el final en el documento adjunto la DCD cuyo texto encaje semánticamente de manera perfecta con el Tema.`,
+      prompt: `SUBNIVEL: ${sublevel}\nTEMA A ENSEÑAR: "${tema}"\n\nDOCUMENTO CURRICULAR (Fracción enfocada):\n${focusedText}`,
       schema: z.object({
         dcd_code: z.string().describe("El código exacto de la DCD encontrada (Ej: CN.3.1.2)"),
         dcd_text: z.string().describe("El texto completo de la DCD, excluyendo el código (Ej: Explorar y clasificar las plantas sin semilla...)")
@@ -125,7 +139,11 @@ async function run() {
 
         const temasMapeados = await processInBatches(temas, 30, async (temaObj) => {
           // Si ya es un objeto y tiene una DCD válida, mantenerlo
-          if (typeof temaObj === 'object' && temaObj.dcd && !temaObj.dcd.includes('NO_ENCONTRADA') && !temaObj.dcd.includes('No encontrada')) {
+          if (typeof temaObj === 'object' && temaObj.dcd && 
+              !temaObj.dcd.includes('ENCONTRAD') && 
+              !temaObj.dcd.includes('NOT_FOUND') && 
+              !temaObj.dcd.includes('NO DCD') &&
+              temaObj.dcd.length > 15) {
             return temaObj;
           }
           

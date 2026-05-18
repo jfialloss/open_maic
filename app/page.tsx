@@ -160,7 +160,10 @@ function getSyllabusContext(subject?: string, grade?: string, topic?: string, en
         : uData.temas.includes(topic);
         
       if (topicExists) {
-        const dcd = isNewFormat ? uData.temas.find((t: any) => t.titulo === topic)?.dcd : null;
+        let dcd = isNewFormat ? uData.temas.find((t: any) => t.titulo === topic)?.dcd : null;
+        if (dcd && typeof dcd === 'string' && /no se encuentr|no se encontr|no detallad|no especificad|not found/i.test(dcd)) {
+          dcd = null;
+        }
         const officialObjectives = subjectData["objetivos_oficiales"] || [];
         return { unitName, block: unitIndex + 1, dcd, officialObjectives };
       }
@@ -555,16 +558,8 @@ function HomePage() {
             : '';
           curriculumBody = `[DCD ESPECÍFICA A DESARROLLAR]:\n${syllabusContext.dcd}${objText}`;
         } else {
-          // Old legacy format
-          try {
-            const res = await fetch(`/curriculums/MINEDU - ${form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'sociales' ? 'Estudios Sociales' : form.subject === 'lengua' ? 'Lengua & Literatura' : 'Matemáticas'}.txt`);
-            if (res.ok) {
-              const rawBody = await res.text();
-              curriculumBody = `\n\nA continuacion se anexa el documento del currículo oficial:\n\n${rawBody.substring(0, 50000)}...`; // limited to avoid giant context if not mapped yet
-            }
-          } catch (err) {
-            console.error('Failed to fetch curriculum context', err);
-          }
+          // Inferir destreza si falta
+          curriculumBody = `[DCD ESPECÍFICA A DESARROLLAR]:\n(Nota del Sistema: La Destreza oficial para este tema no está explícita en el currículo. Como IA Educativa Experta, debes DEDUCIR e INVENTAR una Destreza con Criterio de Desempeño (DCD) rigurosa y altamente pedagógica para el tema "${form.topic}", adaptada al nivel cognitivo de un estudiante de ${getAgeFromGrade(globalGrade)}.)`;
         }
 
         curriculumContext = `
@@ -1163,8 +1158,14 @@ INSTRUCCIÓN CRÍTICA: Debes garantizar que la clase enseñe EXACTAMENTE la Dest
                           <div className="flex flex-col gap-1.5 mt-0.5">
                             {(() => {
                               const isNewFormat = unitData.temas && typeof unitData.temas[0] === 'object';
-                              const topicArray = isNewFormat ? unitData.temas.map((t: any) => t.titulo) : unitData.temas;
-                              return topicArray.map((topic: string, i: number) => {
+                              // Normalizamos los temas para que todos sean objetos { titulo, dcd }
+                              const topicsData = isNewFormat 
+                                ? unitData.temas 
+                                : unitData.temas.map((t: string) => ({ titulo: t, dcd: null }));
+
+                              return topicsData.map((temaObj: any, i: number) => {
+                                const topic = temaObj.titulo;
+                                const rawDCD = temaObj.dcd;
                                 const isMastered = masteredTopics?.includes(topic) || false;
                                 const isLocked = lockedTopics.has(topic);
                                 const prefix = `${unitIndex + 1}.${i + 1}`;
@@ -1182,9 +1183,17 @@ INSTRUCCIÓN CRÍTICA: Debes garantizar que la clase enseñe EXACTAMENTE la Dest
                                         return;
                                       }
 
-                                      const humanPrompt = form.subject === 'ingles'
-                                        ? `I want a class about the topic: "${topic}".\nThe main learning objective should be: "${unitData.objetivos ? unitData.objetivos[0] : ''}".`
-                                        : `Quiero que me des una clase sobre el tema: "${topic}".\nEl objetivo de aprendizaje principal debe ser: "${unitData.objetivos ? unitData.objetivos[0] : ''}".`;
+                                      // Verificamos si la DCD es válida (ignorar si es null o contiene mensajes de "no encontrado" de la IA)
+                                      const isNotFoundMessage = /no se encuentr|no se encontr|no detallad|no especificad|not found/i.test(rawDCD || '');
+                                      const isValidDCD = rawDCD && typeof rawDCD === 'string' && !isNotFoundMessage;
+                                      
+                                      let humanPrompt = '';
+                                      if (form.subject === 'ingles') {
+                                        humanPrompt = `I want a class about the topic: "${topic}".`;
+                                      } else {
+                                        humanPrompt = `Quiero que me des una clase sobre el tema: "${topic}".`;
+                                      }
+
                                       if (form.subject === 'ingles') {
                                         updateForm('language', 'en-US');
                                       }

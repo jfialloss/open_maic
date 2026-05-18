@@ -38,6 +38,7 @@ interface RequestBody {
   language: string;
   availableAvatars: string[];
   requirement?: string;
+  teacherGender?: 'male' | 'female';
 }
 
 function stripCodeFences(text: string): string {
@@ -53,7 +54,7 @@ export async function POST(req: NextRequest) {
   try {
     await authenticateRequest(req);
     const body = (await req.json()) as RequestBody;
-    const { stageInfo, sceneOutlines, language, availableAvatars, requirement } = body;
+    const { stageInfo, sceneOutlines, language, availableAvatars, requirement, teacherGender } = body;
 
     // ── Validate required fields ──
     if (!stageInfo?.name) {
@@ -93,12 +94,14 @@ Requirements:
 - Exactly 1 agent must have role "teacher", the rest can be "assistant" or "student"
 - Priority values: teacher=10 (highest), assistant=7, student=4-6
 - Each agent needs: name, role, persona (2-3 sentences describing personality and teaching/learning style)
-- For the "teacher" role, use a generic name like "Profesor / Profesora" (or "Teacher" in English) depending on the assigned gender, without any personal name, and explicitly state in their persona that they NEVER introduce themselves by name.
+- For the "teacher" role, you MUST strictly follow this gender constraint: The teacher MUST be **${teacherGender === 'female' ? 'FEMALE' : 'MALE'}**.
+  - Name: Use generic "${teacherGender === 'female' ? 'Profesora' : 'Profesor'}" (or "${teacherGender === 'female' ? 'Female Teacher' : 'Male Teacher'}" in English), never a personal name.
+  - Persona: Must explicitly reflect a ${teacherGender === 'female' ? 'female' : 'male'} educator.
 - Names and personas must be in language: ${language}
 - Each agent must be assigned one avatar from this list: ${JSON.stringify(availableAvatars)}
-  - CRITICAL: The "teacher" role MUST use ONLY an avatar with "teacher" in its name (e.g., teacher.png or teacher-2.png).
-  - CRITICAL: Match the avatar strictly to the agent's gender. If an avatar has "-2.png" in its name, it is a FEMALE avatar (e.g., teacher-2.png, assist-2.png). Otherwise, it is a MALE avatar.
-  - Make sure the name (e.g. Profesor vs Profesora) and persona match the gender of the assigned avatar.
+  - CRITICAL: The "teacher" role MUST use ONLY the exact teacher avatar provided in the list.
+  - CRITICAL: Match the avatar strictly to the agent's gender. If an avatar has "-2.png" in its name, it is a FEMALE avatar (e.g., assist-2.png). Otherwise, it is a MALE avatar.
+  - Make sure the name and persona match the gender of the assigned avatar.
   - Try to use different avatars for each agent
 - Each agent must be assigned one color from this list: ${JSON.stringify(COLOR_PALETTE)}
   - Each agent must have a different color

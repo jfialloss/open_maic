@@ -407,15 +407,20 @@ function GenerationPreviewContent() {
           .catch((err) => log.error('Failed to publish building stub', err));
       }
 
+      // Implementamos alternancia estricta (Round-Robin) para garantizar equidad 50/50 en todos los modos
+      const lastGender = settings.lastTeacherGender || 'male';
+      const isFemaleTeacher = lastGender === 'male'; // Si el último fue hombre, toca mujer
+      
+      // Guardamos inmediatamente la elección para el próximo curso
+      settings.setLastTeacherGender(isFemaleTeacher ? 'female' : 'male');
+      
+      const teacherAvatar = isFemaleTeacher ? '/avatars/teacher-2.png' : '/avatars/teacher.png';
+
       if (settings.agentMode === 'auto') {
         const agentStepIdx = activeSteps.findIndex((s) => s.id === 'agent-generation');
         if (agentStepIdx >= 0) setCurrentStepIndex(agentStepIdx);
 
         try {
-          // Forzamos un balance 50/50 desde el código, ya que el LLM no tiene memoria.
-          const isFemaleTeacher = Math.random() > 0.5;
-          const teacherAvatar = isFemaleTeacher ? '/avatars/teacher-2.png' : '/avatars/teacher.png';
-          
           const allAvatars = [
             '/avatars/assist.png',
             '/avatars/assist-2.png',
@@ -439,6 +444,7 @@ function GenerationPreviewContent() {
               language: currentSession.requirements.language || 'es-ES',
               availableAvatars: allAvatars,
               requirement: currentSession.requirements.requirement,
+              teacherGender: isFemaleTeacher ? 'female' : 'male',
             }),
             signal,
           });
@@ -480,6 +486,7 @@ function GenerationPreviewContent() {
               name: a!.name,
               role: a!.role,
               persona: a!.persona,
+              avatar: a!.role === 'teacher' ? teacherAvatar : a!.avatar,
             }));
         }
       } else {
@@ -493,7 +500,7 @@ function GenerationPreviewContent() {
             name: a!.name,
             role: a!.role,
             persona: a!.persona,
-            avatar: a!.avatar,
+            avatar: a!.role === 'teacher' ? teacherAvatar : a!.avatar,
           }));
       }
 

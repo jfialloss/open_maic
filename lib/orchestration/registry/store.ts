@@ -10,6 +10,7 @@ import { getActionsForRole } from './types';
 import { USER_AVATAR } from '@/lib/types/roundtable';
 import type { Participant, ParticipantRole } from '@/lib/types/roundtable';
 import { useUserProfileStore } from '@/lib/store/user-profile';
+import { useSettingsStore } from '@/lib/store/settings';
 
 interface AgentRegistryState {
   agents: Record<string, AgentConfig>; // Map of agentId -> config
@@ -283,11 +284,18 @@ export function agentsToParticipants(
     const displayName =
       i18nName && i18nName !== `settings.agentNames.${agent.id}` ? i18nName : agent.name;
 
+    // INJECT GENDER ROUND-ROBIN FOR UI (Only for the default preset teacher)
+    let finalAvatar = agent.avatar;
+    if (agent.id === 'default-1') {
+      const lastGender = useSettingsStore.getState().lastTeacherGender || 'male';
+      finalAvatar = lastGender === 'female' ? '/avatars/teacher-2.png' : '/avatars/teacher.png';
+    }
+
     participants.push({
       id: agent.id,
       name: displayName,
       role,
-      avatar: agent.avatar,
+      avatar: finalAvatar,
       isOnline: true,
       isSpeaking: false,
     });
