@@ -45,6 +45,7 @@ export async function generateSceneOutlinesFromRequirements(
     videoGenerationEnabled?: boolean;
     researchContext?: string;
     teacherContext?: string;
+    explicitLanguage?: string;
   },
 ): Promise<GenerationResult<{ languageDirective: string; outlines: SceneOutline[] }>> {
   // Build available images description for the prompt
