@@ -795,7 +795,7 @@ export const ASR_PROVIDERS: Record<ASRProviderId, ASRProviderConfig> = {
     requiresApiKey: true, // Will use Google API Key
     defaultBaseUrl: 'https://speech.googleapis.com/v1',
     icon: '/logos/google.svg',
-    supportedLanguages: ['auto', 'en-US', 'es-ES', 'zh-CN'],
+    supportedLanguages: ['auto', 'en-US', 'es-419', 'es-ES', 'zh-CN'],
     supportedFormats: ['webm', 'wav', 'mp3'],
   },
 
@@ -834,6 +834,7 @@ export const ASR_PROVIDERS: Record<ASRProviderId, ASRProviderConfig> = {
       // European languages
       'de-DE', // German (Germany)
       'fr-FR', // French (France)
+      'es-419', // Spanish (LatAm)
       'es-ES', // Spanish (Spain)
       'es-MX', // Spanish (Mexico)
       'es-AR', // Spanish (Argentina)

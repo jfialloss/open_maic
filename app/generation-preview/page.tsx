@@ -380,7 +380,7 @@ function GenerationPreviewContent() {
         id: stageId,
         name: extractTopicFromRequirement(currentSession.requirements.requirement),
         description: '',
-        language: currentSession.requirements.language || 'es-ES',
+        language: currentSession.requirements.language || 'es-419',
         style: 'professional',
         subject: currentSession.requirements.subject || 'none',
         grade: currentSession.requirements.grade || undefined,
@@ -441,7 +441,7 @@ function GenerationPreviewContent() {
             headers: await getApiHeaders(),
             body: JSON.stringify({
               stageInfo: { name: stage.name, description: stage.description },
-              language: currentSession.requirements.language || 'es-ES',
+              language: currentSession.requirements.language || 'es-419',
               availableAvatars: allAvatars,
               requirement: currentSession.requirements.requirement,
               teacherGender: isFemaleTeacher ? 'female' : 'male',

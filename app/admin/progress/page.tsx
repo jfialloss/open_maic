@@ -15,7 +15,7 @@ const syllabusData = syllabusDataRaw as any;
 const BASIC_SUBJECTS = [
   'Matemática',
   'Ciencias Naturales',
-  'Ciencias Sociales',
+  'Estudios Sociales',
   'Lengua y Literatura'
 ];
 
@@ -49,14 +49,22 @@ interface StudentProfile {
   assignedCourses: any;
 }
 
-function getSublevelFromGrade(grade: string): string | null {
-  if (['Inicial 1', 'Inicial 2'].includes(grade)) return 'Educación Inicial';
-  if (['1º Grado de EGB'].includes(grade)) return 'Preparatoria';
-  if (['2º Grado de EGB', '3º Grado de EGB', '4º Grado de EGB'].includes(grade)) return 'Básica Elemental';
-  if (['5º Grado de EGB', '6º Grado de EGB', '7º Grado de EGB'].includes(grade)) return 'Básica Media';
-  if (['8º Grado de EGB', '9º Grado de EGB', '10º Grado de EGB'].includes(grade)) return 'Básica Superior';
-  if (['1º de Bachillerato', '2º de Bachillerato', '3º de Bachillerato'].includes(grade)) return 'Bachillerato';
-  return null;
+function getMappedLevel(grade: string): string | null {
+  const gradeMap: Record<string, string> = {
+    '5º Grado de EGB': '5to de EGB',
+    '6º Grado de EGB': '6to de EGB',
+    '7º Grado de EGB': '7mo de EGB',
+    '8º Grado de EGB': '8vo de EGB',
+    '9º Grado de EGB': '9no de EGB',
+    '10º Grado de EGB': '10mo de EGB',
+    '1º de Bachillerato': '1ro de BGU',
+    '2º de Bachillerato': '2do de BGU',
+    '3º de Bachillerato': '3ro de BGU',
+    '1º Curso de Bachillerato': '1ro de BGU',
+    '2º Curso de Bachillerato': '2do de BGU',
+    '3º Curso de Bachillerato': '3ro de BGU',
+  };
+  return gradeMap[grade] || null;
 }
 
 function computeSubjectProgress(syllabusMap: any, masteredTopics: string[]): SubjectProgress {
@@ -69,7 +77,7 @@ function computeSubjectProgress(syllabusMap: any, masteredTopics: string[]): Sub
   const units: UnitProgress[] = [];
 
   for (const [unitName, unitData] of Object.entries(syllabusMap)) {
-    if (unitName === 'objetivos_oficiales') continue;
+    if (unitName === 'objetivos_oficiales' || unitName === 'objetivos') continue;
     const rawTemas = (unitData as any).temas || [];
     const temas = rawTemas.map((t: any) => typeof t === 'object' ? t.titulo : t);
     const unitProgress: UnitProgress = { unitName, temas: [] };
@@ -135,12 +143,12 @@ export default function AdminProgressPage() {
             const englishLevel = profileData.englishLevel || 'A1';
             const assignedCourses = profileData.assignedCourses || {};
             
-            const sublevel = getSublevelFromGrade(grade);
+            const mappedLevel = getMappedLevel(grade);
             const subjectsProgress: Record<string, SubjectProgress> = {};
             
             // Basic subjects
             for (const subj of BASIC_SUBJECTS) {
-              const syllabusMap = sublevel ? syllabusData[subj]?.[sublevel] : null;
+              const syllabusMap = mappedLevel ? syllabusData[subj]?.[mappedLevel] : null;
               subjectsProgress[subj] = computeSubjectProgress(syllabusMap, masteredTopics);
             }
             // English

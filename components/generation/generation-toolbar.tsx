@@ -29,8 +29,8 @@ const MAX_PDF_SIZE_BYTES = MAX_PDF_SIZE_MB * 1024 * 1024;
 
 // ─── Types ───────────────────────────────────────────────────
 export interface GenerationToolbarProps {
-  language: 'en-US' | 'es-ES';
-  onLanguageChange: (lang: 'en-US' | 'es-ES') => void;
+  language: 'en-US' | 'es-419';
+  onLanguageChange: (lang: 'en-US' | 'es-419') => void;
   webSearch: boolean;
   onWebSearchChange: (v: boolean) => void;
   deepInteraction: boolean;
@@ -384,7 +384,7 @@ export function GenerationToolbar({
         <TooltipTrigger asChild>
           <button
             onClick={() =>
-              onLanguageChange(language === 'en-US' ? 'es-ES' : 'en-US')
+              onLanguageChange(language === 'en-US' ? 'es-419' : 'en-US')
             }
             className={pillMuted}
           >

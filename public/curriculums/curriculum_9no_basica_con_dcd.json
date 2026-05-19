@@ -1,0 +1,607 @@
+{
+  "Ciencias Naturales": {
+    "9no de EGB": {
+      "Unidad 1: Los secretos de la célula y la reproducción": {
+        "objetivos": [
+          "Diferenciar tejidos celulares y clasificar a los seres vivos taxonómicamente.",
+          "Comprender la mitosis, meiosis y la reproducción sexual y humana."
+        ],
+        "temas": [
+          {
+            "titulo": "Explorando los tejidos vegetales y animales",
+            "destrezas": [
+              "CN.4.1.5. Diseñar y ejecutar una indagación experimental y explicar las clases de tejidos animales y vegetales, diferenciándolos por sus características, funciones y ubicación. [cite: 401]"
+            ]
+          },
+          {
+            "titulo": "Clasificación taxonómica de los seres vivos",
+            "destrezas": [
+              "CN.4.1.7. Analizar los niveles de organización y diversidad de los seres vivos y clasificarlos en grupos taxonómicos, de acuerdo con las características observadas a simple vista y las invisibles para el ojo humano. [cite: 403, 404]"
+            ]
+          },
+          {
+            "titulo": "Mitosis y meiosis: La danza de la división celular",
+            "destrezas": [
+              "CN.4.1.6. Analizar el proceso del ciclo celular e investigar experimentalmente los ciclos celulares mitótico y meiótico, describirlos y establecer su importancia en la proliferación celular y en la formación de gametos. [cite: 402]"
+            ]
+          },
+          {
+            "titulo": "El milagro de la reproducción sexual en las especies",
+            "destrezas": [
+              "CN.4.1.8. Usar modelos y describir la reproducción sexual en los seres vivos y deducir su importancia para la supervivencia de la especie. [cite: 405]"
+            ]
+          },
+          {
+            "titulo": "Reproducción humana y el vínculo de la lactancia",
+            "destrezas": [
+              "CN.4.2.1. Analizar y explicar las etapas de la reproducción humana, deducir su importancia como un mecanismo de perpetuación de la especie y argumentar sobre la importancia de la nutrición prenatal y la lactancia como forma de enriquecer la afectividad. [cite: 406]"
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Nuestro ejército interno y las amenazas microscópicas": {
+        "objetivos": [
+          "Entender la evolución bacteriana y la función del sistema inmunitario.",
+          "Prevenir infecciones de transmisión sexual y enfermedades virales."
+        ],
+        "temas": [
+          {
+            "titulo": "La evolución de las bacterias y los antibióticos",
+            "destrezas": [
+              "CN.4.2.2. Investigar en forma documental y explicar la evolución de las bacterias y la resistencia a los antibióticos, deducir sus causas y las consecuencias de estas para el ser humano. [cite: 407]"
+            ]
+          },
+          {
+            "titulo": "El escudo del cuerpo: Sistema inmunitario y vacunas",
+            "destrezas": [
+              "CN.4.2.3. Explicar, con apoyo de modelos, el sistema inmunitario, identificar las clases de barreras inmunológicas, interpretar los tipos de inmunidad que presenta el ser humano e infiere sobre la importancia de la vacunación. [cite: 408]"
+            ]
+          },
+          {
+            "titulo": "Infecciones de Transmisión Sexual (ITS): Causas y prevención",
+            "destrezas": [
+              "CN.4.2.5. Investigar en forma documental y registrar evidencias sobre las infecciones de transmisión sexual, agruparlas en virales, bacterianas y micóticas, inferir sus causas y consecuencias y reconocer medidas de prevención. [cite: 409]"
+            ]
+          },
+          {
+            "titulo": "Invasores invisibles: Conociendo a los virus",
+            "destrezas": [
+              "CN.4.2.7. Describir las características de los virus, indagar las formas de transmisión y comunicar las medidas preventivas, por diferentes medios. [cite: 410]"
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Viaje a través del Cosmos": {
+        "objetivos": [
+          "Analizar la teoría del Big Bang y el aspecto de los componentes del universo.",
+          "Comprender el espectro electromagnético y su relación con la luz."
+        ],
+        "temas": [
+          {
+            "titulo": "El origen de todo: El Big Bang",
+            "destrezas": [
+              "CN.4.4.1. Indagar, con uso de las TIC y otros recursos, sobre el origen del Universo, analizar la teoría del Big Bang y demostrarla en modelos actuales de la cosmología teórica. [cite: 411]"
+            ]
+          },
+          {
+            "titulo": "Nuestro vecindario cósmico: El sistema solar",
+            "destrezas": [
+              "CN.4.4.3. Observar, con uso de las TIC y otros recursos, y explicar la apariencia general de los planetas, satélites, cometas y asteroides, y elaborar modelos representativos del sistema solar. [cite: 412]"
+            ]
+          },
+          {
+            "titulo": "Mapas estelares: Mitos y verdades de las constelaciones",
+            "destrezas": [
+              "CN.4.4.4. Observar en el mapa del cielo, la forma y ubicación de las constelaciones y explicar sus evidencias sustentadas en teorías y creencias, con un lenguaje pertinente y modelos representativos. [cite: 413]"
+            ]
+          },
+          {
+            "titulo": "La luz y el espectro electromagnético: El arcoíris",
+            "destrezas": [
+              "CN.4.4.6. Reconocer, con uso de las TIC y otros recursos, los diferentes tipos de radiaciones del espectro electromagnético y comprobar experimentalmente, a partir de la luz blanca, la mecánica de formación del arcoíris. [cite: 414]"
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Ciclos vitales y el desafío del clima": {
+        "objetivos": [
+          "Describir la interacción de los ciclos biogeoquímicos en la biosfera.",
+          "Investigar las causas y los efectos del cambio climático global."
+        ],
+        "temas": [
+          {
+            "titulo": "El reciclaje de la naturaleza: Ciclos biogeoquímicos",
+            "destrezas": [
+              "CN.4.4.7. Describir, con apoyo de modelos, los ciclos del oxígeno, el carbono, el nitrógeno y el fósforo, y explicar la importancia de estos para el reciclaje de los compuestos que mantienen la vida en el planeta. [cite: 415]"
+            ]
+          },
+          {
+            "titulo": "Equilibrio ecológico en la biosfera",
+            "destrezas": [
+              "CN.4.4.8. Explicar, con apoyo de modelos, la interacción de los ciclos biogeoquímicos en la biosfera (litósfera, la hidrósfera y la atmósfera), e inferir su importancia para el mantenimiento del equilibrio ecológico y los procesos vitales que tienen lugar en los seres vivos. [cite: 416]"
+            ]
+          },
+          {
+            "titulo": "Alerta roja: Cambio climático y deshielo global",
+            "destrezas": [
+              "CN.4.4.10. Investigar en forma documental sobre el cambio climático y sus efectos en los casquetes polares, nevados y capas de hielo, formular hipótesis sobre sus causas y registrar evidencias sobre la actividad humana y el impacto de esta en el clima. [cite: 417]"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Matemática": {
+    "9no de EGB": {
+      "Unidad 1: El lenguaje del álgebra y los racionales": {
+        "objetivos": [
+          "Resolver ecuaciones e inecuaciones de primer grado en Z.",
+          "Operar con números racionales, potencias y polinomios."
+        ],
+        "temas": [
+          {
+            "titulo": "Traduciendo el mundo a letras: Lenguaje algebraico",
+            "destrezas": [
+              "M.4.1.8. Expresar enunciados simples en lenguaje matemático (algebraico) para resolver problemas. [cite: 303]"
+            ]
+          },
+          {
+            "titulo": "Operaciones extremas con Z y polinomios",
+            "destrezas": [
+              "M.4.1.9. Aplicar las propiedades algebraicas (adición y multiplicación) de los números enteros en la suma de monomios homogéneos y la multiplicación de términos algebraicos. [cite: 304]",
+              "M.4.1.23. Definir y reconocer polinomios de grados 1 y 2. [cite: 312]",
+              "M.4.1.24. Operar con polinomios de grado ≤2 (adición y producto por escalar) en ejercicios numéricos y algebraicos. [cite: 313]"
+            ]
+          },
+          {
+            "titulo": "Resolviendo misterios: Ecuaciones e inecuaciones en Z",
+            "destrezas": [
+              "M.4.1.10. Resolver ecuaciones de primer grado con una incógnita en Z en la solución de problemas. [cite: 305]",
+              "M.4.1.11. Resolver inecuaciones de primer grado con una incógnita en Z, de manera analítica, en la solución de ejercicios numéricos y problemas. [cite: 306]"
+            ]
+          },
+          {
+            "titulo": "Explorando los racionales (Q) y sus propiedades",
+            "destrezas": [
+              "M.4.1.13. Reconocer el conjunto de los números racionales Q e identificar sus elementos. [cite: 307]",
+              "M.4.1.14. Representar y reconocer los números racionales como un número decimal y/o como una fracción. [cite: 308]",
+              "M.4.1.16. Operar en Q (adición y multiplicación) resolviendo ejercicios numéricos. [cite: 309]",
+              "M.4.1.17. Aplicar las propiedades algebraicas para la suma y la multiplicación de números racionales en la solución de ejercicios numéricos. [cite: 310]"
+            ]
+          },
+          {
+            "titulo": "Potencias racionales y el misterioso conjunto irracional",
+            "destrezas": [
+              "M.4.1.18. Calcular potencias de números racionales con exponentes enteros. [cite: 311]",
+              "M.4.1.26. Reconocer el conjunto de los números irracionales e identificar sus elementos. [cite: 314]"
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Operaciones reales, intervalos y funciones": {
+        "objetivos": [
+          "Calcular con números reales y utilizar la notación científica.",
+          "Analizar y graficar funciones lineales y reales."
+        ],
+        "temas": [
+          {
+            "titulo": "Operaciones y propiedades en el mundo Real (R)",
+            "destrezas": [
+              "M.4.1.31. Calcular adiciones y multiplicaciones con números reales y con términos algebraicos aplicando propiedades en R (propiedad distributiva de la suma con respecto al producto). [cite: 315]",
+              "M.4.1.32. Calcular expresiones numéricas y algebraicas usando las operaciones básicas y las propiedades algebraicas en R. [cite: 316]"
+            ]
+          },
+          {
+            "titulo": "Atajos matemáticos: Productos notables y factores",
+            "destrezas": [
+              "M.4.1.33. Reconocer y calcular productos notables e identificar factores de expresiones algebraicas. [cite: 317]"
+            ]
+          },
+          {
+            "titulo": "Números gigantes y diminutos: Notación científica",
+            "destrezas": [
+              "M.4.1.34. Aplicar las potencias de números reales con exponentes enteros para la notación científica. [cite: 318]"
+            ]
+          },
+          {
+            "titulo": "Ecuaciones e intervalos en los números Reales",
+            "destrezas": [
+              "M.4.1.38. Resolver ecuaciones de primer grado con una incógnita en R para resolver problemas sencillos. [cite: 319]",
+              "M.4.1.39. Representar un intervalo en R de manera algebraica y gráfica, y reconocer el intervalo como la solución de una inecuación de primer grado con una incógnita en R. [cite: 320]"
+            ]
+          },
+          {
+            "titulo": "Descubriendo patrones: Funciones lineales y su gráfica",
+            "destrezas": [
+              "M.4.1.47. Definir y reconocer funciones lineales en Z, con base en tablas de valores, de formulación algebraica y/o representación gráfica, con o sin el uso de la tecnología. [cite: 321]",
+              "M.4.1.48. Reconocer funciones crecientes y decrecientes a partir de su representación gráfica o tabla de valores. [cite: 322]",
+              "M.4.1.49. Definir y reconocer una función real identificando sus características: dominio, recorrido, monotonía, cortes con los ejes. [cite: 323]",
+              "M.4.1.50. Definir y reconocer una función lineal de manera algebraica y gráfica (con o sin el empleo de la tecnología), e identificar su monotonía a partir de la gráfica o su pendiente. [cite: 324]",
+              "M.4.1.52. Representar e interpretar modelos matemáticos con funciones lineales, y resolver problemas. [cite: 325]"
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Geometría plana y espacial": {
+        "objetivos": [
+          "Aplicar congruencia, semejanza y el Teorema de Pitágoras en figuras planas.",
+          "Calcular el área y volumen de cuerpos geométricos tridimensionales."
+        ],
+        "temas": [
+          {
+            "titulo": "Triángulos: Construcción, clasificación y congruencia",
+            "destrezas": [
+              "M.4.2.8. Clasificar y construir triángulos, utilizando regla y compás, bajo condiciones de ciertas medidas de lados y/o ángulos. [cite: 327]",
+              "M.4.2.9. Definir e identificar la congruencia de dos triángulos de acuerdo a criterios que consideran las medidas de sus lados y/o sus ángulos. [cite: 328]"
+            ]
+          },
+          {
+            "titulo": "Semejanza y las líneas mágicas del triángulo",
+            "destrezas": [
+              "M.4.2.6. Aplicar la semejanza en la construcción de figuras semejantes, el cálculo de longitudes y la solución de problemas geométricos. [cite: 326]",
+              "M.4.2.10. Aplicar criterios de semejanza para reconocer triángulos rectángulos semejantes y resolver problemas. [cite: 329]",
+              "M.4.2.12. Definir y dibujar medianas y baricentro, mediatrices y circuncentro, alturas y ortocentro, bisectrices e incentro en un triángulo. [cite: 331]"
+            ]
+          },
+          {
+            "titulo": "Calculando terrenos: Perímetro, área y Teorema de Pitágoras",
+            "destrezas": [
+              "M.4.2.11. Calcular el perímetro y el área de triángulos en la resolución de problemas. [cite: 330]",
+              "M.4.2.15. Aplicar el teorema de Pitágoras en la resolución de triángulos rectángulos. [cite: 332]",
+              "M.4.2.18. Calcular el área de polígonos regulares por descomposición en triángulos. [cite: 333]"
+            ]
+          },
+          {
+            "titulo": "Arquitectura 3D: Construyendo prismas, pirámides y cilindros",
+            "destrezas": [
+              "M.4.2.20. Construir pirámides, prismas, conos y cilindros a partir de patrones en dos dimensiones (redes), para calcular el área lateral y total de estos cuerpos geométricos. [cite: 334]"
+            ]
+          },
+          {
+            "titulo": "Llenando el espacio: Cálculo de volúmenes",
+            "destrezas": [
+              "M.4.2.21. Calcular el volumen de pirámides, prismas, conos y cilindros aplicando las fórmulas respectivas. [cite: 335]"
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Análisis de datos estadísticos": {
+        "objetivos": [
+          "Elaborar estudios estadísticos y organizar datos en tablas de frecuencia.",
+          "Interpretar medidas de tendencia central y de dispersión."
+        ],
+        "temas": [
+          {
+            "titulo": "El arte de organizar datos estadísticos",
+            "destrezas": [
+              "M.4.3.1. Organizar datos procesados en tablas de frecuencias para definir la función asociada, y representarlos gráficamente con ayuda de las TIC. [cite: 336]",
+              "M.4.3.4. Definir y aplicar la metodología para realizar un estudio estadístico: estadística descriptiva. [cite: 337]"
+            ]
+          },
+          {
+            "titulo": "Encontrando el centro: Media, mediana y moda",
+            "destrezas": [
+              "M.4.3.7. Calcular e interpretar las medidas de tendencia central (media, mediana, moda) y medidas de dispersión (rango, varianza y desviación estándar) de un conjunto de datos en la solución de problemas. [cite: 338]"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Lengua y Literatura": {
+    "9no de EGB": {
+      "Unidad 1: Comunicación, diversidad y debate oral": {
+        "objetivos": [
+          "Valorar los aportes de la cultura escrita y comprender las variaciones socioculturales.",
+          "Organizar discursos orales eliminando estereotipos y prejuicios."
+        ],
+        "temas": [
+          {
+            "titulo": "El impacto histórico de la cultura escrita",
+            "destrezas": [
+              "LL.4.1.1. Indagar y explicar los aportes de la cultura escrita al desarrollo histórico, social y cultural de la humanidad. [cite: 373]"
+            ]
+          },
+          {
+            "titulo": "Nuestros dialectos y las relaciones sociales",
+            "destrezas": [
+              "LL.4.1.3. Indagar sobre las variaciones lingüísticas socioculturales del Ecuador y explicar su influencia en las relaciones sociales. [cite: 374]"
+            ]
+          },
+          {
+            "titulo": "Debatiendo sin prejuicios ni estereotipos",
+            "destrezas": [
+              "LL.4.2.1. Utilizar recursos de la comunicación oral en contextos de intercambio social, construcción de acuerdos y resolución de problemas. [cite: 375]",
+              "LL.4.2.4. Reflexionar sobre los efectos del uso de estereotipos y prejuicios en la comunicación. [cite: 378]"
+            ]
+          },
+          {
+            "titulo": "Estructurando un discurso oral potente",
+            "destrezas": [
+              "LL.4.2.2. Organizar el discurso mediante el uso de las estructuras básicas de la lengua oral, la selección y empleo de vocabulario específico, acorde con la intencionalidad, en diversos contextos comunicativos formales e informales. [cite: 376]"
+            ]
+          },
+          {
+            "titulo": "Recursos audiovisuales para discursos de impacto",
+            "destrezas": [
+              "LL.4.2.3. Producir discursos que integren una variedad de recursos, formatos y soportes. [cite: 377]"
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Hackeando la lectura y la investigación": {
+        "objetivos": [
+          "Inferir y comparar información en textos, autorregulando la comprensión.",
+          "Organizar y contrastar información de fuentes digitales."
+        ],
+        "temas": [
+          {
+            "titulo": "Comparando textos y descubriendo perspectivas",
+            "destrezas": [
+              "LL.4.3.1. Comparar, bajo criterios preestablecidos, las relaciones explícitas entre los contenidos de dos o más textos y contrastar sus fuentes. [cite: 379]",
+              "LL.4.3.3. Elaborar criterios crítico-valorativos al distinguir las diferentes perspectivas en conflicto sobre un mismo tema, en diferentes textos. [cite: 381]"
+            ]
+          },
+          {
+            "titulo": "Leyendo entre líneas: Inferencias y motivaciones",
+            "destrezas": [
+              "LL.4.3.2. Construir significados implícitos al inferir el tema, el punto de vista del autor, las motivaciones y argumentos de un texto. [cite: 380]"
+            ]
+          },
+          {
+            "titulo": "Estrategias cognitivas para ser un lector experto",
+            "destrezas": [
+              "LL.4.3.4. Autorregular la comprensión de un texto mediante la aplicación de estrategias cognitivas de comprensión autoseleccionadas, de acuerdo con el propósito de lectura y las dificultades identificadas. [cite: 382]"
+            ]
+          },
+          {
+            "titulo": "Evaluando la confiabilidad de fuentes y webs",
+            "destrezas": [
+              "LL.4.3.5. Valorar y comparar textos de consulta en función del propósito de lectura y la calidad de la información (claridad, organización, actualización, amplitud, profundidad y otros). [cite: 383]",
+              "LL.4.3.6. Consultar bibliotecas y recursos digitales en la web, con capacidad para analizar la confiabilidad de la fuente. [cite: 384]"
+            ]
+          },
+          {
+            "titulo": "Organizando el conocimiento en esquemas",
+            "destrezas": [
+              "LL.4.3.7. Recoger, comparar y organizar información consultada en esquemas de diverso tipo. [cite: 385]"
+            ]
+          }
+        ]
+      },
+      "Unidad 3: El laboratorio de periodismo y escritura académica": {
+        "objetivos": [
+          "Producir textos cohesionados y coherentes con estructura periodística y académica.",
+          "Emplear estrategias de planificación, precisión gramatical y citas correctas."
+        ],
+        "temas": [
+          {
+            "titulo": "Estructura de textos académicos y periodísticos",
+            "destrezas": [
+              "LL.4.4.1. Escribir textos periodísticos y académicos con manejo de su estructura básica, y sustentar las ideas con razones y ejemplos organizados de manera jerárquica. [cite: 386]",
+              "LL.4.4.2. Lograr cohesión y coherencia en la escritura de textos periodísticos y académicos mediante la construcción y organización de diferentes tipos de párrafo. [cite: 387]"
+            ]
+          },
+          {
+            "titulo": "El proceso creativo: Planificar, redactar y revisar",
+            "destrezas": [
+              "LL.4.4.3. Usar estrategias y procesos de pensamiento que apoyen la escritura de diferentes tipos de textos periodísticos y académicos. [cite: 388]",
+              "LL.4.4.4. Autorregular la escritura de textos periodísticos y académicos con la selección y aplicación de variadas técnicas y recursos. [cite: 389]",
+              "LL.4.4.5. Usar el procedimiento de planificación, redacción y revisión en la escritura de diferentes tipos de textos periodísticos y académicos. [cite: 390]"
+            ]
+          },
+          {
+            "titulo": "Construyendo oraciones compuestas y precisas",
+            "destrezas": [
+              "LL.4.4.6. Mejorar la claridad y precisión de diferentes tipos de textos periodísticos y académicos mediante la escritura de oraciones compuestas y la utilización de nexos, modificadores, objetos, complementos y signos de puntuación. [cite: 391]",
+              "LL.4.4.7. Matizar y precisar las ideas y los significados de oraciones y párrafos mediante el uso selectivo de modos verbales, tiempos verbales complejos, verboides, voz activa y pasiva, conjunciones y frases nominales, adjetivas, adverbiales, preposicionales y verbales. [cite: 392]"
+            ]
+          },
+          {
+            "titulo": "Diálogos dinámicos y puntuación perfecta",
+            "destrezas": [
+              "LL.4.4.8. Comunicar ideas con eficiencia aplicando, de manera autónoma, las reglas de uso de las letras, de la puntuación y de la tilde. [cite: 393]",
+              "LL.4.4.9. Escribir diálogos directos e indirectos e integrarlos en diferentes tipos de texto, según la intención comunicativa. [cite: 394]"
+            ]
+          },
+          {
+            "titulo": "Citar correctamente: Honestidad intelectual",
+            "destrezas": [
+              "LL.4.4.10. Manejar las normas de citación e identificación de fuentes más utilizadas. [cite: 395]"
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Mundos literarios y el uso creativo de las palabras": {
+        "objetivos": [
+          "Interpretar obras literarias y usar el lenguaje de forma creativa (sarcasmo, ironía).",
+          "Reinventar relatos literarios con la ayuda de las TIC."
+        ],
+        "temas": [
+          {
+            "titulo": "Descubriendo los géneros literarios",
+            "destrezas": [
+              "LL.4.5.1. Interpretar un texto literario desde las características del género al que pertenece. [cite: 396]"
+            ]
+          },
+          {
+            "titulo": "Creando mi identidad lectora",
+            "destrezas": [
+              "LL.4.5.3. Elegir lecturas basándose en preferencias personales de autor, género, estilo, temas y contextos socioculturales, con el manejo de diversos soportes. [cite: 397]"
+            ]
+          },
+          {
+            "titulo": "Ironía, humor y sarcasmo: Jugando con el lenguaje",
+            "destrezas": [
+              "LL.4.5.5. Expresar intenciones determinadas (ironía, sarcasmo, humor, etc.) con el uso creativo del significado de las palabras. [cite: 398]"
+            ]
+          },
+          {
+            "titulo": "Recreando literatura con las TIC",
+            "destrezas": [
+              "LL.4.5.6. Recrear textos literarios leídos o escuchados con el uso colaborativo de diversos medios y recursos de las TIC. [cite: 399]"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Estudios Sociales": {
+    "9no de EGB": {
+      "Unidad 1: Choque de mundos y el orden colonial": {
+        "objetivos": [
+          "Explicar las motivaciones de los viajes al Nuevo Mundo y la conquista de América.",
+          "Analizar el impacto del progreso científico y la Ilustración en Europa y América."
+        ],
+        "temas": [
+          {
+            "titulo": "Rutas marítimas y la llegada a América",
+            "destrezas": [
+              "CS.4.1.24. Examinar las motivaciones de los europeos para buscar nuevas rutas marítimas al Lejano Oriente y analizar cómo llegaron a la India y “descubrieron” América. [cite: 340]"
+            ]
+          },
+          {
+            "titulo": "La conquista española y la resistencia indígena",
+            "destrezas": [
+              "CS.4.1.25. Explicar el proceso de conquista española del Imperio inca en crisis y la resistencia de los pueblos indígenas. [cite: 341]"
+            ]
+          },
+          {
+            "titulo": "Extracción de riquezas y gobierno colonial",
+            "destrezas": [
+              "CS.4.1.26. Exponer la organización y los mecanismos de gobierno y de extracción de riquezas que empleaba el Imperio colonial español en América. [cite: 342]"
+            ]
+          },
+          {
+            "titulo": "Avances científicos y surgimiento del capitalismo",
+            "destrezas": [
+              "CS.4.1.29. Destacar la contribución de los progresos científicos de los siglos XVII y XVIII a los cambios sociales y económicos. [cite: 343]",
+              "CS.4.1.30. Explicar el avance del capitalismo, el crecimiento de la producción manufacturera, la expansión de las ciudades y del intercambio internacional. [cite: 344]"
+            ]
+          },
+          {
+            "titulo": "La Ilustración y la caída del Antiguo Régimen",
+            "destrezas": [
+              "CS.4.1.33. Exponer la naturaleza de la Ilustración en Europa y América y las condiciones para la caída del Antiguo Régimen en ambos continentes. [cite: 347]"
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Era de revoluciones y nuevos Estados": {
+        "objetivos": [
+          "Analizar las revoluciones independistas en América y los impactos de la Revolución Industrial.",
+          "Estudiar el desarrollo de las naciones latinoamericanas en el mercado mundial."
+        ],
+        "temas": [
+          {
+            "titulo": "Independencia de EE.UU. y revoluciones europeas",
+            "destrezas": [
+              "CS.4.1.31. Analizar el proceso de independencia de Estados Unidos, su establecimiento como la primera república democrática, y sus consecuencias. [cite: 345]",
+              "CS.4.1.32. Discutir el sentido de las revoluciones europeas de fines del siglo XVIII y XIX. [cite: 346]"
+            ]
+          },
+          {
+            "titulo": "El grito de libertad: Independencia en América Latina",
+            "destrezas": [
+              "CS.4.1.35. Analizar críticamente la naturaleza de las revoluciones independentistas de América Latina, sus causas y limitaciones. [cite: 348]",
+              "CS.4.1.36. Explicar el proceso de independencia en Sudamérica desde el norte hasta el sur, reconociendo los actores sociales que participaron en él. [cite: 349]"
+            ]
+          },
+          {
+            "titulo": "El sueño de Bolívar y la Gran Colombia",
+            "destrezas": [
+              "CS.4.1.38. Examinar el contenido del proyecto de Simón Bolívar y la disolución de Colombia, con su proyección en los procesos de integración actuales. [cite: 350]"
+            ]
+          },
+          {
+            "titulo": "La Revolución Industrial y el imperialismo",
+            "destrezas": [
+              "CS.4.1.40. Analizar los avances científicos y técnicos que posibilitaron el gran auge de la industria y el cambio en las condiciones de vida que se dieron entre los siglos XVIII y XIX. [cite: 351]",
+              "CS.4.1.41. Revisar el desarrollo del capitalismo en el mundo del siglo XIX, bajo condiciones de avance del imperialismo. [cite: 352]"
+            ]
+          },
+          {
+            "titulo": "Nuevos Estados y el mercado mundial en el siglo XIX",
+            "destrezas": [
+              "CS.4.1.42. Exponer las características de los Estados nacionales latinoamericanos luego de la Independencia y su influencia en la construcción de la identidad de los países en el presente. [cite: 353]",
+              "CS.4.1.43. Examinar las condiciones en las que las economías latinoamericanas se incorporaron al mercado mundial en el siglo XIX. [cite: 354]"
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Economía y sociedad en el Ecuador actual": {
+        "objetivos": [
+          "Examinar las actividades productivas, el comercio y el papel del Estado en la economía nacional.",
+          "Analizar la situación actual del empleo, salud, educación y servicios en Ecuador."
+        ],
+        "temas": [
+          {
+            "titulo": "Nuestros recursos naturales y sectores productivos",
+            "destrezas": [
+              "CS.4.2.9. Localizar y apreciar los recursos naturales del Ecuador y establecer su importancia económica y social. [cite: 355]",
+              "CS.4.2.10. Relacionar y discutir las actividades productivas del sector primario (agricultura, ganadería, pesca, minería) con los ingresos y calidad de vida de las personas que se dedican a ellas. [cite: 356]",
+              "CS.4.2.11. Analizar las actividades productivas del sector secundario nacional (industrias y artesanías) y las personas que se ocupan en ellas. [cite: 357]"
+            ]
+          },
+          {
+            "titulo": "Comercio, finanzas y el rol del Estado",
+            "destrezas": [
+              "CS.4.2.12. Examinar la interrelación entre los lugares, las personas y los productos que están involucrados en el comercio y sus mutuas incidencias. [cite: 358]",
+              "CS.4.2.14. Analizar el papel del sector financiero en el país y la necesidad de su control por parte de la sociedad y el Estado. [cite: 359]",
+              "CS.4.2.15. Establecer las diversas formas en que el Estado participa en la economía y los efectos de esa participación en la vida de la sociedad. [cite: 360]"
+            ]
+          },
+          {
+            "titulo": "Desafíos económicos: Empleo y alternativas de desarrollo",
+            "destrezas": [
+              "CS.4.2.16. Identificar los principales problemas económicos del país, ejemplificando posibles alternativas de superación. [cite: 361]",
+              "CS.4.2.22. Discutir la importancia del empleo y los problemas del subempleo y el desempleo, estacando la realidad de la Seguridad Social. [cite: 366]"
+            ]
+          },
+          {
+            "titulo": "Derechos sociales: Educación, salud y vivienda",
+            "destrezas": [
+              "CS.4.2.18. Examinar la situación en que se encuentra el sistema educativo, sus niveles, crecimiento y calidad, frente a las necesidades nacionales. [cite: 362]",
+              "CS.4.2.19. Analizar el estado en que se encuentran los sistemas de salud en el país frente a las necesidades de la sociedad ecuatoriana. [cite: 363]",
+              "CS.4.2.20. Identificar las demandas existentes sobre vivienda comparándola con la forma en que se está enfrentando esta realidad en el país. [cite: 364]"
+            ]
+          },
+          {
+            "titulo": "Transporte, deporte y tiempo libre para la identidad nacional",
+            "destrezas": [
+              "CS.4.2.21. Ubicar en el territorio las necesidades de transporte de la ciudadanía y los medios que se han establecido para satisfacerlas. [cite: 365]",
+              "CS.4.2.23. Reconocer la importancia del deporte en la vida nacional, las principales disciplinas deportivas que se practican y los avances en su infraestructura. [cite: 367]",
+              "CS.4.2.24. Relacionar las opciones de ocio y recreación de los ecuatorianos como ocasiones para estimular vínculos que posibiliten la construcción de la identidad nacional. [cite: 368]"
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Mis derechos y deberes ciudadanos": {
+        "objetivos": [
+          "Reflexionar sobre los derechos de la niñez y la adolescencia y su relación con el Buen Vivir.",
+          "Asumir los deberes y promover la defensa de los derechos humanos."
+        ],
+        "temas": [
+          {
+            "titulo": "El Código de la Niñez y el Buen Vivir",
+            "destrezas": [
+              "CS.4.3.12. Identificar los derechos fundamentales estipulados en el Código de la Niñez y la Adolescencia y reflexionar sobre ellos en función del Buen Vivir. [cite: 369]"
+            ]
+          },
+          {
+            "titulo": "Dos caras de la moneda: Derechos y responsabilidades",
+            "destrezas": [
+              "CS.4.3.13. Reconocer que la existencia de derechos implica deberes y responsabilidades que tenemos todos como parte de la sociedad. [cite: 370]"
+            ]
+          },
+          {
+            "titulo": "La lucha permanente por los Derechos Humanos",
+            "destrezas": [
+              "CS.4.3.14. Reconocer la importancia de la lucha por los derechos humanos y su protección y cumplimiento como una responsabilidad de todos los ciudadanos y ciudadanas. [cite: 371]"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

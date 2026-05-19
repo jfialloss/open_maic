@@ -22,6 +22,8 @@ import type { ImageProviderId, ImageGenerationOptions } from '@/lib/media/types'
 import { createLogger } from '@/lib/logger';
 import { apiError, apiSuccess } from '@/lib/server/api-response';
 import { validateUrlForSSRF } from '@/lib/server/ssrf-guard';
+import { authenticateRequest } from '@/lib/server/auth';
+import { logTokenUsage } from '@/lib/server/token-logger';
 
 const log = createLogger('ImageGeneration API');
 
@@ -29,6 +31,7 @@ export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
   try {
+    const authUser = await authenticateRequest(request);
     const body = (await request.json()) as ImageGenerationOptions;
 
     if (!body.prompt) {
@@ -73,6 +76,19 @@ export async function POST(request: NextRequest) {
     );
 
     const result = await generateImage({ providerId, apiKey, baseUrl, model: clientModel }, body);
+
+    try {
+      logTokenUsage({
+        uid: authUser.uid,
+        email: authUser.email || undefined,
+        modelString: clientModel || providerId,
+        promptTokens: 0,
+        completionTokens: 0,
+        source: 'image',
+      });
+    } catch (e) {
+      log.error('Failed to log image generation usage', e);
+    }
 
     return apiSuccess({ result });
   } catch (error) {

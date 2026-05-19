@@ -15,6 +15,7 @@ import { createLogger } from '@/lib/logger';
 import { apiError, apiSuccess } from '@/lib/server/api-response';
 import { validateUrlForSSRF } from '@/lib/server/ssrf-guard';
 import { authenticateRequest } from '@/lib/server/auth';
+import { logTokenUsage } from '@/lib/server/token-logger';
 
 const log = createLogger('TTS API');
 
@@ -22,7 +23,7 @@ export const maxDuration = 30;
 
 export async function POST(req: NextRequest) {
   try {
-    await authenticateRequest(req);
+    const authUser = await authenticateRequest(req);
     const body = await req.json();
     const { text, audioId, ttsProviderId, ttsVoice, ttsSpeed, ttsApiKey, ttsBaseUrl } = body as {
       text: string;
@@ -81,6 +82,19 @@ export async function POST(req: NextRequest) {
 
     // Convert to base64
     const base64 = Buffer.from(audio).toString('base64');
+
+    try {
+      logTokenUsage({
+        uid: authUser.uid,
+        email: authUser.email || undefined,
+        modelString: ttsProviderId,
+        promptTokens: text.length, // use chars for TTS cost
+        completionTokens: 0,
+        source: 'tts',
+      });
+    } catch (e) {
+      log.error('Failed to log tts generation usage', e);
+    }
 
     return apiSuccess({ audioId, base64, format });
   } catch (error) {

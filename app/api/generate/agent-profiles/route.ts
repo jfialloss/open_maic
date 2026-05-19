@@ -12,6 +12,7 @@ import { createLogger } from '@/lib/logger';
 import { apiError, apiSuccess } from '@/lib/server/api-response';
 import { resolveModelFromHeaders } from '@/lib/server/resolve-model';
 import { authenticateRequest } from '@/lib/server/auth';
+import { logTokenUsage } from '@/lib/server/token-logger';
 
 const log = createLogger('Agent Profiles API');
 
@@ -52,7 +53,7 @@ function stripCodeFences(text: string): string {
 
 export async function POST(req: NextRequest) {
   try {
-    await authenticateRequest(req);
+    const authUser = await authenticateRequest(req);
     const body = (await req.json()) as RequestBody;
     const { stageInfo, sceneOutlines, language, availableAvatars, requirement, teacherGender } = body;
 
@@ -95,9 +96,9 @@ Requirements:
 - Priority values: teacher=10 (highest), assistant=7, student=4-6
 - Each agent needs: name, role, persona (2-3 sentences describing personality and teaching/learning style)
 - For the "teacher" role, you MUST strictly follow this gender constraint: The teacher MUST be **${teacherGender === 'female' ? 'FEMALE' : 'MALE'}**.
-  - Name: Use generic "${teacherGender === 'female' ? 'Profesora' : 'Profesor'}" (or "${teacherGender === 'female' ? 'Female Teacher' : 'Male Teacher'}" in English), never a personal name.
+  - Name: Translate the word "Teacher" to the target language (e.g. "Profesor", "Teacher", "Professeur"). NEVER use a personal name.
   - Persona: Must explicitly reflect a ${teacherGender === 'female' ? 'female' : 'male'} educator.
-- Names and personas must be in language: ${language}
+- Names and personas must be in language: ${language === 'es-419' ? 'Español Latinoamericano (es-419)' : language}
 - Each agent must be assigned one avatar from this list: ${JSON.stringify(availableAvatars)}
   - CRITICAL: The "teacher" role MUST use ONLY the exact teacher avatar provided in the list.
   - CRITICAL: Match the avatar strictly to the agent's gender. If an avatar has "-2.png" in its name, it is a FEMALE avatar (e.g., assist-2.png). Otherwise, it is a MALE avatar.
@@ -130,6 +131,19 @@ Return a JSON object with this exact structure:
       },
       'agent-profiles',
     );
+
+    try {
+      logTokenUsage({
+        uid: authUser.uid,
+        email: authUser.email || undefined,
+        modelString,
+        promptTokens: (result.usage as any)?.promptTokens || 0,
+        completionTokens: (result.usage as any)?.completionTokens || 0,
+        source: 'agent-profiles',
+      });
+    } catch (e) {
+      log.error('Failed to log agent-profiles token usage', e);
+    }
 
     // ── Parse LLM response ──
     const rawText = stripCodeFences(result.text);

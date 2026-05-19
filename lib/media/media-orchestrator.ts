@@ -12,6 +12,7 @@ import { db, mediaFileKey } from '@/lib/utils/database';
 import type { SceneOutline } from '@/lib/types/generation';
 import type { MediaGenerationRequest } from '@/lib/media/types';
 import { createLogger } from '@/lib/logger';
+import { auth } from '@/lib/firebase';
 
 const log = createLogger('MediaOrchestrator');
 
@@ -189,11 +190,13 @@ async function callImageApi(
 ): Promise<{ url: string }> {
   const settings = useSettingsStore.getState();
   const providerConfig = settings.imageProvidersConfig?.[settings.imageProviderId];
+  const idToken = auth.currentUser ? await auth.currentUser.getIdToken() : '';
 
   const response = await fetch('/api/generate/image', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${idToken}`,
       'x-image-provider': settings.imageProviderId || '',
       'x-image-model': settings.imageModelId || '',
       'x-api-key': providerConfig?.apiKey || '',
@@ -229,11 +232,13 @@ async function callVideoApi(
 ): Promise<{ url: string; poster?: string }> {
   const settings = useSettingsStore.getState();
   const providerConfig = settings.videoProvidersConfig?.[settings.videoProviderId];
+  const idToken = auth.currentUser ? await auth.currentUser.getIdToken() : '';
 
   const response = await fetch('/api/generate/video', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${idToken}`,
       'x-video-provider': settings.videoProviderId || '',
       'x-video-model': settings.videoModelId || '',
       'x-api-key': providerConfig?.apiKey || '',

@@ -79,10 +79,10 @@ function createInMemoryStore(stage: Stage): StageStore {
   };
 }
 
-function normalizeLanguage(language?: string): 'zh-CN' | 'en-US' | 'es-ES' {
+function normalizeLanguage(language?: string): 'zh-CN' | 'en-US' | 'es-419' {
   if (language === 'en-US') return 'en-US';
   if (language === 'zh-CN') return 'zh-CN';
-  return 'es-ES';
+  return 'es-419';
 }
 
 export async function generateClassroom(

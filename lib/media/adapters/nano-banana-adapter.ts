@@ -115,6 +115,9 @@ export async function generateWithNanoBanana(
       ],
       generationConfig: {
         responseModalities: ['IMAGE'],
+        ...(options.aspectRatio ? { 
+          imageConfig: { aspectRatio: options.aspectRatio } 
+        } : {}),
       },
     }),
   });

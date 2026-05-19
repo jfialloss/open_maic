@@ -19,10 +19,9 @@ interface UserData {
 }
 
 const GRADES = [
-  'Inicial 1', 'Inicial 2', '1º Grado de EGB', '2º Grado de EGB', '3º Grado de EGB',
-  '4º Grado de EGB', '5º Grado de EGB', '6º Grado de EGB', '7º Grado de EGB',
-  '8º Grado de EGB', '9º Grado de EGB', '10º Grado de EGB', '1º Curso de Bachillerato',
-  '2º Curso de Bachillerato', '3º Curso de Bachillerato'
+  '5º Grado de EGB', '6º Grado de EGB', '7º Grado de EGB',
+  '8º Grado de EGB', '9º Grado de EGB', '10º Grado de EGB', '1º de Bachillerato',
+  '2º de Bachillerato', '3º de Bachillerato'
 ];
 
 export default function AdminUsersPage() {

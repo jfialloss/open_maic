@@ -1,0 +1,533 @@
+{
+  "Ciencias Naturales": {
+    "7mo de EGB": {
+      "Unidad 1: Ecosistemas y Supervivencia": {
+        "objetivos": [
+          "Investigar las interrelaciones en los ecosistemas y la biodiversidad del Ecuador.",
+          "Comprender las adaptaciones de las especies y las amenazas de extinción."
+        ],
+        "temas": [
+          {
+            "titulo": "Redes de vida: Productores y consumidores",
+            "destrezas": [
+              "CN.3.1.9. Indagar, con uso de las TIC y otros recursos, las características de los ecosistemas y sus clases, interpretar las interrelaciones de los seres vivos en los ecosistemas y clasificarlos en productores, consumidores y descomponedores. [cite: 199]"
+            ]
+          },
+          {
+            "titulo": "Tesoros vivos del Ecuador y sus guardianes",
+            "destrezas": [
+              "CN.3.1.10. Indagar, con uso de las TIC y otros recursos, la diversidad biológica de los ecosistemas de Ecuador e identificar la flora y fauna representativas de los ecosistemas naturales de la localidad. [cite: 200]",
+              "CN.3.5.5. Planificar y realizar una indagación bibliográfica sobre el trabajo de los científicos en las Áreas Naturales Protegidas de Ecuador, y utilizar esa información para establecer la importancia de la preservación y el cuidado de la biodiversidad nativa. [cite: 215]"
+            ]
+          },
+          {
+            "titulo": "Maestros del disfraz y la adaptación",
+            "destrezas": [
+              "CN.3.1.11. Indagar y explicar las adaptaciones de plantas y animales a las condiciones ambientales de diferentes ecosistemas y relacionarlas con su supervivencia. [cite: 201]"
+            ]
+          },
+          {
+            "titulo": "Especies en peligro y cómo salvarlas",
+            "destrezas": [
+              "CN.3.1.13. Indagar en diversas fuentes y describir las causas y consecuencias potenciales de la extinción de las especies en un determinado ecosistema, y proponer medidas de protección de la biodiversidad amenazada. [cite: 202]"
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Mi cuerpo en transformación": {
+        "objetivos": [
+          "Comprender el funcionamiento de los sistemas reproductor y endocrino.",
+          "Analizar la importancia de hábitos saludables y prevenir el consumo de drogas."
+        ],
+        "temas": [
+          {
+            "titulo": "El origen de la vida: sistema reproductor",
+            "destrezas": [
+              "CN.3.2.1. Indagar y describir la estructura y función del sistema reproductor humano, femenino y masculino, y explicar su importancia en la transmisión de las características hereditarias. [cite: 203]"
+            ]
+          },
+          {
+            "titulo": "La montaña rusa de la pubertad",
+            "destrezas": [
+              "CN.3.2.2. Examinar los cambios fisiológicos, anatómicos y conductuales durante la pubertad, formular preguntas y encontrar respuestas sobre el inicio de la madurez sexual en mujeres y hombres, basándose en sus propias experiencias. [cite: 204]"
+            ]
+          },
+          {
+            "titulo": "Hormonas al mando: el sistema endocrino",
+            "destrezas": [
+              "CN.3.2.4. Explicar, con apoyo de modelos, la estructura y función del sistema endocrino e interpretar su importancia para el mantenimiento del equilibrio del medio interno (homeostasis) y en cambios que se dan en la pubertad. [cite: 205]"
+            ]
+          },
+          {
+            "titulo": "Hábitos de campeones para crecer sanos",
+            "destrezas": [
+              "CN.3.2.7. Reconocer la importancia de la actividad física, la higiene corporal y la dieta equilibrada en la pubertad para mantener la salud integral y comunicar los beneficios por diferentes medios. [cite: 206]"
+            ]
+          },
+          {
+            "titulo": "Mente clara: el peligro de las sustancias tóxicas",
+            "destrezas": [
+              "CN.3.2.9. Planificar y ejecutar una indagación documental sobre los efectos nocivos de las drogas -estimulantes, depresoras, alucinógenas-, y analizar las prácticas que se aplican para la erradicación del consumo. [cite: 207]"
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Fuerzas, calor y máquinas": {
+        "objetivos": [
+          "Interpretar cómo las fuerzas alteran el movimiento y la forma de los objetos.",
+          "Experimentar la transmisión de calor y entender la importancia de la máquina de vapor."
+        ],
+        "temas": [
+          {
+            "titulo": "El poder del movimiento y las fuerzas",
+            "destrezas": [
+              "CN.3.3.6. Explorar e interpretar los efectos de la aplicación de las fuerzas en los cambios de la forma, la rapidez y la dirección de movimiento de los objetos y comunicar sus conclusiones. [cite: 208]"
+            ]
+          },
+          {
+            "titulo": "Los viajeros del calor",
+            "destrezas": [
+              "CN.3.3.8. Experimentar la transmisión de calor y deducir la forma en que se producen la conducción, la convección y la radiación. [cite: 209]"
+            ]
+          },
+          {
+            "titulo": "Máquinas a vapor que cambiaron el mundo",
+            "destrezas": [
+              "CN.3.3.9. Indagar, con uso de las TIC y otros recursos, las aplicaciones de la energía térmica en la máquina de vapor e interpretar su importancia en el desarrollo industrial. [cite: 210]"
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Nuestro planeta dinámico y el clima": {
+        "objetivos": [
+          "Analizar el impacto del movimiento de placas tectónicas y la radiación solar.",
+          "Comprender los fenómenos climáticos y las catástrofes naturales."
+        ],
+        "temas": [
+          {
+            "titulo": "El choque de placas y el nacimiento de los Andes",
+            "destrezas": [
+              "CN.3.4.6. Analizar la influencia de las placas tectónicas en los movimientos orogénicos y epirogénicos que formaron la cordillera de Los Andes y explicar su influencia en la distribución de la biodiversidad en las regiones naturales de Ecuador. [cite: 211]"
+            ]
+          },
+          {
+            "titulo": "El Sol y su impacto en nuestro mapa",
+            "destrezas": [
+              "CN.3.4.7. Explicar, con apoyo de modelos, los patrones de incidencia de la radiación solar sobre la superficie terrestre y relacionar las variaciones de intensidad de la radiación solar con la ubicación geográfica. [cite: 212]"
+            ]
+          },
+          {
+            "titulo": "La danza de los vientos y las lluvias",
+            "destrezas": [
+              "CN.3.4.8. Analizar e interpretar los patrones de calentamiento de la superficie terrestre y explicar su relación con la formación de vientos, nubes y lluvias. [cite: 213]"
+            ]
+          },
+          {
+            "titulo": "Sobreviviendo a la furia del clima",
+            "destrezas": [
+              "CN.3.4.14. Indagar e inferir las características y efectos de las catástrofes climáticas y establecer las consecuencias en los seres vivos y sus hábitats. [cite: 214]"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Estudios Sociales": {
+    "7mo de EGB": {
+      "Unidad 1: El Ecuador se moderniza (Años 60s y 70s)": {
+        "objetivos": [
+          "Analizar las transformaciones agrarias, industriales y el boom petrolero.",
+          "Reconocer a los nuevos actores sociales y los procesos de transición democrática."
+        ],
+        "temas": [
+          {
+            "titulo": "Del campo a la industria: la reforma agraria",
+            "destrezas": [
+              "CS.3.1.52. Exponer el alcance de la transformación agraria y los procesos de industrialización con sus consecuencias en la economía y la política. [cite: 217]",
+              "CS.3.1.54. Describir las condiciones del gran crecimiento poblacional del país, la expansión de las ciudades, la migración interna y el crecimiento de los servicios. [cite: 219]"
+            ]
+          },
+          {
+            "titulo": "El oro negro: la era del boom petrolero",
+            "destrezas": [
+              "CS.3.1.53. Explicar el surgimiento del “boom” petrolero ecuatoriano en los años setenta y su impacto en la sociedad, el robustecimiento del Estado y el inicio del endeudamiento externo. [cite: 218]",
+              "CS.3.1.58. Comparar la década 1960-1970 con la subsiguiente 1970-1979, destacando el papel de las fuerzas armadas y los movimientos sociales. [cite: 223]"
+            ]
+          },
+          {
+            "titulo": "Las voces que cambiaron la historia",
+            "destrezas": [
+              "CS.3.1.55. Reconocer la presencia de nuevos actores sociales, como trabajadores y empresarios, y el ascenso del movimiento indígena, las organizaciones de mujeres y ecologistas, en la construcción de la conciencia de la diversidad. [cite: 220]",
+              "CS.3.1.56. Analizar los cambios en la vida de la gente y la cultura a causa de la modernización, las reformas religiosas y los cambios tecnológicos. [cite: 221]"
+            ]
+          },
+          {
+            "titulo": "El retorno a la democracia",
+            "destrezas": [
+              "CS.3.1.57. Explicar el papel que el Estado ha cumplido en la economía y la promoción social a fines del siglo XX. [cite: 222]",
+              "CS.3.1.59. Analizar el proceso de transición al régimen constitucional de fines de los setenta e inicios de los ochenta, con los cambios sociales y políticos que se produjeron. [cite: 224]"
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Fin de siglo y los retos del nuevo milenio": {
+        "objetivos": [
+          "Examinar la época del neoliberalismo, la migración y la inestabilidad política.",
+          "Identificar los desafíos del Ecuador en el siglo XXI frente a la globalización."
+        ],
+        "temas": [
+          {
+            "titulo": "Tiempos difíciles: Neoliberalismo y migración",
+            "destrezas": [
+              "CS.3.1.61. Reconocer el predominio del neoliberalismo a fines del siglo XX e inicios del XXI, con el incremento de la deuda externa, la emigración, la concentración de la riqueza, el aumento de la pobreza, la respuesta de los movimientos sociales y la inestabilidad política. [cite: 226]",
+              "CS.3.1.62. Establecer la secuencia de los regímenes de las dos décadas finales del siglo XX, sus políticas económicas y la respuesta de la movilización social. [cite: 227]"
+            ]
+          },
+          {
+            "titulo": "El Ecuador en el tablero mundial",
+            "destrezas": [
+              "CS.3.1.60. Identificar el papel que cumplió nuestro país al final del siglo XX en el panorama internacional. [cite: 225]"
+            ]
+          },
+          {
+            "titulo": "Nuestro país en el siglo XXI",
+            "destrezas": [
+              "CS.3.1.64. Discutir los hechos recientes del país a inicios del siglo XXI, con sus conflictos y transformaciones políticas y sociales. [cite: 228]",
+              "CS.3.1.65. Revisar los desafíos más urgentes que tiene el Ecuador frente a la globalización, la democracia y la unidad nacional. [cite: 229]"
+            ]
+          },
+          {
+            "titulo": "Los jóvenes construimos el futuro",
+            "destrezas": [
+              "CS.3.1.66. Examinar el compromiso que tiene la juventud en la construcción del Ecuador del Buen Vivir y la integración regional. [cite: 230]"
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Nuestra gente y la geografía que nos rodea": {
+        "objetivos": [
+          "Interpretar datos demográficos y características geográficas del país.",
+          "Analizar la organización territorial y el rol de los gobiernos locales."
+        ],
+        "temas": [
+          {
+            "titulo": "¿Cuántos somos y dónde estamos?",
+            "destrezas": [
+              "CS.3.2.16. Apreciar el crecimiento de la población del Ecuador, con énfasis en sus principales causas y consecuencias. [cite: 231]",
+              "CS.3.2.23. Exponer la realidad de la población del Ecuador, considerando su localización en el territorio a partir de los últimos censos realizados en el país [cite: 237]"
+            ]
+          },
+          {
+            "titulo": "Geografía fascinante de nuestras regiones",
+            "destrezas": [
+              "CS.3.2.24. Reconocer los principales rasgos físicos (relieves, hidrografía, climas, áreas cultivables, pisos ecológicos, etc.), de las provincias de la Costa norte, de la Costa sur, de la Sierra norte, de la Sierra centro, de la Sierra sur, de la Amazonía y de la región Insular de Galápagos. [cite: 238]"
+            ]
+          },
+          {
+            "titulo": "Educación y salud para todos",
+            "destrezas": [
+              "CS.3.2.17. Comparar el acceso a educación y salud de los niños, niñas, adultos, mayores, y personas con discapacidad, considerando variables demográficas y geográficas. [cite: 232]"
+            ]
+          },
+          {
+            "titulo": "¿Cómo se organiza nuestro país?",
+            "destrezas": [
+              "CS.3.2.19. Establecer las ventajas y desventajas de la organización territorial del Ecuador en provincias, cantones, parroquias y regiones transversales, considerando su utilidad para el desarrollo nacional. [cite: 233]",
+              "CS.3.2.20. Distinguir las características de los gobiernos provinciales del Ecuador, destacando su incidencia en la satisfacción de las necesidades de sus habitantes y la construcción de su identidad. [cite: 234]"
+            ]
+          },
+          {
+            "titulo": "Mi voz cuenta en mi cantón y provincia",
+            "destrezas": [
+              "CS.3.2.21. Explicar las características político-administrativas de los gobiernos provinciales, municipales y parroquiales del país, destacando su cercanía con el pueblo y su capacidad para enfrentar cuestiones locales. [cite: 235]",
+              "CS.3.2.22. Reconocer las formas de participación popular de las provincias, cantones y parroquias en la vida pública, destacando el trabajo y la acción colectivos en pro del bien común. [cite: 236]"
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Igualdad, diversidad y derechos": {
+        "objetivos": [
+          "Fomentar una cultura de equidad, respeto y rechazo a la discriminación.",
+          "Conocer la diversidad religiosa y el estado laico."
+        ],
+        "temas": [
+          {
+            "titulo": "Hombres y mujeres, juntos por la equidad",
+            "destrezas": [
+              "CS.3.3.12. Analizar la participación de mujeres y hombres en el marco de la diversidad, la equidad de género y el rechazo a toda forma de discriminación. [cite: 239]"
+            ]
+          },
+          {
+            "titulo": "Capacidades sin límites: inclusión social",
+            "destrezas": [
+              "CS.3.3.13. Discutir la situación de las personas con discapacidad en el Ecuador y sus posibilidades de inclusión y participación productiva en la sociedad. [cite: 240]"
+            ]
+          },
+          {
+            "titulo": "Creencias y libertad religiosa en Ecuador",
+            "destrezas": [
+              "CS.3.3.15. Examinar las principales denominaciones religiosas que existen en el Ecuador, destacando su función social y sus características más importantes. [cite: 241]",
+              "CS.3.3.16. Destacar el avance que significó el establecimiento del laicismo y el derecho a la libertad de cultos en el país. [cite: 242]"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Matemática": {
+    "7mo de EGB": {
+      "Unidad 1: Calculadoras humanas y coordenadas": {
+        "objetivos": [
+          "Calcular raíces cuadradas, cúbicas y operar con números decimales.",
+          "Resolver problemas utilizando coordenadas cartesianas."
+        ],
+        "temas": [
+          {
+            "titulo": "Raíces cuadradas y cúbicas misteriosas",
+            "destrezas": [
+              "M.3.1.24. Calcular raíces cuadradas y cúbicas utilizando la estimación, la descomposición en factores primos y la tecnología. [cite: 245]"
+            ]
+          },
+          {
+            "titulo": "Mapas y coordenadas en el plano cartesiano",
+            "destrezas": [
+              "M.3.1.2. Leer y ubicar pares ordenados en el sistema de coordenadas rectangulares, con números naturales, decimales y fracciones. [cite: 244]"
+            ]
+          },
+          {
+            "titulo": "Dominando las operaciones con números decimales",
+            "destrezas": [
+              "M.3.1.28. Calcular, aplicando algoritmos y la tecnología, sumas, restas, multiplicaciones y divisiones con números decimales. [cite: 246]"
+            ]
+          },
+          {
+            "titulo": "Retos de la vida real con números decimales",
+            "destrezas": [
+              "M.3.1.31. Resolver y plantear problemas con sumas, restas, multiplicaciones y divisiones con números decimales, utilizando varias estrategias, e interpretar la solución dentro del contexto del problema. [cite: 247]"
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Fracciones, porcentajes y dinero": {
+        "objetivos": [
+          "Multiplicar, dividir y resolver problemas con fracciones.",
+          "Dominar el cálculo de porcentajes y entender la proporcionalidad."
+        ],
+        "temas": [
+          {
+            "titulo": "Multiplicando y dividiendo pedazos",
+            "destrezas": [
+              "M.3.1.40. Realizar multiplicaciones y divisiones entre fracciones, empleando como estrategia la simplificación. [cite: 248]"
+            ]
+          },
+          {
+            "titulo": "Desafíos matemáticos con fracciones",
+            "destrezas": [
+              "M.3.1.42. Resolver y plantear problemas de sumas, restas, multiplicaciones y divisiones con fracciones, e interpretar la solución dentro del contexto del problema. [cite: 249]"
+            ]
+          },
+          {
+            "titulo": "El triángulo mágico: fracciones, decimales y porcentajes",
+            "destrezas": [
+              "M.3.1.45. Expresar porcentajes como fracciones y decimales, o fracciones y decimales como porcentajes, en función de explicar situaciones cotidianas. [cite: 250]"
+            ]
+          },
+          {
+            "titulo": "Rebajas, facturas y finanzas para niños",
+            "destrezas": [
+              "M.3.1.47. Calcular porcentajes en aplicaciones cotidianas: facturas, notas de venta, rebajas, cuentas de ahorro, interés simple y otros. [cite: 251]"
+            ]
+          },
+          {
+            "titulo": "La balanza matemática: proporcionalidad",
+            "destrezas": [
+              "M.3.1.48. Resolver y plantear problemas con la aplicación de la proporcionalidad directa o inversa, e interpretar la solución dentro del contexto del problema. [cite: 252]"
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Geometría de campo y la medición espacial": {
+        "objetivos": [
+          "Calcular perímetro y área de polígonos regulares.",
+          "Realizar conversiones de superficie (medidas agrarias) y volumen."
+        ],
+        "temas": [
+          {
+            "titulo": "Descubriendo los polígonos regulares e irregulares",
+            "destrezas": [
+              "M.3.2.8. Clasificar polígonos regulares e irregulares según sus lados y ángulos. [cite: 253]"
+            ]
+          },
+          {
+            "titulo": "Calculando los perímetros y áreas perfectas",
+            "destrezas": [
+              "M.3.2.9. Calcular, en la resolución de problemas, el perímetro y área de polígonos regulares, aplicando la fórmula correspondiente. [cite: 254]"
+            ]
+          },
+          {
+            "titulo": "Midiendo los campos y las haciendas",
+            "destrezas": [
+              "M.3.2.15. Reconocer el metro cuadrado como unidad de medida de superficie, los submúltiplos y múltiplos, y realizar conversiones en la resolución de problemas. [cite: 255]",
+              "M.3.2.16. Relacionar las medidas de superficie con las medidas agrarias más usuales (hectárea, área, centiárea) en la resolución de problemas. [cite: 256]"
+            ]
+          },
+          {
+            "titulo": "Cajas, piscinas y medidas de volumen",
+            "destrezas": [
+              "M.3.2.17. Reconocer el metro cúbico como unidad de medida de volumen, los submúltiplos y múltiplos; relacionar medidas de volumen y capacidad; y realizar conversiones en la resolución de problemas. [cite: 257], [cite: 258]"
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Los detectives de los datos": {
+        "objetivos": [
+          "Interpretar y calcular medidas de tendencia central y dispersión."
+        ],
+        "temas": [
+          {
+            "titulo": "Encontrando el promedio, la moda y la mediana",
+            "destrezas": [
+              "M.3.3.2. Analizar e interpretar el significado de calcular medidas de tendencia central (media, mediana y moda) y medidas de dispersión (el rango), de un conjunto de datos estadísticos discretos tomados del entorno y de medios de comunicación. [cite: 259], [cite: 260]"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Lengua y Literatura": {
+    "7mo de EGB": {
+      "Unidad 1: Comunicadores de alto impacto": {
+        "objetivos": [
+          "Expresarse con seguridad, usando apoyos audiovisuales y respetando dialectos.",
+          "Asumir una posición crítica frente a los discursos orales."
+        ],
+        "temas": [
+          {
+            "titulo": "La escritura como superpoder cultural",
+            "destrezas": [
+              "LL.3.1.1. Participar en contextos y situaciones que evidencien la funcionalidad de la lengua escrita como herramienta cultural. [cite: 262]"
+            ]
+          },
+          {
+            "titulo": "Nuestro idioma tiene muchos sabores",
+            "destrezas": [
+              "LL.3.1.2. Indagar sobre las influencias lingüísticas y culturales que explican los dialectos del castellano en el Ecuador. [cite: 263]"
+            ]
+          },
+          {
+            "titulo": "Escucha activa y pensamiento crítico",
+            "destrezas": [
+              "LL.3.2.1. Escuchar discursos orales y formular juicios de valor con respecto a su contenido y forma, y participar de manera respetuosa frente a las intervenciones de los demás. [cite: 264]"
+            ]
+          },
+          {
+            "titulo": "Oradores deslumbrantes en el escenario",
+            "destrezas": [
+              "LL.3.2.2. Proponer intervenciones orales con una intención comunicativa, organizar el discurso según las estructuras básicas de la lengua oral y utilizar un vocabulario adecuado a diversas situaciones comunicativas. [cite: 265], [cite: 266]",
+              "LL.3.2.3. Apoyar el discurso con recursos y producciones audiovisuales. [cite: 267]"
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Hackeando la lectura y la información": {
+        "objetivos": [
+          "Comparar información y decodificar textos de alta complejidad.",
+          "Realizar inferencias, buscar en bibliotecas y elaborar esquemas."
+        ],
+        "temas": [
+          {
+            "titulo": "Detectives comparando información",
+            "destrezas": [
+              "LL.3.3.1. Establecer las relaciones explícitas entre los contenidos de dos o más textos, comparar y contrastar fuentes. [cite: 268]"
+            ]
+          },
+          {
+            "titulo": "Leer la mente del autor: inferencias y valoraciones",
+            "destrezas": [
+              "LL.3.3.2. Comprender los contenidos implícitos de un texto mediante la realización de inferencias fundamentales y proyectivo-valorativas a partir del contenido de un texto. [cite: 269]",
+              "LL.3.3.3. Inferir y sintetizar el contenido esencial de un texto al diferenciar el tema de las ideas principales. [cite: 270]",
+              "LL.3.3.5. Valorar los aspectos de forma y el contenido de un texto, a partir de criterios preestablecidos. [cite: 272]"
+            ]
+          },
+          {
+            "titulo": "Trucos ninjas para comprender mejor",
+            "destrezas": [
+              "LL.3.3.4. Autorregular la comprensión de textos mediante el uso de estrategias cognitivas de comprensión: parafrasear, releer, formular preguntas, leer selectivamente, consultar fuentes adicionales. [cite: 271]",
+              "LL.3.3.11. Aplicar los conocimientos lingüísticos (léxicos, semánticos, sintácticos y fonológicos) en la decodificación y comprensión de textos. [cite: 275]"
+            ]
+          },
+          {
+            "titulo": "Investigadores en la web y la biblioteca",
+            "destrezas": [
+              "LL.3.3.6. Acceder a bibliotecas y recursos digitales en la web, identificando las fuentes consultadas. [cite: 273]",
+              "LL.3.3.7. Registrar la información consultada con el uso de esquemas de diverso tipo. [cite: 274]"
+            ]
+          }
+        ]
+      },
+      "Unidad 3: El laboratorio de la escritura perfecta": {
+        "objetivos": [
+          "Producir párrafos, textos descriptivos y de instrucciones con alta coherencia.",
+          "Utilizar correctamente sustantivos, verbos, conectores y campos semánticos."
+        ],
+        "temas": [
+          {
+            "titulo": "Manual de instrucciones y relatos increíbles",
+            "destrezas": [
+              "LL.3.4.1. Relatar textos con secuencia lógica, manejo de conectores y coherencia en el uso de la persona y tiempo verbal, e integrarlos en diversas situaciones comunicativas. [cite: 276]",
+              "LL.3.4.4. Escribir instrucciones con secuencia lógica, uso de conectores temporales y de orden, y coherencia en el manejo del verbo y la persona, en situaciones comunicativas que lo requieran. [cite: 278]"
+            ]
+          },
+          {
+            "titulo": "El arte de describir el mundo",
+            "destrezas": [
+              "LL.3.4.2. Escribir descripciones organizadas y con vocabulario específico relativo al ser, objeto, lugar o hecho que se describe e integrarlas en producciones escritas. [cite: 277]",
+              "LL.3.4.8. Lograr precisión y claridad en sus producciones escritas, mediante el uso de vocabulario según un determinado campo semántico. [cite: 281]"
+            ]
+          },
+          {
+            "titulo": "Arquitectos de párrafos y oraciones",
+            "destrezas": [
+              "LL.3.4.9. Organizar las ideas con unidad de sentido a partir de la construcción de párrafos. [cite: 282]",
+              "LL.3.4.10. Expresar sus ideas con precisión e integrar en las producciones escritas los diferentes tipos de sustantivo, pronombre, adjetivo, verbo, adverbio y sus modificadores. [cite: 283]",
+              "LL.3.4.11. Mejorar la cohesión interna del párrafo y la organización del texto mediante el uso de conectores lógicos. [cite: 284]"
+            ]
+          },
+          {
+            "titulo": "El ciclo de vida de un texto",
+            "destrezas": [
+              "LL.3.4.6. Autorregular la producción escrita mediante el uso habitual del procedimiento de planificación, redacción y revisión del texto. [cite: 279]",
+              "LL.3.4.7. Usar estrategias y procesos de pensamiento que apoyen la escritura. [cite: 280]",
+              "LL.3.4.13. Producir escritos de acuerdo con la situación comunicativa, mediante el empleo de diversos formatos, recursos y materiales. [cite: 285]"
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Universos paralelos en la literatura": {
+        "objetivos": [
+          "Leer, apreciar y reinventar textos literarios desde una perspectiva autónoma."
+        ],
+        "temas": [
+          {
+            "titulo": "Desarmando historias fantásticas",
+            "destrezas": [
+              "LL.3.5.1. Reconocer en un texto literario los elementos característicos que le dan sentido. [cite: 286]"
+            ]
+          },
+          {
+            "titulo": "Creando mi estantería de libros favoritos",
+            "destrezas": [
+              "LL.3.5.3. Elegir lecturas basándose en preferencias personales de autor, género o temas y el manejo de diversos soportes para formarse como lector autónomo. [cite: 287]"
+            ]
+          },
+          {
+            "titulo": "Remix literario: reinventando historias",
+            "destrezas": [
+              "LL.3.5.5. Reinventar los textos literarios y relacionarlos con el contexto cultural propio y de otros entornos. [cite: 288]"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

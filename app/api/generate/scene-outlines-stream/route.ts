@@ -230,7 +230,7 @@ export async function POST(req: NextRequest) {
       videoEnabled: videoGenerationEnabled,
       mediaEnabled: imageGenerationEnabled || videoGenerationEnabled,
       teacherContext,
-      explicitLanguage: requirements.subject === 'ingles' ? 'en-US' : requirements.language,
+      explicitLanguage: (requirements.subject && requirements.subject.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') === 'ingles') ? 'en-US' : requirements.language,
     });
 
     if (!prompts) {

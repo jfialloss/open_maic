@@ -828,7 +828,7 @@ export function QuizView({ questions, sceneId }: QuizViewProps) {
             for (const subjectGrades of Object.values(syllabusData)) {
               for (const units of Object.values(subjectGrades as any)) {
                 for (const [unitName, unit] of Object.entries(units as any)) {
-                  if (unitName === 'objetivos_oficiales') continue;
+                  if (unitName === 'objetivos_oficiales' || unitName === 'objetivos') continue;
                   const isNewFormat = (unit as any).temas && typeof (unit as any).temas[0] === 'object';
                   const topicArray = isNewFormat ? (unit as any).temas.map((t: any) => t.titulo) : (unit as any).temas;
                   if (!topicArray) continue;

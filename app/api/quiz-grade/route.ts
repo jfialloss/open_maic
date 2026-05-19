@@ -10,6 +10,9 @@ import { callLLM } from '@/lib/ai/llm';
 import { createLogger } from '@/lib/logger';
 import { apiError, apiSuccess } from '@/lib/server/api-response';
 import { resolveModelFromHeaders } from '@/lib/server/resolve-model';
+import { authenticateRequest } from '@/lib/server/auth';
+import { logTokenUsage } from '@/lib/server/token-logger';
+
 const log = createLogger('Quiz Grade');
 
 interface GradeRequest {
@@ -27,6 +30,7 @@ interface GradeResponse {
 
 export async function POST(req: NextRequest) {
   try {
+    const authUser = await authenticateRequest(req);
     const body = (await req.json()) as GradeRequest;
     const { question, userAnswer, points, commentPrompt, language } = body;
 
@@ -35,23 +39,15 @@ export async function POST(req: NextRequest) {
     }
 
     // Resolve model from request headers
-    const { model: languageModel } = resolveModelFromHeaders(req);
+    const { model: languageModel, modelString } = resolveModelFromHeaders(req);
 
-    const isZh = language === 'zh-CN';
-
-    const systemPrompt = isZh
-      ? `你是一位专业的教育评估专家。请根据题目和学生答案进行评分并给出简短评语。
-必须以如下 JSON 格式回复（不要包含其他内容）：
-{"score": <0到${points}的整数>, "comment": "<一两句评语>"}`
-      : `You are a professional educational assessor. Grade the student's answer and provide brief feedback.
+    const systemPrompt = `You are a professional educational assessor. Grade the student's answer and provide brief feedback.
 You must reply in the following JSON format only (no other content):
-{"score": <integer from 0 to ${points}>, "comment": "<one or two sentences of feedback>"}`;
+{"score": <integer from 0 to ${points}>, "comment": "<one or two sentences of feedback>"}
 
-    const userPrompt = isZh
-      ? `题目：${question}
-满分：${points}分
-${commentPrompt ? `评分要点：${commentPrompt}\n` : ''}学生答案：${userAnswer}`
-      : `Question: ${question}
+CRITICAL INSTRUCTION: You MUST write the 'comment' field entirely in the following language: ${language || 'English'}.`;
+
+    const userPrompt = `Question: ${question}
 Full marks: ${points} points
 ${commentPrompt ? `Grading guidance: ${commentPrompt}\n` : ''}Student answer: ${userAnswer}`;
 
@@ -63,6 +59,19 @@ ${commentPrompt ? `Grading guidance: ${commentPrompt}\n` : ''}Student answer: ${
       },
       'quiz-grade',
     );
+
+    try {
+      logTokenUsage({
+        uid: authUser.uid,
+        email: authUser.email || undefined,
+        modelString: modelString,
+        promptTokens: (result.usage as any)?.promptTokens || 0,
+        completionTokens: (result.usage as any)?.completionTokens || 0,
+        source: 'quiz-grade',
+      });
+    } catch (e) {
+      log.error('Failed to log quiz-grade token usage', e);
+    }
 
     // Parse the LLM response as JSON
     const text = result.text.trim();
@@ -81,9 +90,7 @@ ${commentPrompt ? `Grading guidance: ${commentPrompt}\n` : ''}Student answer: ${
       // Fallback: give partial credit with a generic comment
       gradeResult = {
         score: Math.round(points * 0.5),
-        comment: isZh
-          ? '已作答，请参考标准答案。'
-          : 'Answer received. Please refer to the standard answer.',
+        comment: 'Answer received. Please refer to the standard answer.',
       };
     }
 

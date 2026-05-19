@@ -135,6 +135,7 @@ export function BaseImageElement({ elementInfo }: BaseImageElementProps) {
                     left: imgPosition.left,
                     width: imgPosition.width,
                     height: imgPosition.height,
+                    objectFit: 'cover',
                     filter,
                   }}
                   alt=""

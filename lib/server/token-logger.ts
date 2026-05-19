@@ -40,6 +40,15 @@ const MODEL_PRICING: Record<string, { input: number; output: number }> = {
   'gpt-4o-mini': { input: 0.15, output: 0.60 },
   'claude-3-5-sonnet': { input: 3.00, output: 15.00 },
   'claude-3-haiku': { input: 0.25, output: 1.25 },
+  // Image Models (cost per image)
+  'imagen-3': { input: 0.03, output: 0.03 },
+  'dall-e-3': { input: 0.040, output: 0.040 },
+  'recraft': { input: 0.04, output: 0.04 },
+  'seedream': { input: 0.03, output: 0.03 },
+  // TTS Models (cost per 1M characters, input=output=half the cost to fit the calculation)
+  'google-tts': { input: 8.00, output: 8.00 }, // $16 per 1M chars
+  'azure-tts': { input: 8.00, output: 8.00 },  // $16 per 1M chars
+  'elevenlabs': { input: 150.00, output: 150.00 }, // ~$300 per 1M chars
 };
 
 function calculateCost(modelString: string, promptTokens: number, completionTokens: number): number {
@@ -60,8 +69,30 @@ function calculateCost(modelString: string, promptTokens: number, completionToke
 
 export async function logTokenUsage(params: TokenLogParams): Promise<void> {
   try {
-    const promptTokens = params.promptTokens || 0;
-    const completionTokens = params.completionTokens || 0;
+    let promptTokens = params.promptTokens || 0;
+    let completionTokens = params.completionTokens || 0;
+    
+    // Fallback estimation if AI SDK failed to return usage
+    if (promptTokens === 0 && completionTokens === 0) {
+      if (params.source === 'outline') {
+        promptTokens = 1500;
+        completionTokens = 600;
+      } else if (params.source === 'content') {
+        promptTokens = 2500;
+        completionTokens = 1200;
+      } else if (params.source === 'actions') {
+        promptTokens = 1800;
+        completionTokens = 500;
+      } else if (params.source === 'image') {
+        promptTokens = 1000000; // Represents 1 image to trigger the fixed cost addition
+        completionTokens = 0;
+      } else if (params.source === 'tts') {
+        // tokens represent characters
+      } else {
+        promptTokens = 1000;
+        completionTokens = 500;
+      }
+    }
     const cost = calculateCost(params.modelString, promptTokens, completionTokens);
 
     const db = admin.firestore();

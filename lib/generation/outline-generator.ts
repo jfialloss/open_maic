@@ -108,7 +108,7 @@ export async function generateSceneOutlinesFromRequirements(
   const prompts = buildPrompt(promptId, {
     // New simplified variables
     requirement: requirements.requirement,
-    language: requirements.language === 'en-US' ? 'English (MUST translate everything to English)' : 'Spanish / Español',
+    language: requirements.language === 'en-US' ? 'English (MUST translate everything to English)' : 'Español Latinoamericano (es-419)',
     pdfContent: pdfText ? pdfText.substring(0, MAX_PDF_CONTENT_CHARS) : 'None',
     availableImages: availableImagesText,
     userProfile: userProfileText,
@@ -152,12 +152,6 @@ export async function generateSceneOutlinesFromRequirements(
       rawOutlines = parsed.outlines;
     } else {
       return { success: false, error: 'Failed to parse scene outlines response' };
-    }
-
-    // Intercept Spanish to enforce Latin American dialect and avoid 'os/vosotros'
-    const isSpanish = options?.explicitLanguage?.startsWith('es') || languageDirective.toLowerCase().includes('spanish') || languageDirective.toLowerCase().includes('español');
-    if (isSpanish) {
-      languageDirective += '\n\n**CRITICAL DIALECT RULE**: You MUST use Latin American Spanish (Español Latinoamericano). Use "ustedes" instead of "vosotros". NEVER use "os", "fijaos", "mirad", or any Spain-specific conjugations. Maintain a professional, accessible Latin American tone.';
     }
 
     if (!Array.isArray(rawOutlines)) {

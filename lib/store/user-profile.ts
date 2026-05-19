@@ -189,7 +189,7 @@ export const useUserProfileStore = create<UserProfileState>()(
       }),
     }),
     {
-      name: 'user-profile-storage',
+      name: 'user-profile-storage-v2',
     },
   ),
 );

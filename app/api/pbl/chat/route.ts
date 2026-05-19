@@ -12,6 +12,8 @@ import { createLogger } from '@/lib/logger';
 import { apiError, apiSuccess } from '@/lib/server/api-response';
 import { resolveModelFromHeaders } from '@/lib/server/resolve-model';
 import { authenticateRequest } from '@/lib/server/auth';
+import { logTokenUsage } from '@/lib/server/token-logger';
+
 const log = createLogger('PBL Chat');
 
 interface PBLChatRequest {
@@ -25,7 +27,7 @@ interface PBLChatRequest {
 
 export async function POST(req: NextRequest) {
   try {
-    await authenticateRequest(req);
+    const authUser = await authenticateRequest(req);
     const body = (await req.json()) as PBLChatRequest;
     const { message, agent, currentIssue, recentMessages, userRole, agentType } = body;
 
@@ -34,7 +36,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Get model config from headers
-    const { model } = resolveModelFromHeaders(req);
+    const { model, modelString } = resolveModelFromHeaders(req);
 
     // Build context for the agent, differentiating question vs judge
     let issueContext = '';
@@ -67,6 +69,19 @@ export async function POST(req: NextRequest) {
       },
       'pbl-chat',
     );
+
+    try {
+      logTokenUsage({
+        uid: authUser.uid,
+        email: authUser.email || undefined,
+        modelString: modelString,
+        promptTokens: (result.usage as any)?.promptTokens || 0,
+        completionTokens: (result.usage as any)?.completionTokens || 0,
+        source: 'pbl-chat',
+      });
+    } catch (e) {
+      log.error('Failed to log pbl-chat token usage', e);
+    }
 
     return apiSuccess({ message: result.text, agentName: agent.name });
   } catch (error) {

@@ -1,0 +1,539 @@
+{
+  "Ciencias Naturales": {
+    "8vo de EGB": {
+      "Unidad 1: El mundo microscópico y la energía": {
+        "objetivos": [
+          "Comprender la estructura celular como unidad básica de vida.",
+          "Analizar el flujo de energía y los ciclos biogeoquímicos en las redes alimenticias."
+        ],
+        "temas": [
+          {
+            "titulo": "Viaje al interior de la vida: La Célula y el Microscopio",
+            "destrezas": [
+              "CN.4.1.3. (Microscopio/Célula).",
+              "CN.4.1.4. (Células Animal/Vegetal y organelos)."
+            ]
+          },
+          {
+            "titulo": "¿Quién se come a quién? Redes alimenticias",
+            "destrezas": [
+              "CN.4.1.10. (Redes alimenticias)."
+            ]
+          },
+          {
+            "titulo": "La energía que nos mueve",
+            "destrezas": [
+              "CN.4.1.11. (Flujo de energía)."
+            ]
+          },
+          {
+            "titulo": "El reciclaje natural: Ciclos del Carbono, Oxígeno y Nitrógeno",
+            "destrezas": [
+              "CN.4.1.12. (Ciclos C, O, N)."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Fuerzas y movimiento en acción": {
+        "objetivos": [
+          "Diferenciar los conceptos de posición, velocidad y rapidez.",
+          "Comprender la relación entre fuerza, masa y aceleración."
+        ],
+        "temas": [
+          {
+            "titulo": "Atrápame si puedes: Posición y velocidad",
+            "destrezas": [
+              "CN.4.3.1. (Referencia/Posición).",
+              "CN.4.3.3. (Velocidad/Rapidez)."
+            ]
+          },
+          {
+            "titulo": "El equilibrio de las fuerzas invisibles",
+            "destrezas": [
+              "CN.4.3.5. (Fuerzas equilibradas)."
+            ]
+          },
+          {
+            "titulo": "Masa y aceleración: Rompiendo la inercia",
+            "destrezas": [
+              "CN.4.3.8. (Masa, fuerza, aceleración)."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: La materia y sus secretos bajo presión": {
+        "objetivos": [
+          "Experimentar con la densidad de la materia en proyectos de construcción.",
+          "Analizar los efectos de la presión atmosférica e hidrostática."
+        ],
+        "temas": [
+          {
+            "titulo": "¿Por qué flotan los barcos? La densidad",
+            "destrezas": [
+              "CN.4.3.9. (Densidad de la materia)."
+            ]
+          },
+          {
+            "titulo": "Bajo presión: La atmósfera y el agua",
+            "destrezas": [
+              "CN.4.3.12. (Presión atmosférica e hidrostática)."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Los grandes misterios del Cosmos": {
+        "objetivos": [
+          "Explicar el efecto de la fuerza gravitacional en el universo.",
+          "Describir el movimiento y órbitas de los planetas del sistema solar."
+        ],
+        "temas": [
+          {
+            "titulo": "La gravedad: El pegamento del universo",
+            "destrezas": [
+              "CN.4.3.14. (Fuerza gravitacional)."
+            ]
+          },
+          {
+            "titulo": "Planetas en órbita: Nuestro vecindario solar",
+            "destrezas": [
+              "CN.4.3.15. (Gravedad solar, órbitas y movimiento de planetas)."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Matemática": {
+    "8vo de EGB": {
+      "Unidad 1: Los números que construyen el mundo": {
+        "objetivos": [
+          "Operar fluidamente con números enteros y racionales.",
+          "Aplicar las propiedades de las potencias en problemas lógicos."
+        ],
+        "temas": [
+          {
+            "titulo": "Bajo cero y sobre cero: Los números enteros (Z)",
+            "destrezas": [
+              "M.4.1.1. (Números Enteros Z).",
+              "M.4.1.2. (Orden en Z)."
+            ]
+          },
+          {
+            "titulo": "Operaciones extremas con números enteros",
+            "destrezas": [
+              "M.4.1.3. (Operaciones combinadas en Z).",
+              "M.4.1.4. (Propiedades de las operaciones)."
+            ]
+          },
+          {
+            "titulo": "El poder expansivo de las potencias",
+            "destrezas": [
+              "M.4.1.5. (Potencias números enteros).",
+              "M.4.1.18. (Potencias con exponentes enteros)."
+            ]
+          },
+          {
+            "titulo": "Partiendo el pastel: Fracciones y decimales (Q)",
+            "destrezas": [
+              "M.4.1.13. (Conjunto Q).",
+              "M.4.1.14. (Decimales/Fracciones)."
+            ]
+          },
+          {
+            "titulo": "Dominando el universo racional",
+            "destrezas": [
+              "M.4.1.15. (Orden en Q).",
+              "M.4.1.16. (Suma/Mult en Q).",
+              "M.4.1.17. (Propiedades Q)."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Geometría, formas y el teorema maestro": {
+        "objetivos": [
+          "Comprender la semejanza de figuras planas y calcular perímetros y áreas.",
+          "Aplicar el Teorema de Pitágoras y construir cuerpos geométricos en 3D."
+        ],
+        "temas": [
+          {
+            "titulo": "Clonando figuras: Semejanza y escalas",
+            "destrezas": [
+              "M.4.2.5. (Semejanza/Thales).",
+              "M.4.2.6. (Construcción de figuras semejantes/Escalas)."
+            ]
+          },
+          {
+            "titulo": "Triángulos: Semejanza, perímetro y área",
+            "destrezas": [
+              "M.4.2.10. (Semejanza de triángulos).",
+              "M.4.2.11. (Perímetro y área de triángulos)."
+            ]
+          },
+          {
+            "titulo": "El secreto ancestral de Pitágoras",
+            "destrezas": [
+              "M.4.2.15. (Teorema de Pitágoras)."
+            ]
+          },
+          {
+            "titulo": "Creando mundos en 3D: Prismas, cilindros y polígonos",
+            "destrezas": [
+              "M.4.2.18. (Área de polígonos por descomposición).",
+              "M.4.2.20. (Construcción de pirámides, prismas, conos y cilindros desde redes 2D)."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: El idioma del álgebra y las funciones": {
+        "objetivos": [
+          "Representar relaciones mediante conjuntos y modelos funcionales.",
+          "Resolver ecuaciones e inecuaciones de primer grado en Q."
+        ],
+        "temas": [
+          {
+            "titulo": "Agrupando ideas matemáticas: Conjuntos",
+            "destrezas": [
+              "M.4.2.4. (Conjuntos y características)."
+            ]
+          },
+          {
+            "titulo": "Resolviendo misterios: Ecuaciones de primer grado",
+            "destrezas": [
+              "M.4.1.20. (Ecuaciones de primer grado con incógnita en Q)."
+            ]
+          },
+          {
+            "titulo": "El equilibrio desigual: Inecuaciones",
+            "destrezas": [
+              "M.4.1.21. (Inecuaciones de primer grado con incógnita en Q)."
+            ]
+          },
+          {
+            "titulo": "Modelos matemáticos de la vida real",
+            "destrezas": [
+              "M.1.46. (Modelos matemáticos/Funciones)."
+            ]
+          },
+          {
+            "titulo": "Líneas que cuentan historias: Funciones lineales",
+            "destrezas": [
+              "M.1.47. (Funciones lineales en Z: tablas, graficación, álgebra)."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Datos, gráficos y la verdad estadística": {
+        "objetivos": [
+          "Recolectar y analizar datos cualitativos y cuantitativos utilizando TIC.",
+          "Interpretar gráficos estadísticos y medidas de tendencia central."
+        ],
+        "temas": [
+          {
+            "titulo": "Las encuestas y las tablas de la verdad",
+            "destrezas": [
+              "M.4.3.1. (Tablas de frecuencia/TIC).",
+              "M.4.3.5. (Variables cualitativas/cuantitativas)."
+            ]
+          },
+          {
+            "titulo": "Organizando el caos: Datos agrupados",
+            "destrezas": [
+              "M.4.3.2. (Datos agrupados/no agrupados)."
+            ]
+          },
+          {
+            "titulo": "Dibujando la información: Histogramas y diagramas",
+            "destrezas": [
+              "M.4.3.3. (Histogramas, Polígonos de frecuencia, Ojivas, Diagramas circulares)."
+            ]
+          },
+          {
+            "titulo": "Buscando el centro: Media, mediana y moda",
+            "destrezas": [
+              "M.4.3.7. (Medidas de tendencia central y dispersión: media, mediana, moda, rango)."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Lengua y Literatura": {
+    "8vo de EGB": {
+      "Unidad 1: El origen de las palabras y el arte de hablar": {
+        "objetivos": [
+          "Reconocer la evolución de la escritura y las variaciones lingüísticas del país.",
+          "Desarrollar habilidades de persuasión y comunicación oral efectiva."
+        ],
+        "temas": [
+          {
+            "titulo": "El increíble nacimiento de la escritura",
+            "destrezas": [
+              "LL.4.1.1. (Origen y evolución de la escritura)."
+            ]
+          },
+          {
+            "titulo": "Nuestros acentos y palabras ecuatorianas",
+            "destrezas": [
+              "LL.4.1.3. (Variaciones lingüísticas en Ecuador)."
+            ]
+          },
+          {
+            "titulo": "El poder de la voz: Comunicación en contexto",
+            "destrezas": [
+              "LL.4.2.1. (Comunicación oral/Contexto)."
+            ]
+          },
+          {
+            "titulo": "Convence a tu público: Estrategias de persuasión",
+            "destrezas": [
+              "LL.4.2.2. (Estrategias de persuasión en el discurso)."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Lectores expertos y organizados": {
+        "objetivos": [
+          "Aplicar estrategias de comprensión, resumen y evaluación de fuentes.",
+          "Sintetizar información mediante el uso de esquemas gráficos."
+        ],
+        "temas": [
+          {
+            "titulo": "Hackeando textos: Autorregulación y comprensión",
+            "destrezas": [
+              "LL.4.3.4. (Autorregulación de comprensión)."
+            ]
+          },
+          {
+            "titulo": "Detectives de fuentes confiables en la web",
+            "destrezas": [
+              "LL.4.3.5. (Valorar textos de consulta)."
+            ]
+          },
+          {
+            "titulo": "Mapas mentales y esquemas visuales",
+            "destrezas": [
+              "LL.4.3.7. (Organizar en esquemas)."
+            ]
+          },
+          {
+            "titulo": "Entendiendo la ciencia y la divulgación",
+            "destrezas": [
+              "LL.4.3.1. (Comprensión de textos de divulgación)."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: El taller del joven escritor": {
+        "objetivos": [
+          "Redactar crónicas y textos instructivos aplicando la planificación y revisión.",
+          "Mejorar la ortografía y el uso preciso del vocabulario."
+        ],
+        "temas": [
+          {
+            "titulo": "Periodistas en acción: Escribiendo crónicas",
+            "destrezas": [
+              "LL.4.4.1. (Escribir crónicas)."
+            ]
+          },
+          {
+            "titulo": "Instrucciones claras: Textos expositivos",
+            "destrezas": [
+              "LL.4.3.2. (Construcción de textos instructivos/expositivos)."
+            ]
+          },
+          {
+            "titulo": "El ciclo del escritor: Planificar, escribir y revisar",
+            "destrezas": [
+              "LL.4.4.3. (Estrategias y procesos de pensamiento).",
+              "LL.4.4.5. (Planificación/revisión escritura)."
+            ]
+          },
+          {
+            "titulo": "Ortografía ninja y el poder de la tilde",
+            "destrezas": [
+              "LL.4.4.8. (Reglas uso de letras y tilde)."
+            ]
+          },
+          {
+            "titulo": "Dando color a las ideas: Precisión y modos verbales",
+            "destrezas": [
+              "LL.4.4.7. (Matizar y precisar ideas: modos verbales, etc.).",
+              "LL.4.5.5. (Intencionalidad/uso de significado de palabras)."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Viajes literarios y universos paralelos": {
+        "objetivos": [
+          "Fomentar el hábito lector mediante el análisis de novelas de ciencia ficción y aventuras."
+        ],
+        "temas": [
+          {
+            "titulo": "Universos paralelos: Ciencia ficción y aventuras",
+            "destrezas": [
+              "LL.4.5.1. (Novelas de aventuras/Ciencia ficción)."
+            ]
+          },
+          {
+            "titulo": "Eligiendo mi próximo libro favorito",
+            "destrezas": [
+              "LL.4.5.3. (Elección de lecturas/criterios)."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Estudios Sociales": {
+    "8vo de EGB": {
+      "Unidad 1: Los albores de la humanidad y grandes imperios": {
+        "objetivos": [
+          "Analizar el origen de la humanidad, el impacto de la agricultura y las primeras civilizaciones.",
+          "Estudiar el legado histórico de Grecia, Roma y los imperios asiáticos."
+        ],
+        "temas": [
+          {
+            "titulo": "La historia como ciencia y nuestros orígenes",
+            "destrezas": [
+              "CS.4.1.1. (Historia como ciencia).",
+              "CS.4.1.2. (Origen de la humanidad)."
+            ]
+          },
+          {
+            "titulo": "El salto tecnológico: agricultura y escritura",
+            "destrezas": [
+              "CS.4.1.3. (Influencia agricultura/escritura).",
+              "CS.4.1.17. (Mujer y agricultura)."
+            ]
+          },
+          {
+            "titulo": "El poder de los imperios gigantes de Asia",
+            "destrezas": [
+              "CS.4.1.6. (Imperios asiáticos)."
+            ]
+          },
+          {
+            "titulo": "Grecia, Roma y la era de los grandes imperios",
+            "destrezas": [
+              "CS.4.1.5. (Imperios esclavistas).",
+              "CS.4.1.7. (Grecia).",
+              "CS.4.1.8. (Imperio romano)."
+            ]
+          },
+          {
+            "titulo": "Ideas que cambiaron el mundo: Cristianismo y Humanismo",
+            "destrezas": [
+              "CS.4.1.9. (Cristianismo).",
+              "CS.4.1.14. (Humanismo)."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Edad Media, Geografía del Mundo y América": {
+        "objetivos": [
+          "Comprender la estructura social feudal, el Islam y las Cruzadas.",
+          "Explorar la geografía mundial, sus climas y los primeros pobladores de América."
+        ],
+        "temas": [
+          {
+            "titulo": "Castillos, reyes y siervos: La Edad Media",
+            "destrezas": [
+              "CS.4.1.12. (Edad Media/Feudalismo)."
+            ]
+          },
+          {
+            "titulo": "El Islam, el comercio y el choque de las Cruzadas",
+            "destrezas": [
+              "CS.4.1.11. (Islam).",
+              "CS.4.1.13. (Cruzadas)."
+            ]
+          },
+          {
+            "titulo": "El lienzo de la Tierra: Relieve y climas del mundo",
+            "destrezas": [
+              "CS.4.2.1. (Formación de la Tierra).",
+              "CS.4.2.2. (Relieve e hidrografía del mundo).",
+              "CS.4.2.3. (Climas del mundo)."
+            ]
+          },
+          {
+            "titulo": "Explorando los continentes: África, Europa, Asia y Oceanía",
+            "destrezas": [
+              "CS.4.2.5. (África, Europa, Asia y Oceanía)."
+            ]
+          },
+          {
+            "titulo": "Descubriendo América y sus primeros habitantes",
+            "destrezas": [
+              "CS.4.2.7. (América).",
+              "CS.4.1.16. (Primeros pobladores América)."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: El esplendor aborigen y el Imperio Inca": {
+        "objetivos": [
+          "Valorar la riqueza cultural y organizativa de los pueblos precolombinos.",
+          "Analizar la estructura, expansión y herencia del Tahuantinsuyo."
+        ],
+        "temas": [
+          {
+            "titulo": "Las grandes culturas aborígenes de América",
+            "destrezas": [
+              "CS.4.1.18. (Pueblos aborígenes en América)."
+            ]
+          },
+          {
+            "titulo": "El surgimiento y poder del Imperio Inca",
+            "destrezas": [
+              "CS.4.1.19. (Imperio Inca y estructura organizativa del Tahuantinsuyo).",
+              "CS.4.1.20. (Imperio Inca y estructura organizativa del Tahuantinsuyo)."
+            ]
+          },
+          {
+            "titulo": "La red social y política del Tahuantinsuyo",
+            "destrezas": [
+              "CS.4.1.21. (Imperio Inca y estructura organizativa del Tahuantinsuyo)."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Cultura, Identidad y Ciudadanía Moderna": {
+        "objetivos": [
+          "Reconocer las raíces culturales, interculturalidad y diversidad del Ecuador.",
+          "Fomentar la participación democrática y defender el derecho a la libre expresión."
+        ],
+        "temas": [
+          {
+            "titulo": "Las raíces de nuestra cultura ecuatoriana",
+            "destrezas": [
+              "CS.4.3.1. (Origen culturas Ecuador).",
+              "CS.4.3.2. (Cultural nacional Ecuatoriana)."
+            ]
+          },
+          {
+            "titulo": "Diversidad e Interculturalidad viva",
+            "destrezas": [
+              "CS.4.3.3. (Cultura popular).",
+              "CS.4.3.4. (Interculturalidad)."
+            ]
+          },
+          {
+            "titulo": "El poder de los medios y la libre expresión",
+            "destrezas": [
+              "CS.4.3.6. (Papel político y social de medios de comunicación).",
+              "CS.4.3.7. (Libre expresión)."
+            ]
+          },
+          {
+            "titulo": "Democracia y el superpoder de la participación",
+            "destrezas": [
+              "CS.4.3.9. (Democracia).",
+              "CS.4.3.10. (Participación ciudadana)."
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

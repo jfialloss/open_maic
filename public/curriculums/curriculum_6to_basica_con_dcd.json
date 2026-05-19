@@ -1,0 +1,508 @@
+{
+  "Ciencias Naturales": {
+    "6to de EGB": {
+      "Unidad 1: Mi cuerpo, una máquina perfecta": {
+        "objetivos": [
+          "Describir la función de los sistemas del cuerpo humano y promover su cuidado.",
+          "Investigar las causas de las enfermedades en el cuerpo y conocer medidas de prevención."
+        ],
+        "temas": [
+          {
+            "titulo": "Los súper sistemas de mi cuerpo en acción",
+            "destrezas": [
+              "CN.3.2.3. Describir, con apoyo de modelos, la estructura y función de los sistemas digestivo, respiratorio, circulatorio y excretor y promover su cuidado."
+            ]
+          },
+          {
+            "titulo": "Escudos protectores: previniendo enfermedades",
+            "destrezas": [
+              "CN.3.2.8. Diseñar y ejecutar una indagación documental sobre las causas de las enfermedades de los sistemas digestivo, respiratorio, circulatorio, excretor y reproductor y comunicar las medidas de prevención."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: La magia de la energía y los imanes": {
+        "objetivos": [
+          "Analizar cómo se transforma la energía eléctrica.",
+          "Descubrir los principios y usos prácticos del magnetismo."
+        ],
+        "temas": [
+          {
+            "titulo": "El viaje asombroso de la electricidad",
+            "destrezas": [
+              "CN.3.3.11. Analizar las transformaciones de la energía eléctrica, desde su generación en las centrales hidroeléctricas hasta su conversión en luz, sonido, movimiento y calor."
+            ]
+          },
+          {
+            "titulo": "Atracción magnética: descubriendo brújulas y motores",
+            "destrezas": [
+              "CN.3.3.12. Observar, identificar y describir las características y aplicaciones prácticas del magnetismo en objetos como la brújula sencilla y los motores eléctricos."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Exploradores del Universo y la Tierra": {
+        "objetivos": [
+          "Indagar sobre los componentes del sistema solar y los eclipses.",
+          "Diferenciar las capas internas que forman nuestro planeta Tierra."
+        ],
+        "temas": [
+          {
+            "titulo": "Misterios del Sistema Solar y el baile de los eclipses",
+            "destrezas": [
+              "CN.3.4.3. Indagar, con uso de las TIC y otros recursos, sobre el sistema solar, describir algunos de sus componentes, usar modelos de simulación y explicar los eclipses de la Luna y el Sol."
+            ]
+          },
+          {
+            "titulo": "Un viaje a las profundidades de la Tierra",
+            "destrezas": [
+              "CN.3.4.4. Analizar modelos de la estructura de la Tierra y diferenciar sus capas de acuerdo a sus componentes."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Cuidemos nuestro cielo y clima": {
+        "objetivos": [
+          "Describir la atmósfera y diferenciar entre clima y tiempo atmosférico.",
+          "Investigar la calidad del aire local y crear conciencia sobre la contaminación."
+        ],
+        "temas": [
+          {
+            "titulo": "La atmósfera: nuestra cobija invisible",
+            "destrezas": [
+              "CN.3.4.9. Observar, con uso de las TIC y otros recursos, la atmósfera, describir sus capas según su distancia desde la litósfera e identificar su importancia para el mantenimiento de la vida."
+            ]
+          },
+          {
+            "titulo": "Meteorólogos por un día: entendiendo el clima",
+            "destrezas": [
+              "CN.3.4.12. Indagar y explicar las características, elementos y factores del clima, diferenciarlo del tiempo atmosférico, registrar y analizar datos meteorológicos de la localidad con apoyo de instrumentos de medición."
+            ]
+          },
+          {
+            "titulo": "Detectives ambientales: buscando aire limpio",
+            "destrezas": [
+              "CN.3.5.3. Planificar una indagación sobre el estado de la calidad del aire de la localidad, diseñar una experimentación sencilla que compruebe el nivel de contaminación local y explicar sus conclusiones acerca de los efectos de la contaminación en el ambiente."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Estudios Sociales": {
+    "6to de EGB": {
+      "Unidad 1: El nacimiento de una nueva nación (1830 - 1859)": {
+        "objetivos": [
+          "Identificar las características sociales, geográficas y culturales del inicio de la República.",
+          "Analizar los primeros gobiernos, conflictos regionales y la inestabilidad política."
+        ],
+        "temas": [
+          {
+            "titulo": "Así era el Ecuador cuando nació en 1830",
+            "destrezas": [
+              "CS.3.1.25. Identificar los territorios que formaban parte del Ecuador en 1830, su población y diversidad étnica.",
+              "CS.3.1.26. Describir los grupos sociales del naciente Ecuador, en especial los vinculados al espacio rural.",
+              "CS.3.1.27. Relacionar la vida de las ciudades y los actores urbanos fundamentales con el comercio del país."
+            ]
+          },
+          {
+            "titulo": "Un nuevo nombre, escuelas e iglesias",
+            "destrezas": [
+              "CS.3.1.28. Explicar la influencia de la regionalización y del enfrentamiento de las élites del Ecuador, ejemplificado en el nombre de la nueva república.",
+              "CS.3.1.29. Explicar los alcances de la educación y la cultura, así como la influencia de la Iglesia católica al inicio de la época republicana.",
+              "CS.3.1.30. Identificar los actores sociales fundamentales en la vida cotidiana y la cultura popular en el nuevo Estado."
+            ]
+          },
+          {
+            "titulo": "Los primeros presidentes y el desafío de organizarnos",
+            "destrezas": [
+              "CS.3.1.32. Analizar la organización del Estado ecuatoriano en sus primeros años de vida republicana.",
+              "CS.3.1.33. Explicar los inicios históricos de la República, subrayando el predominio del floreanismo y el esfuerzo organizador de Rocafuerte."
+            ]
+          },
+          {
+            "titulo": "La Revolución Marcista y tiempos de crisis",
+            "destrezas": [
+              "CS.3.1.34. Analizar el impacto de la “Revolución marcista” y la situación de inestabilidad y conflicto que desembocó en la crisis nacional de 1859."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Modernización y cambios radicales (1860 - 1920s)": {
+        "objetivos": [
+          "Examinar el régimen Garciano, el boom cacaotero y la Revolución Liberal.",
+          "Discutir el impacto del estado laico y la modernización en la vida nacional."
+        ],
+        "temas": [
+          {
+            "titulo": "La época de García Moreno y la riqueza del cacao",
+            "destrezas": [
+              "CS.3.1.35. Examinar el proceso de consolidación del Estado bajo el régimen de García Moreno y su proyecto.",
+              "CS.3.1.36. Analizar la etapa 1875-1895 con el inicio del auge cacaotero y sus conflictos sociales y políticos."
+            ]
+          },
+          {
+            "titulo": "Grandes pensadores en busca de nuestra identidad",
+            "destrezas": [
+              "CS.3.1.37. Explicar los principales esfuerzos intelectuales que se dieron a fines del siglo XIX por entender el país y su identidad, precisando sus principales representantes."
+            ]
+          },
+          {
+            "titulo": "El tren de la Revolución Liberal de Eloy Alfaro",
+            "destrezas": [
+              "CS.3.1.40. Describir el proceso de la Revolución liberal liderada por Eloy Alfaro con sus principales hechos y conflictos.",
+              "CS.3.1.41. Analizar los rasgos esenciales del Estado laico: separación Estado-Iglesia, la modernización estatal, la educación laica e incorporación de la mujer a la vida pública."
+            ]
+          },
+          {
+            "titulo": "El laicismo, el progreso y los años plutocráticos",
+            "destrezas": [
+              "CS.3.1.42. Examinar los cambios que se dieron en la sociedad con el laicismo y la modernización, y su impacto en la vida cotidiana y la cultura.",
+              "CS.3.1.43. Discutir las principales incidencias del llamado “predominio plutocrático”, con énfasis en la crisis cacaotera y la reacción social."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Desafíos y vida del siglo XX (1920s - 1950s)": {
+        "objetivos": [
+          "Analizar las crisis económicas, conflictos territoriales y el surgimiento de nuevos liderazgos.",
+          "Describir la vida cotidiana, la cultura y el arte durante la primera mitad del siglo XX."
+        ],
+        "temas": [
+          {
+            "titulo": "La voz del pueblo frente a la crisis económica",
+            "destrezas": [
+              "CS.3.1.45. Explicar las causas y consecuencias de la crisis económica y política que se dio entre los años veinte y cuarenta, y las respuestas de la insurgencia social.",
+              "CS.3.1.46. Examinar los impactos de la crisis en la vida política y el desarrollo de manifestaciones artísticas comprometidas con el cambio social."
+            ]
+          },
+          {
+            "titulo": "¿Cómo vivían, vestían y se divertían nuestros abuelos?",
+            "destrezas": [
+              "CS.3.1.47. Identificar los principales rasgos de la vida cotidiana, vestidos, costumbres y diversiones en la primera mitad del siglo XX."
+            ]
+          },
+          {
+            "titulo": "El laberinto político y la figura de Velasco Ibarra",
+            "destrezas": [
+              "CS.3.1.48. Analizar el proceso histórico entre 1925 a 1938, sus reformas estatales, la inestabilidad política y el surgimiento del velasquismo."
+            ]
+          },
+          {
+            "titulo": "Guerra territorial y la esperanza del auge bananero",
+            "destrezas": [
+              "CS.3.1.49. Discutir las causas y consecuencias de la guerra con el Perú y la desmembración territorial, subrayando el papel de la oligarquía liberal en este proceso.",
+              "CS.3.1.50. Analizar la etapa del “auge bananero”, marcado por el ascenso de los sectores medios y la organización estatal."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Nuestra gente y la fuerza de la unión": {
+        "objetivos": [
+          "Valorar la gran diversidad de la población del Ecuador y su historia.",
+          "Reconocer el papel vital de los movimientos y organizaciones sociales."
+        ],
+        "temas": [
+          {
+            "titulo": "La riqueza de ser diversos y ecuatorianos",
+            "destrezas": [
+              "CS.3.2.10. Identificar la gran diversidad de la población del Ecuador como riqueza y oportunidad para el desarrollo y crecimiento del país.",
+              "CS.3.2.11. Apreciar el origen diverso de la población ecuatoriana, su vocación y trabajo para construir un país unitario y equitativo."
+            ]
+          },
+          {
+            "titulo": "Nuestras raíces históricas y los viajeros migrantes",
+            "destrezas": [
+              "CS.3.2.13. Establecer el origen histórico de los indígenas, mestizos y afrodescendientes y montubios del Ecuador, su evolución histórica, en la Colonia y la República, su diversidad, identidad, organización y luchas por su liberación.",
+              "CS.3.2.14. Identificar los diversos procesos de inmigración al Ecuador, el origen de los inmigrantes y su participación en la sociedad nacional, así como el impacto de la reciente migración al extranjero."
+            ]
+          },
+          {
+            "titulo": "Juntos somos más fuertes: organizaciones sociales",
+            "destrezas": [
+              "CS.3.3.8. Reconocer la importancia de la organización y la participación social como condición indispensable para construir una sociedad justa y solidaria.",
+              "CS.3.3.9. Destacar y analizar la existencia y el funcionamiento de las organizaciones sociales más representativas de la sociedad ecuatoriana."
+            ]
+          },
+          {
+            "titulo": "Movimientos ciudadanos que cambian el mundo",
+            "destrezas": [
+              "CS.3.3.10. Identificar los antiguos y nuevos movimientos sociales que han influido en las transformaciones de los últimos tiempos."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Matemática": {
+    "6to de EGB": {
+      "Unidad 1: El universo de los números y sus secretos": {
+        "objetivos": [
+          "Aplicar criterios de divisibilidad, calcular múltiplos, divisores, MCM y MCD.",
+          "Reconocer la relación entre potenciación y radicación, y ubicar pares ordenados."
+        ],
+        "temas": [
+          {
+            "titulo": "Números naturales y coordenadas ocultas en el plano",
+            "destrezas": [
+              "M.3.1.4. Leer y escribir números naturales en cualquier contexto.",
+              "M.3.1.2. Leer y ubicar pares ordenados en el sistema de coordenadas rectangulares, con números naturales, decimales y fracciones."
+            ]
+          },
+          {
+            "titulo": "Múltiplos, divisores y las reglas mágicas de división",
+            "destrezas": [
+              "M.3.1.14. Identificar múltiplos y divisores de un conjunto de números naturales.",
+              "M.3.1.15. Utilizar criterios de divisibilidad por 2, 3, 4, 5, 6, 9 y 10 en la descomposición de números naturales en factores primos y en la resolución de problemas."
+            ]
+          },
+          {
+            "titulo": "El club exclusivo de los números primos y compuestos",
+            "destrezas": [
+              "M.3.1.16. Identificar números primos y números compuestos por su definición, aplicando criterios de divisibilidad."
+            ]
+          },
+          {
+            "titulo": "Buscando tesoros: El MCM y el MCD",
+            "destrezas": [
+              "M.3.1.17. Encontrar el máximo común divisor y el mínimo común múltiplo de un conjunto de números naturales."
+            ]
+          },
+          {
+            "titulo": "Potencias y raíces: las operaciones hermanas",
+            "destrezas": [
+              "M.3.1.19. Identificar la potenciación como una operación multiplicativa en los números naturales.",
+              "M.3.1.21. Reconocer la radicación como la operación inversa a la potenciación."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Fracciones y porcentajes en la vida real": {
+        "objetivos": [
+          "Ordenar, sumar, restar y resolver problemas con fracciones.",
+          "Comprender la relación directa entre porcentajes, fracciones y números decimales."
+        ],
+        "temas": [
+          {
+            "titulo": "Ordenando piezas y comparando fracciones",
+            "destrezas": [
+              "M.3.1.37. Establecer relaciones de orden entre fracciones, utilizando material concreto, la semirrecta numérica y simbología matemática (=, <, >)."
+            ]
+          },
+          {
+            "titulo": "El truco del denominador común para sumar y restar",
+            "destrezas": [
+              "M.3.1.39. Calcular sumas y restas con fracciones obteniendo el denominador común."
+            ]
+          },
+          {
+            "titulo": "Matemática diaria: resolviendo problemas con fracciones",
+            "destrezas": [
+              "M.3.1.42. Resolver y plantear problemas de sumas, restas, multiplicaciones y divisiones con fracciones, e interpretar la solución dentro del contexto del problema."
+            ]
+          },
+          {
+            "titulo": "El trío dinámico: fracciones, decimales y porcentajes",
+            "destrezas": [
+              "M.3.1.45. Expresar porcentajes como fracciones y decimales, o fracciones y decimales como porcentajes, en función de explicar situaciones cotidianas."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Geometría: Formas, áreas y volúmenes": {
+        "objetivos": [
+          "Calcular el perímetro y área de polígonos y figuras circulares.",
+          "Manejar unidades de medida de superficie, volumen, masa y uso del graduador."
+        ],
+        "temas": [
+          {
+            "titulo": "Arquitectos calculando paralelogramos, trapecios y triángulos",
+            "destrezas": [
+              "M.3.2.4. Calcular el perímetro; deducir y calcular el área de paralelogramos y trapecios en la resolución de problemas.",
+              "M.3.2.6. Calcular el perímetro de triángulos; deducir y calcular el área de triángulos en la resolución de problemas."
+            ]
+          },
+          {
+            "titulo": "Diseñando polígonos regulares e irregulares",
+            "destrezas": [
+              "M.3.2.8. Clasificar polígonos regulares e irregulares según sus lados y ángulos.",
+              "M.3.2.9. Calcular, en la resolución de problemas, el perímetro y área de polígonos regulares, aplicando la fórmula correspondiente."
+            ]
+          },
+          {
+            "titulo": "Los secretos redondos del círculo y los ángulos",
+            "destrezas": [
+              "M.3.2.11. Reconocer los elementos de un círculo en representaciones gráficas, y calcular la longitud (perímetro) de la circunferencia y el área de un círculo en la resolución de problemas.",
+              "M.3.2.20. Medir ángulos rectos, agudos y obtusos, con el graduador u otras estrategias, para dar solución a situaciones cotidianas."
+            ]
+          },
+          {
+            "titulo": "Midiendo superficies con el metro cuadrado",
+            "destrezas": [
+              "M.3.2.15. Reconocer el metro cuadrado como unidad de medida de superficie, los submúltiplos y múltiplos, y realizar conversiones en la resolución de problemas."
+            ]
+          },
+          {
+            "titulo": "Cajas y pesas: volúmenes y masas en nuestro entorno",
+            "destrezas": [
+              "M.3.2.17. Reconocer el metro cúbico como unidad de medida de volumen, los submúltiplos y múltiplos; relacionar medidas de volumen y capacidad; y realizar conversiones en la resolución de problemas.",
+              "M.3.2.18. Comparar el kilogramo, el gramo y la libra con las medidas de masa de la localidad, a partir de experiencias concretas y del uso de instrumentos de medida."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Gráficos estadísticos y el azar": {
+        "objetivos": [
+          "Construir y analizar diagramas estadísticos.",
+          "Interpretar sucesos aleatorios en base a probabilidades básicas."
+        ],
+        "temas": [
+          {
+            "titulo": "Creando gráficos y leyendo encuestas",
+            "destrezas": [
+              "M.3.3.1. Analizar y representar, en tablas de frecuencias, diagramas de barra, circulares y poligonales, datos discretos recolectados en el entorno e información publicada en medios de comunicación."
+            ]
+          },
+          {
+            "titulo": "Prediciendo la suerte: ¿qué probabilidad hay?",
+            "destrezas": [
+              "M.3.3.5. Describir las experiencias y sucesos aleatorios a través del análisis de sus representaciones gráficas y el uso de la terminología adecuada."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Lengua y Literatura": {
+    "6to de EGB": {
+      "Unidad 1: La magia de conversar y entendernos": {
+        "objetivos": [
+          "Reconocer las variaciones dialécticas del país y la funcionalidad cultural de la lengua.",
+          "Desarrollar destrezas para escuchar discursos y exponer ideas formalmente."
+        ],
+        "temas": [
+          {
+            "titulo": "Nuestra lengua escrita y los hermosos dialectos del Ecuador",
+            "destrezas": [
+              "LL.3.1.1. Participar en contextos y situaciones que evidencien la funcionalidad de la lengua escrita como herramienta cultural.",
+              "LL.3.1.2. Indagar sobre las influencias lingüísticas y culturales que explican los dialectos del castellano en el Ecuador."
+            ]
+          },
+          {
+            "titulo": "El difícil arte de escuchar y debatir con respeto",
+            "destrezas": [
+              "LL.3.2.1. Escuchar discursos orales y formular juicios de valor con respecto a su contenido y forma, y participar de manera respetuosa frente a las intervenciones de los demás."
+            ]
+          },
+          {
+            "titulo": "Preparando exposiciones orales increíbles",
+            "destrezas": [
+              "LL.3.2.2. Proponer intervenciones orales con una intención comunicativa, organizar el discurso según las estructuras básicas de la lengua oral y utilizar un vocabulario adecuado a diversas situaciones comunicativas.",
+              "LL.3.2.3. Apoyar el discurso con recursos y producciones audiovisuales."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Detectives de historias y textos": {
+        "objetivos": [
+          "Extraer inferencias y sintetizar la idea principal de diversos textos.",
+          "Autorregular la lectura mediante la aplicación de estrategias cognitivas."
+        ],
+        "temas": [
+          {
+            "titulo": "Leer entre líneas: buscando mensajes ocultos",
+            "destrezas": [
+              "LL.3.3.2. Comprender los contenidos implícitos de un texto mediante la realización de inferencias fundamentales y proyectivo-valorativas a partir del contenido de un texto."
+            ]
+          },
+          {
+            "titulo": "Cazadores expertos de ideas principales",
+            "destrezas": [
+              "LL.3.3.3. Inferir y sintetizar el contenido esencial de un texto al diferenciar el tema de las ideas principales."
+            ]
+          },
+          {
+            "titulo": "Las estrategias secretas de los grandes lectores",
+            "destrezas": [
+              "LL.3.3.4. Autorregular la comprensión de textos mediante el uso de estrategias cognitivas de comprensión: parafrasear, releer, formular preguntas, leer selectivamente, consultar fuentes adicionales."
+            ]
+          },
+          {
+            "titulo": "Comprendiendo palabras difíciles por su contexto",
+            "destrezas": [
+              "LL.3.3.11. Aplicar los conocimientos lingüísticos (léxicos, semánticos, sintácticos y fonológicos) en la decodificación y comprensión de textos."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: El taller de los jóvenes escritores": {
+        "objetivos": [
+          "Planificar, redactar y revisar textos cohesionados aplicando reglas ortográficas y gramaticales.",
+          "Enriquecer el vocabulario utilizando campos semánticos y conectores lógicos."
+        ],
+        "temas": [
+          {
+            "titulo": "Relatos lógicos y descripciones detalladas",
+            "destrezas": [
+              "LL.3.4.1. Relatar textos con secuencia lógica, manejo de conectores y coherencia en el uso de la persona y tiempo verbal, e integrarlos en diversas situaciones comunicativas.",
+              "LL.3.4.2. Escribir descripciones organizadas y con vocabulario específico relativo al ser, objeto, lugar o hecho que se describe e integrarlas en producciones escritas."
+            ]
+          },
+          {
+            "titulo": "Mis pasos para planificar, redactar y revisar textos",
+            "destrezas": [
+              "LL.3.4.6. Autorregular la producción escrita mediante el uso habitual del procedimiento de planificación, redacción y revisión del texto.",
+              "LL.3.4.7. Usar estrategias y procesos de pensamiento que apoyen la escritura.",
+              "LL.3.4.13. Producir escritos de acuerdo con la situación comunicativa, mediante el empleo de diversos formatos, recursos y materiales."
+            ]
+          },
+          {
+            "titulo": "El equipo perfecto: verbos, sustantivos y nuevo vocabulario",
+            "destrezas": [
+              "LL.3.4.8. Lograr precisión y claridad en sus producciones escritas, mediante el uso de vocabulario según un determinado campo semántico.",
+              "LL.3.4.10. Expresar sus ideas con precisión e integrar en las producciones escritas los diferentes tipos de sustantivo, pronombre, adjetivo, verbo, adverbio y sus modificadores."
+            ]
+          },
+          {
+            "titulo": "Construyendo párrafos con sentido y conectores",
+            "destrezas": [
+              "LL.3.4.9. Organizar las ideas con unidad de sentido a partir de la construcción de párrafos.",
+              "LL.3.4.11. Mejorar la cohesión interna del párrafo y la organización del texto mediante el uso de conectores lógicos."
+            ]
+          },
+          {
+            "titulo": "Maestros de la ortografía y la tilde",
+            "destrezas": [
+              "LL.3.4.12. Comunicar ideas con eficiencia a partir de la aplicación de las reglas de uso de las letras y de la tilde."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Sumergidos en la literatura": {
+        "objetivos": [
+          "Identificar los elementos de la literatura y reinventar historias con creatividad."
+        ],
+        "temas": [
+          {
+            "titulo": "Los secretos detrás de los cuentos y poemas",
+            "destrezas": [
+              "LL.3.5.1. Reconocer en un texto literario los elementos característicos que le dan sentido."
+            ]
+          },
+          {
+            "titulo": "Creando mi propia biblioteca de favoritos",
+            "destrezas": [
+              "LL.3.5.3. Elegir lecturas basándose en preferencias personales de autor, género o temas y el manejo de diversos soportes para formarse como lector autónomo."
+            ]
+          },
+          {
+            "titulo": "Imaginación al máximo: reinventando historias",
+            "destrezas": [
+              "LL.3.5.5. Reinventar los textos literarios y relacionarlos con el contexto cultural propio y de otros entornos."
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

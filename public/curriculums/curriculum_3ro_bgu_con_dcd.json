@@ -1,0 +1,623 @@
+{
+  "Ciencias Naturales": {
+    "3ro BGU": {
+      "Unidad 1: Evolución Biológica y la Química del Carbono": {
+        "objetivos": [
+          "Evaluar las evidencias de la evolución y su diversidad.",
+          "Analizar la importancia y estructura de la química orgánica."
+        ],
+        "temas": [
+          {
+            "titulo": "Evidencias de la evolución biológica",
+            "destrezas": [
+              "CN.B.5.1.6. Establecer las principales evidencias de las teorías científicas sobre la evolución biológica."
+            ]
+          },
+          {
+            "titulo": "Selección natural",
+            "destrezas": [
+              "CN.B.5.1.7. Analizar los procesos de variación, aislamiento y migración, relacionados con la selección natural."
+            ]
+          },
+          {
+            "titulo": "Biomas y evolución de la biodiversidad",
+            "destrezas": [
+              "CN.B.5.1.18. Indagar y describir los biomas del mundo e interpretarlos como sitios donde se evidencia la evolución."
+            ]
+          },
+          {
+            "titulo": "El átomo de carbono",
+            "destrezas": [
+              "CN.Q.5.1.15. Explicar que el carbono es un átomo excepcional, desde la observación de sus variedades alotrópicas."
+            ]
+          },
+          {
+            "titulo": "Clasificación de los hidrocarburos",
+            "destrezas": [
+              "CN.Q.5.1.18. Categorizar y clasificar a los hidrocarburos por su composición y estructura."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Respuestas Fisiológicas y Compuestos Orgánicos": {
+        "objetivos": [
+          "Comprender los sistemas de control y defensa del organismo.",
+          "Reconocer compuestos orgánicos funcionales."
+        ],
+        "temas": [
+          {
+            "titulo": "Sistemas nervioso y endocrino",
+            "destrezas": [
+              "CN.B.5.4.8. Establecer la relación entre la estructura y función del sistema nervioso y del sistema endocrino."
+            ]
+          },
+          {
+            "titulo": "Sistema inmunológico y patógenos",
+            "destrezas": [
+              "CN.B.5.4.11. Interpretar la respuesta del cuerpo humano frente a microorganismos patógenos y respuesta inmunitaria."
+            ]
+          },
+          {
+            "titulo": "Biotecnología e ingeniería genética",
+            "destrezas": [
+              "CN.B.5.5.8. Indagar las aplicaciones de la ingeniería genética en la producción de alimentos y fármacos."
+            ]
+          },
+          {
+            "titulo": "Grupos funcionales orgánicos",
+            "destrezas": [
+              "CN.Q.5.1.22. Clasificar y analizar las series homólogas por el tipo de grupo funcional que posee."
+            ]
+          },
+          {
+            "titulo": "Compuestos oxigenados",
+            "destrezas": [
+              "CN.Q.5.1.23. Comparar las propiedades físicas y químicas de alcoholes, aldehídos, ácidos, cetonas y éteres."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Electricidad y Magnetismo": {
+        "objetivos": [
+          "Analizar las leyes fundamentales del electromagnetismo.",
+          "Resolver problemas aplicados sobre circuitos eléctricos."
+        ],
+        "temas": [
+          {
+            "titulo": "La carga eléctrica y la materia",
+            "destrezas": [
+              "CN.F.5.1.38. Explicar el origen de la carga eléctrica en los constituyentes del átomo y detectar su presencia."
+            ]
+          },
+          {
+            "titulo": "La Ley de Coulomb",
+            "destrezas": [
+              "CN.F.5.1.43. Conceptualizar la ley de Coulomb en función de cuantificar la fuerza electrostática."
+            ]
+          },
+          {
+            "titulo": "Campo y potencial eléctrico",
+            "destrezas": [
+              "CN.F.5.1.45. Explicar la presencia de un campo eléctrico alrededor de una carga puntual.",
+              "CN.F.5.1.46. Establecer que el trabajo al mover una carga se almacena como energía potencial eléctrica."
+            ]
+          },
+          {
+            "titulo": "Ley de Ohm y circuitos",
+            "destrezas": [
+              "CN.F.5.1.49. Describir la relación entre diferencia de potencial, corriente y resistencia eléctrica (ley de Ohm)."
+            ]
+          },
+          {
+            "titulo": "Magnetismo y electromagnetismo",
+            "destrezas": [
+              "CN.F.5.1.52. Comprobar que los imanes solo se atraen o repelen, explicando la acción a distancia."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Física Moderna, Ondas y Materiales": {
+        "objetivos": [
+          "Comprender fenómenos ondulatorios y de física cuántica.",
+          "Analizar polímeros y la industria química contemporánea."
+        ],
+        "temas": [
+          {
+            "titulo": "Características de las ondas",
+            "destrezas": [
+              "CN.F.5.3.1. Describir las relaciones de los elementos de la onda: amplitud, periodo y frecuencia."
+            ]
+          },
+          {
+            "titulo": "Radiación electromagnética",
+            "destrezas": [
+              "CN.F.5.3.6. Explicar que la luz exhibe propiedades de onda pero también de partícula (fotón)."
+            ]
+          },
+          {
+            "titulo": "Efecto fotoeléctrico y radiación de cuerpo negro",
+            "destrezas": [
+              "CN.F.5.5.1. Explicar los fenómenos de radiación de cuerpo negro y efecto fotoeléctrico."
+            ]
+          },
+          {
+            "titulo": "Modelo estándar y fuerzas de la naturaleza",
+            "destrezas": [
+              "CN.F.5.5.8. Explicar la importancia de las fuerzas fundamentales de la naturaleza (fuerte, débil, electromagnética, gravitacional)."
+            ]
+          },
+          {
+            "titulo": "Polímeros y biomateriales",
+            "destrezas": [
+              "CN.Q.5.3.8. Investigar y comunicar la importancia de los polímeros artificiales en la industria y vida cotidiana.",
+              "CN.Q.5.3.14. Examinar y explicar la utilidad de algunos biomateriales para mejorar la calidad de vida."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Matemática": {
+    "3ro BGU": {
+      "Unidad 1: Sucesiones, Límites y Funciones Avanzadas": {
+        "objetivos": [
+          "Resolver progresiones aritméticas, geométricas y estudiar los límites de funciones."
+        ],
+        "temas": [
+          {
+            "titulo": "Sucesiones y progresiones aritméticas",
+            "destrezas": [
+              "M.5.1.53. Identificar sucesiones numéricas reales.",
+              "M.5.1.55. Aplicar conocimientos sobre progresiones aritméticas y sumas parciales."
+            ]
+          },
+          {
+            "titulo": "Progresiones geométricas e interés compuesto",
+            "destrezas": [
+              "M.5.1.57. Reconocer aplicaciones de las sucesiones numéricas reales en el ámbito financiero (interés compuesto)."
+            ]
+          },
+          {
+            "titulo": "Funciones trigonométricas",
+            "destrezas": [
+              "M.5.1.70. Definir las funciones seno, coseno y tangente a partir del círculo trigonométrico.",
+              "M.5.1.72. Reconocer las funciones trigonométricas y sus gráficas con TICs."
+            ]
+          },
+          {
+            "titulo": "Función exponencial y logarítmica",
+            "destrezas": [
+              "M.5.1.74. Reconocer y graficar funciones exponenciales.",
+              "M.5.1.75. Reconocer la función logarítmica como la función inversa de la exponencial."
+            ]
+          },
+          {
+            "titulo": "Límite de una función",
+            "destrezas": [
+              "M.5.1.32. Calcular de manera intuitiva el límite de una función cuadrática con el uso de la calculadora."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Cálculo Diferencial e Integral Básico": {
+        "objetivos": [
+          "Introducir nociones de cálculo diferencial e integral y su aplicación física."
+        ],
+        "temas": [
+          {
+            "titulo": "Derivada y cociente incremental",
+            "destrezas": [
+              "M.5.1.33. Calcular de manera intuitiva la derivada a partir del cociente incremental."
+            ]
+          },
+          {
+            "titulo": "Interpretación física de la derivada",
+            "destrezas": [
+              "M.5.1.35. Interpretar geométrica y físicamente la primera derivada (velocidad instantánea).",
+              "M.5.1.36. Interpretar la segunda derivada (aceleración)."
+            ]
+          },
+          {
+            "titulo": "Optimización: Máximos y mínimos",
+            "destrezas": [
+              "M.5.1.50. Analizar la monotonía y determinar los máximos y mínimos de funciones polinomiales."
+            ]
+          },
+          {
+            "titulo": "Integral definida",
+            "destrezas": [
+              "M.5.1.64. Calcular la integral definida de una función escalonada."
+            ]
+          },
+          {
+            "titulo": "Aplicaciones del cálculo integral",
+            "destrezas": [
+              "M.5.1.65. Aplicar la interpretación geométrica de la integral como superficie limitada por la curva.",
+              "M.5.1.69. Resolver aplicaciones geométricas (áreas) y físicas (espacio recorrido) de la integral."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Geometría en el Espacio y Programación Lineal": {
+        "objetivos": [
+          "Operar con vectores tridimensionales y resolver problemas de optimización lineal."
+        ],
+        "temas": [
+          {
+            "titulo": "Vectores en R3",
+            "destrezas": [
+              "M.5.2.18. Realizar las operaciones de adición y producto escalar en R3."
+            ]
+          },
+          {
+            "titulo": "Rectas y planos en el espacio",
+            "destrezas": [
+              "M.5.2.20. Escribir la ecuación vectorial y paramétrica de una recta en R3.",
+              "M.5.2.21. Determinar la ecuación vectorial de un plano."
+            ]
+          },
+          {
+            "titulo": "Sistemas de inecuaciones y región factible",
+            "destrezas": [
+              "M.5.2.25. Reconocer un subconjunto convexo en R2 y determinar el conjunto de soluciones factibles."
+            ]
+          },
+          {
+            "titulo": "Programación lineal: solución gráfica",
+            "destrezas": [
+              "M.5.2.26. Realizar un proceso de solución gráfica para programación lineal y encontrar la solución óptima."
+            ]
+          },
+          {
+            "titulo": "Aplicaciones de optimización",
+            "destrezas": [
+              "M.5.2.27. Resolver aplicaciones (modelo de línea de producción, industria química, transporte) interpretando la validez de la solución."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Estadística Bivariante y Distribuciones": {
+        "objetivos": [
+          "Analizar la relación entre dos variables y aplicar distribuciones discretas."
+        ],
+        "temas": [
+          {
+            "titulo": "Distribución Binomial",
+            "destrezas": [
+              "M.5.3.19. Reconocer un experimento de Bernoulli y la distribución binomial identificando p y q.",
+              "M.5.3.20. Calcular probabilidades binomiales con la fórmula."
+            ]
+          },
+          {
+            "titulo": "Distribución de Poisson",
+            "destrezas": [
+              "M.5.3.18. Identificar variables aleatorias discretas y reconocer la distribución de Poisson."
+            ]
+          },
+          {
+            "titulo": "Dependencia lineal y Covarianza",
+            "destrezas": [
+              "M.5.3.22. Calcular la covarianza de dos variables aleatorias para determinar la dependencia lineal."
+            ]
+          },
+          {
+            "titulo": "Recta de regresión",
+            "destrezas": [
+              "M.5.3.23. Determinar la recta de regresión lineal para predecir valores de la variable dependiente."
+            ]
+          },
+          {
+            "titulo": "Método de mínimos cuadrados",
+            "destrezas": [
+              "M.5.3.24. Utilizar el método de mínimos cuadrados para determinar la recta de regresión con apoyo de TIC."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Lengua y Literatura": {
+    "3ro BGU": {
+      "Unidad 1: Impacto de la Tecnología en la Comunicación": {
+        "objetivos": [
+          "Analizar con criterio el flujo de información y el lenguaje en los nuevos medios digitales."
+        ],
+        "temas": [
+          {
+            "titulo": "La cibercultura y la sociedad",
+            "destrezas": [
+              "LL.5.1.2. Identificar las implicaciones socioculturales de la producción y el consumo de cultura digital."
+            ]
+          },
+          {
+            "titulo": "Evolución de las noticias en plataformas virtuales",
+            "destrezas": [
+              "LL.5.1.1. Indagar sobre las tendencias actuales del consumo masivo de información."
+            ]
+          },
+          {
+            "titulo": "Fake News y verificación de datos",
+            "destrezas": [
+              "LL.5.3.1. Valorar el contenido de múltiples textos identificando distorsiones o falsedades."
+            ]
+          },
+          {
+            "titulo": "Los blogs y las micro-narrativas",
+            "destrezas": [
+              "LL.5.4.1. Construir textos periodísticos digitales argumentando la tesis elegida."
+            ]
+          },
+          {
+            "titulo": "Identidad digital y huella comunicativa",
+            "destrezas": [
+              "LL.5.1.2. Discutir cómo la cultura digital modela la identidad colectiva y personal."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Metodología y Producción Intelectual": {
+        "objetivos": [
+          "Dominar la redacción científica, formal y el diseño de monografías o informes."
+        ],
+        "temas": [
+          {
+            "titulo": "Búsqueda y selección de fuentes fidedignas",
+            "destrezas": [
+              "LL.5.3.2. Valorar contenido implícito con argumentos propios contrastando con fuentes bibliográficas rigurosas."
+            ]
+          },
+          {
+            "titulo": "La Monografía de grado",
+            "destrezas": [
+              "LL.5.4.1. Desarrollar textos académicos jerarquizando las ideas y formulando una tesis de investigación."
+            ]
+          },
+          {
+            "titulo": "Uso avanzado de herramientas de citación",
+            "destrezas": [
+              "LL.5.4.3. Aplicar las normas de citación (APA) en la bibliografía y evitar el plagio con honestidad académica."
+            ]
+          },
+          {
+            "titulo": "Sintaxis compleja y revisión de estilo",
+            "destrezas": [
+              "LL.5.4.2. Defender la tesis seleccionando con precisión las palabras para expresar matices."
+            ]
+          },
+          {
+            "titulo": "Sustentación y defensa oral del proyecto",
+            "destrezas": [
+              "LL.5.2.3. Utilizar formatos de participación oral y argumentación para persuadir a un tribunal o audiencia."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Literatura Ecuatoriana y su Identidad": {
+        "objetivos": [
+          "Reconocer las distintas voces de la literatura nacional y su aporte histórico."
+        ],
+        "temas": [
+          {
+            "titulo": "La poesía del siglo XIX: Dolores Veintimilla y Medardo Ángel Silva",
+            "destrezas": [
+              "LL.5.5.3. Ubicar cronológicamente los textos más representativos de la literatura ecuatoriana: siglos XIX."
+            ]
+          },
+          {
+            "titulo": "La Generación del 30 y el Realismo Social",
+            "destrezas": [
+              "LL.5.5.3. Analizar los aportes en la construcción de una cultura diversa al revisar a Jorge Icaza, Demetrio Aguilera Malta."
+            ]
+          },
+          {
+            "titulo": "La novela indigenista ecuatoriana",
+            "destrezas": [
+              "LL.5.5.3. Establecer el valor histórico literario del indigenismo en la obra de Jorge Icaza o Fernando Chaves."
+            ]
+          },
+          {
+            "titulo": "Poesía contemporánea del Ecuador",
+            "destrezas": [
+              "LL.5.5.3. Examinar a autores del siglo XX y XXI como Jorge Enrique Adoum, César Dávila y su peso cultural."
+            ]
+          },
+          {
+            "titulo": "Narrativa actual y diversidad de géneros",
+            "destrezas": [
+              "LL.5.5.3. Establecer los aportes en la construcción de una cultura plural en novelistas y ensayistas del siglo XXI."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Crítica de Arte y Producción Creativa": {
+        "objetivos": [
+          "Evaluar obras artísticas y aplicar recursos estilísticos en creaciones propias."
+        ],
+        "temas": [
+          {
+            "titulo": "La reseña literaria",
+            "destrezas": [
+              "LL.5.4.2. Formular distintos tipos de argumento para defender o criticar una obra o producción cultural."
+            ]
+          },
+          {
+            "titulo": "Análisis semiótico del poema",
+            "destrezas": [
+              "LL.5.3.2. Valorar el contenido implícito del texto poético y extraer el sentido profundo de las metáforas."
+            ]
+          },
+          {
+            "titulo": "Teatro ecuatoriano contemporáneo",
+            "destrezas": [
+              "LL.5.5.3. Analizar textos teatrales como expresión de la pluralidad cultural ecuatoriana."
+            ]
+          },
+          {
+            "titulo": "Creación de cuentos y microrrelatos",
+            "destrezas": [
+              "LL.5.5.4. Recrear textos literarios aplicando conocimientos de estructuras y estilos narrativos."
+            ]
+          },
+          {
+            "titulo": "Declamación y poética escénica",
+            "destrezas": [
+              "LL.5.2.3. Utilizar entonación, ritmo y volumen adecuados en formatos de participación lúdica y poética oral."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Ciencias Sociales": {
+    "3ro BGU": {
+      "Unidad 1: Economía, Capitalismo y Sistemas Mundiales": {
+        "objetivos": [
+          "Contextualizar la historia socioeconómica del capitalismo y sus modelos de respuesta."
+        ],
+        "temas": [
+          {
+            "titulo": "Primeras etapas del sistema capitalista",
+            "destrezas": [
+              "CS.H.5.4.13. Sintetizar el origen, desarrollo y características de las primeras etapas del sistema capitalista."
+            ]
+          },
+          {
+            "titulo": "La Revolución Industrial y la manufactura",
+            "destrezas": [
+              "CS.H.5.4.16. Identificar y diferenciar la Primera y Segunda Revolución Industrial tomando en cuenta fuentes de energía y la tecnificación."
+            ]
+          },
+          {
+            "titulo": "Sistemas de respuesta: el socialismo y marxismo",
+            "destrezas": [
+              "CS.H.5.4.21. Distinguir las principales características del socialismo como sistema económico... socialismo utópico y marxismo."
+            ]
+          },
+          {
+            "titulo": "El proteccionismo frente al librecambismo",
+            "destrezas": [
+              "CS.H.5.4.19. Conceptualizar los términos proteccionismo y librecambismo desde la Economía Política y sus principales representantes."
+            ]
+          },
+          {
+            "titulo": "Integración de escuelas y modelos económicos",
+            "destrezas": [
+              "CS.H.5.4.41. Construir un modelo económico a partir de todas las teorías estudiadas, en función de la satisfacción de las necesidades de la mayoría..."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Crisis Globales y Latinoamérica": {
+        "objetivos": [
+          "Evaluar las repercusiones de las crisis económicas modernas y el neoliberalismo."
+        ],
+        "temas": [
+          {
+            "titulo": "Impacto de la Gran Depresión",
+            "destrezas": [
+              "CS.H.5.3.43. Analizar las causas y repercusiones de la Gran Depresión en la economía latinoamericana y ecuatoriana."
+            ]
+          },
+          {
+            "titulo": "Guerra Fría y dictaduras latinoamericanas",
+            "destrezas": [
+              "CS.H.5.4.24. Argumentar el protagonismo de América Latina en el contexto de la Guerra Fría y su actitud frente a los EE.UU. y la URSS."
+            ]
+          },
+          {
+            "titulo": "Neoliberalismo en América Latina",
+            "destrezas": [
+              "CS.H.5.4.27. Contextualizar el origen del neoliberalismo y su implementación en América Latina y el Ecuador."
+            ]
+          },
+          {
+            "titulo": "La crisis del Feriado Bancario",
+            "destrezas": [
+              "CS.H.5.3.49. Explicar las consecuencias del feriado bancario y la dolarización en la economía del país, empleando diferentes fuentes."
+            ]
+          },
+          {
+            "titulo": "La política contemporánea ecuatoriana",
+            "destrezas": [
+              "CS.H.5.3.51. Analizar el proyecto de la “Revolución Ciudadana” (R.C.) en el contexto de la crisis de los partidos políticos tradicionales."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Democracia, Acción Social y Normativa": {
+        "objetivos": [
+          "Criticar las limitaciones de la democracia representativa y la carta constitucional."
+        ],
+        "temas": [
+          {
+            "titulo": "Democracia social vs política",
+            "destrezas": [
+              "CS.EC.5.2.17. Distinguir la democracia social de la democracia política desde el estudio de experiencias en la sociedad civil y en la sociedad política."
+            ]
+          },
+          {
+            "titulo": "Expresiones prácticas de la democracia en la cotidianidad",
+            "destrezas": [
+              "CS.EC.5.2.18. Reconocer la democracia como una experiencia social enfocándose en el análisis de sus manifestaciones y expresiones en la vida cotidiana."
+            ]
+          },
+          {
+            "titulo": "Paradojas y dificultades de la igualdad social",
+            "destrezas": [
+              "CS.EC.5.3.6. Reconocer la democracia como forma paradójica, a partir de su dificultad para concretar las expectativas sociales."
+            ]
+          },
+          {
+            "titulo": "Las asambleas y cartas constitucionales",
+            "destrezas": [
+              "CS.EC.5.4.7. Comparar las cartas constitucionales del Ecuador atendiendo a la progresión de los derechos de ciudadanía."
+            ]
+          },
+          {
+            "titulo": "Base filosófica de la Constitución de 2008",
+            "destrezas": [
+              "CS.EC.5.4.11. Estudiar la base filosófico-política de la Constitución del Estado ecuatoriano a partir de la Asamblea Constituyente de 2008."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Ética, Felicidad y El Sumak Kawsay": {
+        "objetivos": [
+          "Reflexionar analíticamente sobre el rol de la ética, los valores, el placer y el bienestar."
+        ],
+        "temas": [
+          {
+            "titulo": "Ética clásica: virtudes de Platón y Aristóteles",
+            "destrezas": [
+              "CS.F.5.4.1. Discutir las virtudes platónicas y aristotélicas presentes en las acciones humanas y aplicarlas a la sociedad actual."
+            ]
+          },
+          {
+            "titulo": "Dilemas éticos y posiciones frente al bien y el mal",
+            "destrezas": [
+              "CS.F.5.4.2. Diferenciar comportamientos éticos y antiéticos desde el análisis de dilemas y estudios de caso."
+            ]
+          },
+          {
+            "titulo": "Kantismo vs Utilitarismo",
+            "destrezas": [
+              "CS.F.5.4.7. Contrastar las posiciones ético-filosóficas del kantismo y el utilitarismo, en función de comprender la construcción social y simbólica de la acción humana."
+            ]
+          },
+          {
+            "titulo": "El Sumak Kawsay como proyecto alternativo",
+            "destrezas": [
+              "CS.F.5.3.10. Discutir las propuestas del Sumak Kawsay como proyecto utópico de otro mundo posible en función de la construcción de una nueva sociedad."
+            ]
+          },
+          {
+            "titulo": "La felicidad, el placer y lo público vs lo privado",
+            "destrezas": [
+              "CS.F.5.4.11. Comprender la felicidad a partir de la acción y la reflexión humana, tomando en cuenta el análisis de lo público y lo privado."
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,537 @@
+{
+  "Ciencias Naturales": {
+    "5to de EGB": {
+      "Unidad 1: La vida a nuestro alrededor": {
+        "objetivos": [
+          "Comprender las características y ciclos reproductivos de animales y plantas.",
+          "Identificar a los agentes polinizadores y su importancia."
+        ],
+        "temas": [
+          {
+            "titulo": "El maravilloso mundo de los animales invertebrados",
+            "destrezas": [
+              "CN.3.1.1. Indagar, con uso de las TIC y otros recursos, las características de los animales invertebrados, describirlas y clasificarlos de acuerdo a sus semejanzas y diferencias."
+            ]
+          },
+          {
+            "titulo": "Cómo se alimentan y respiran las plantas",
+            "destrezas": [
+              "CN.3.1.3. Experimentar sobre la fotosíntesis, la nutrición y la respiración en las plantas, explicarlas y deducir su importancia para el mantenimiento de la vida."
+            ]
+          },
+          {
+            "titulo": "El nacimiento de los animales vertebrados",
+            "destrezas": [
+              "CN.3.1.6. Indagar y describir el ciclo reproductivo de los vertebrados y diferenciarlos según su tipo de reproducción."
+            ]
+          },
+          {
+            "titulo": "Así se reproducen los invertebrados",
+            "destrezas": [
+              "CN.3.1.7. Indagar y describir el ciclo reproductivo de los invertebrados y diferenciarlos según su tipo de reproducción."
+            ]
+          },
+          {
+            "titulo": "El viaje del polen: la reproducción de las plantas",
+            "destrezas": [
+              "CN.3.1.8. Analizar y describir el ciclo reproductivo de las plantas e identificar los agentes polinizadores que intervienen en su fecundación."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Mi cuerpo cambia y crece": {
+        "objetivos": [
+          "Entender la estructura y función del sistema reproductor humano.",
+          "Comprender los cambios físicos y emocionales propios de la pubertad."
+        ],
+        "temas": [
+          {
+            "titulo": "Conociendo nuestro sistema reproductor",
+            "destrezas": [
+              "CN.3.2.1. Indagar y describir la estructura y función del sistema reproductor humano, femenino y masculino, y explicar su importancia en la transmisión de las características hereditarias."
+            ]
+          },
+          {
+            "titulo": "Creciendo y cambiando: descubriendo la pubertad",
+            "destrezas": [
+              "CN.3.2.2. Examinar los cambios fisiológicos, anatómicos y conductuales durante la pubertad, formular preguntas y encontrar respuestas sobre el inicio de la madurez sexual en mujeres y hombres, basándose en sus propias experiencias."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Los secretos de la materia": {
+        "objetivos": [
+          "Explorar las propiedades de la materia, los átomos y las moléculas.",
+          "Diferenciar entre sustancias puras, mezclas y compuestos."
+        ],
+        "temas": [
+          {
+            "titulo": "Descubriendo la materia y sus propiedades",
+            "destrezas": [
+              "CN.3.3.1. Explorar y demostrar las propiedades específicas de la materia, experimentar, probar las predicciones y comunicar los resultados."
+            ]
+          },
+          {
+            "titulo": "Viaje al interior de las cosas: el átomo y las moléculas",
+            "destrezas": [
+              "CN.3.3.2. Indagar, con uso de las TIC y otros recursos, la constitución de la materia, analizar el modelo didáctico del átomo y describir los elementos químicos y las moléculas."
+            ]
+          },
+          {
+            "titulo": "Mezclando sustancias puras",
+            "destrezas": [
+              "CN.3.3.3. Indagar y clasificar la materia en sustancias puras y mezclas, y relacionarlas con los estados físicos de la materia."
+            ]
+          },
+          {
+            "titulo": "Química divertida en nuestra casa",
+            "destrezas": [
+              "CN.3.3.4. Indagar y establecer preguntas sobre las propiedades de los compuestos químicos, clasificarlos en orgánicos e inorgánicos, y reconocerlos en sustancias de uso cotidiano."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Nuestro hogar en el espacio": {
+        "objetivos": [
+          "Describir los componentes del sistema solar y el fenómeno de los eclipses.",
+          "Identificar la estructura interna de la Tierra."
+        ],
+        "temas": [
+          {
+            "titulo": "Explorando el Sistema Solar y los Eclipses",
+            "destrezas": [
+              "CN.3.4.3. Indagar, con uso de las TIC y otros recursos, sobre el sistema solar, describir algunos de sus componentes, usar modelos de simulación y explicar los eclipses de la Luna y el Sol."
+            ]
+          },
+          {
+            "titulo": "Viaje al centro de la Tierra",
+            "destrezas": [
+              "CN.3.4.4. Analizar modelos de la estructura de la Tierra y diferenciar sus capas de acuerdo a sus componentes."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Estudios Sociales": {
+    "5to de EGB": {
+      "Unidad 1: Nuestros antepasados y el Imperio Inca": {
+        "objetivos": [
+          "Analizar el origen de los primeros pobladores de Ecuador y las sociedades agrícolas.",
+          "Comprender la dominación Inca y sus características sociales y políticas."
+        ],
+        "temas": [
+          {
+            "titulo": "Los primeros habitantes y las sociedades agrícolas",
+            "destrezas": [
+              "CS.3.1.1. Analizar el origen de los primeros pobladores del Ecuador, sus rutas de llegada, sus herramientas y formas de trabajo colectivo.",
+              "CS.3.1.2. Relacionar la organización económica y social de las sociedades agrícolas con su alfarería y el surgimiento de sus primeros poblados."
+            ]
+          },
+          {
+            "titulo": "Grandes señoríos étnicos y nuestros tesoros arqueológicos",
+            "destrezas": [
+              "CS.3.1.3. Identificar la ubicación, la organización social y política de los cacicazgos mayores o señoríos étnicos, con sus relaciones de comercio, alianzas y enfrentamientos.",
+              "CS.3.1.6. Identificar varios sitios arqueológicos y las piezas que se han conservado, reconociéndolas como patrimonio nacional."
+            ]
+          },
+          {
+            "titulo": "El gran Imperio Inca y la guerra civil",
+            "destrezas": [
+              "CS.3.1.4. Explicar las características de la dominación incaica en el Ecuador, la organización de su imperio y sociedad.",
+              "CS.3.1.5. Examinar el ascenso de Atahualpa y la guerra civil como efectos de una crisis del incario y como antecedentes de la derrota ante la invasión española."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: De la Colonia a la Independencia": {
+        "objetivos": [
+          "Analizar el proceso de conquista española, el mestizaje y la vida colonial.",
+          "Comprender las causas y eventos que llevaron a la Independencia del Ecuador."
+        ],
+        "temas": [
+          {
+            "titulo": "La llegada de los españoles y las nuevas ciudades",
+            "destrezas": [
+              "CS.3.1.7. Documentar la Conquista española del Tahuantinsuyo, especialmente del norte, con sus enfrentamientos y alianzas.",
+              "CS.3.1.9. Identificar a los conquistadores españoles, su relación con los indígenas y sus conflictos con la Corona, el surgimiento de los mestizos y la llegada de los negros esclavizados.",
+              "CS.3.1.10. Analizar los hechos iniciales de la colonización, en especial la fundación de ciudades y su papel en la dominación."
+            ]
+          },
+          {
+            "titulo": "La vida, el arte y el trabajo en la época colonial",
+            "destrezas": [
+              "CS.3.1.11. Apreciar la organización del trabajo en la Audiencia de Quito y el papel de la producción textil.",
+              "CS.3.1.12. Explicar la estructura de la sociedad colonial y la vida cotidiana con sus diferencias sociales y prácticas discriminatorias.",
+              "CS.3.1.16. Explicar la función de dominación de la cultura oficial y la educación colonial y el valor de las culturas populares como respuesta frente al poder.",
+              "CS.3.1.17. Examinar las obras artísticas de la Colonia como productos de una sociedad de desigualdades, y su función cultural, estética e ideológica.",
+              "CS.3.1.18. Reconocer el trabajo artístico indígena y mestizo y el compromiso de proteger el patrimonio nacional."
+            ]
+          },
+          {
+            "titulo": "Tiempos de crisis, rebeliones y búsqueda de identidad",
+            "destrezas": [
+              "CS.3.1.14. Interpretar las causas de la crisis que sufrió la Audiencia de Quito en el marco de los grandes cambios de la monarquía española y el mundo.",
+              "CS.3.1.15. Destacar la consolidación del latifundio, el inicio de la expansión de la Costa y las grandes sublevaciones indígenas y de las ciudades.",
+              "CS.3.1.19. Identificar, al fin de la Colonia, los primeros esfuerzos por definir la identidad del 'país' en el marco de las contradicciones prevalecientes."
+            ]
+          },
+          {
+            "titulo": "El emocionante camino hacia la Independencia",
+            "destrezas": [
+              "CS.3.1.20. Analizar el proceso de la Revolución de Quito de 1809 y su impacto, sus principales actores colectivos y consecuencias.",
+              "CS.3.1.21. Determinar las causas del vacío revolucionario entre 1812 y 1820 y la reactivación de la independencia en Guayaquil.",
+              "CS.3.1.22. Describir las condiciones en las que el actual territorio del Ecuador se incorporó a Colombia, en el marco de la continuidad de la lucha por la independencia.",
+              "CS.3.1.23. Explicar las condiciones económicas, políticas y sociales en que el 'Distrito del Sur' de Colombia participó en la vida de ese país."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: La maravillosa geografía del Ecuador": {
+        "objetivos": [
+          "Localizar y describir las regiones naturales, relieves y recursos hídricos del Ecuador.",
+          "Analizar riesgos naturales como el volcanismo y el Fenómeno del Niño para establecer planes de prevención."
+        ],
+        "temas": [
+          {
+            "titulo": "Los paisajes y regiones de nuestro país",
+            "destrezas": [
+              "CS.3.2.1. Describir el territorio del Ecuador, destacando sus características principales como parte integrante del espacio andino.",
+              "CS.3.2.3. Localizar los relieves, suelos y regiones naturales del Ecuador con el apoyo de diversos recursos cartográficos.",
+              "CS.3.2.4. Describir relieves, cordilleras y hoyas, sistemas fluviales, espacios agrícolas, pecuarios, selváticos, de páramo y las características peculiares de Costa, Sierra, Amazonía y región Insular de Galápagos."
+            ]
+          },
+          {
+            "titulo": "Volcanes: gigantes de fuego y cómo protegernos",
+            "destrezas": [
+              "CS.3.2.6. Identificar la estructura geológica del territorio del Ecuador con su volcanismo activo, en relación con los riesgos para la población y los planes de contingencia para afrontarlos.",
+              "CS.3.2.9. Discutir los riesgos sísmicos que existen en el Ecuador y las medidas que deben tomarse en caso de desastres, sobre todo de modo preventivo."
+            ]
+          },
+          {
+            "titulo": "El agua de nuestros ríos que da vida",
+            "destrezas": [
+              "CS.3.2.7. Localizar los recursos hídricos del Ecuador con sus principales ríos y cuencas de agua considerando su aprovechamiento para el desarrollo nacional."
+            ]
+          },
+          {
+            "titulo": "El clima, la naturaleza y el Fenómeno del Niño",
+            "destrezas": [
+              "CS.3.2.8. Exponer la influencia de los climas y su impacto en la vida vegetal, animal y humana, considerando posibles riesgos (Fenómeno del Niño) y sus respectivos planes de contingencia."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Cuidemos nuestra diversidad y el planeta": {
+        "objetivos": [
+          "Valorar la diversidad del Ecuador y la importancia de sus áreas protegidas.",
+          "Plantear acciones ciudadanas frente al cambio climático y el cuidado ambiental."
+        ],
+        "temas": [
+          {
+            "titulo": "Un país lleno de diversidad y colores",
+            "destrezas": [
+              "CS.3.3.2. Distinguir al Ecuador como uno de los países con mayor diversidad (cultural, étnica, geográfica, florística y faunística)."
+            ]
+          },
+          {
+            "titulo": "Nuestros tesoros naturales: las áreas protegidas",
+            "destrezas": [
+              "CS.3.3.3. Reconocer las áreas protegidas del Ecuador, proponiendo actividades y estrategias para preservarlos."
+            ]
+          },
+          {
+            "titulo": "Cuidemos nuestro planeta del calentamiento global",
+            "destrezas": [
+              "CS.3.3.5. Comparar los efectos concretos que el cambio climático ha provocado en el país en los últimos tiempos y plantear acciones viables para revertir dicho proceso.",
+              "CS.3.3.6. Discutir las causas y los efectos del calentamiento global en el planeta y las acciones colectivas que se deben tomar para enfrentarlo."
+            ]
+          },
+          {
+            "titulo": "Héroes del medio ambiente: acciones que suman",
+            "destrezas": [
+              "CS.3.3.1. Analizar las acciones y omisiones que provocan daños al ambiente y desarrollar una cultura de respeto con propuestas creativas y eficaces."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Matemática": {
+    "5to de EGB": {
+      "Unidad 1: Magia con números grandes": {
+        "objetivos": [
+          "Leer, escribir y operar con números naturales de hasta nueve cifras.",
+          "Resolver problemas matemáticos usando secuencias y pares ordenados."
+        ],
+        "temas": [
+          {
+            "titulo": "Jugando con números gigantes y su valor posicional",
+            "destrezas": [
+              "M.3.1.4. Leer y escribir números naturales en cualquier contexto.",
+              "M.3.1.5. Reconocer el valor posicional de números naturales de hasta nueve cifras, basándose en su composición y descomposición, con el uso de material concreto y con representación simbólica.",
+              "M.3.1.6. Establecer relaciones de secuencia y orden en un conjunto de números naturales de hasta nueve cifras, utilizando material concreto, la semirrecta numérica y simbología matemática (=, <, >)."
+            ]
+          },
+          {
+            "titulo": "Sumando y restando como expertos",
+            "destrezas": [
+              "M.3.1.7. Reconocer términos de la adición y sustracción, y calcular la suma o la diferencia de números naturales.",
+              "M.3.1.8. Aplicar las propiedades de la adición como estrategia de cálculo mental y la solución de problemas."
+            ]
+          },
+          {
+            "titulo": "El arte de multiplicar y dividir",
+            "destrezas": [
+              "M.3.1.9. Reconocer términos y realizar multiplicaciones entre números naturales, aplicando el algoritmo de la multiplicación y con el uso de la tecnología.",
+              "M.3.1.11. Reconocer términos y realizar divisiones entre números naturales con residuo, con el dividendo mayor que el divisor, aplicando el algoritmo correspondiente y con el uso de la tecnología."
+            ]
+          },
+          {
+            "titulo": "Retos combinados y los divisores misteriosos",
+            "destrezas": [
+              "M.3.1.13. Resolver problemas que requieran el uso de operaciones combinadas con números naturales e interpretar la solución dentro del contexto del problema.",
+              "M.3.1.14. Identificar múltiplos y divisores de un conjunto de números naturales."
+            ]
+          },
+          {
+            "titulo": "Sucesiones numéricas y mapas del tesoro (coordenadas)",
+            "destrezas": [
+              "M.3.1.1. Generar sucesiones con sumas, restas, multiplicaciones y divisiones, con números naturales, a partir de ejercicios numéricos o problemas sencillos.",
+              "M.3.1.2. Leer y ubicar pares ordenados en el sistema de coordenadas rectangulares, con números naturales, decimales y fracciones."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: El mundo de las fracciones y los decimales": {
+        "objetivos": [
+          "Operar y resolver problemas con números decimales.",
+          "Representar, comparar y relacionar fracciones con números decimales y magnitudes proporcionales."
+        ],
+        "temas": [
+          {
+            "titulo": "Conociendo a los números decimales",
+            "destrezas": [
+              "M.3.1.26. Reconocer, leer y escribir los números decimales utilizados en la vida cotidiana.",
+              "M.3.1.27. Establecer relaciones de secuencia y orden en un conjunto de números decimales, utilizando material concreto, la semirrecta numérica graduada y simbología matemática (=, <, >)."
+            ]
+          },
+          {
+            "titulo": "Operaciones súper rápidas con decimales",
+            "destrezas": [
+              "M.3.1.28. Calcular, aplicando algoritmos y la tecnología, sumas, restas, multiplicaciones y divisiones con números decimales.",
+              "M.3.1.31. Resolver y plantear problemas con sumas, restas, multiplicaciones y divisiones con números decimales, utilizando varias estrategias, e interpretar la solución dentro del contexto del problema."
+            ]
+          },
+          {
+            "titulo": "Repartiendo el pastel: fracciones en la vida real",
+            "destrezas": [
+              "M.3.1.33. Leer y escribir fracciones a partir de un objeto, un conjunto de objetos fraccionables o una unidad de medida.",
+              "M.3.1.34. Representar fracciones en la semirrecta numérica y gráficamente, para expresar y resolver situaciones cotidianas.",
+              "M.3.1.37. Establecer relaciones de orden entre fracciones, utilizando material concreto, la semirrecta numérica y simbología matemática (=, <, >)."
+            ]
+          },
+          {
+            "titulo": "El puente entre fracciones y decimales",
+            "destrezas": [
+              "M.3.1.35. Reconocer los números decimales: décimos, centésimos y milésimos, como la expresión decimal de fracciones por medio de la división."
+            ]
+          },
+          {
+            "titulo": "Proporciones justas para todos",
+            "destrezas": [
+              "M.3.1.44. Reconocer las magnitudes directa o inversamente proporcionales en situaciones cotidianas; elaborar tablas y plantear proporciones."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Geometría y Medidas de mi entorno": {
+        "objetivos": [
+          "Calcular el área y perímetro de paralelogramos, trapecios y triángulos.",
+          "Realizar conversiones de medidas de longitud, superficie, volumen, masa y ángulos."
+        ],
+        "temas": [
+          {
+            "titulo": "Figuras geométricas maravillosas de cuatro lados",
+            "destrezas": [
+              "M.3.2.3. Identificar paralelogramos y trapecios a partir del análisis de sus características y propiedades."
+            ]
+          },
+          {
+            "titulo": "Calculando contornos y superficies (perímetro y área)",
+            "destrezas": [
+              "M.3.2.4. Calcular el perímetro; deducir y calcular el área.",
+              "M.3.2.6. Calcular el perímetro de triángulos; deducir y calcular el área de triángulos en la resolución de problemas."
+            ]
+          },
+          {
+            "titulo": "Los ángulos que nos rodean",
+            "destrezas": [
+              "M.3.2.20. Medir ángulos rectos, agudos y obtusos, con el graduador u otras estrategias, para dar solución a situaciones cotidianas."
+            ]
+          },
+          {
+            "titulo": "Midiendo distancias y terrenos",
+            "destrezas": [
+              "M.3.2.14. Realizar conversiones simples de medidas de longitud del metro, múltiplos y submúltiplos en la resolución de problemas.",
+              "M.3.2.15. Reconocer el metro cuadrado como unidad de medida de superficie, los submúltiplos y múltiplos, y realizar conversiones en la resolución de problemas."
+            ]
+          },
+          {
+            "titulo": "Calculando pesos y espacios (masa y volumen)",
+            "destrezas": [
+              "M.3.2.17. Reconocer el metro cúbico como unidad de medida de volumen, los submúltiplos y múltiplos; relacionar medidas de volumen y capacidad; y realizar conversiones en la resolución de problemas.",
+              "M.3.2.18. Comparar el kilogramo, el gramo y la libra con las medidas de masa de la localidad, a partir de experiencias concretas y del uso de instrumentos de medida."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Organizando nuestra información estadística": {
+        "objetivos": [
+          "Representar y analizar datos en tablas de frecuencia y gráficos estadísticos.",
+          "Interpretar medidas de tendencia central y de dispersión en problemas cotidianos."
+        ],
+        "temas": [
+          {
+            "titulo": "Tablas y gráficos divertidos",
+            "destrezas": [
+              "M.3.3.1. Analizar y representar, en tablas de frecuencias, diagramas de barra, circulares y poligonales, datos discretos recolectados en el entorno e información publicada en medios de comunicación."
+            ]
+          },
+          {
+            "titulo": "Descubriendo el promedio, la mediana y la moda",
+            "destrezas": [
+              "M.3.3.2. Analizar e interpretar el significado de calcular medidas de tendencia central (media, mediana y moda) y medidas de dispersión (el rango), de un conjunto de datos estadísticos discretos tomados del entorno y de medios de comunicación."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Lengua y Literatura": {
+    "5to de EGB": {
+      "Unidad 1: Comunicando nuestras ideas al mundo": {
+        "objetivos": [
+          "Comprender la funcionalidad de la lengua escrita y oral, y sus variaciones.",
+          "Participar activamente y con respeto en situaciones de exposición oral."
+        ],
+        "temas": [
+          {
+            "titulo": "El poder de las letras y nuestros acentos ecuatorianos",
+            "destrezas": [
+              "LL.3.1.1. Participar en contextos y situaciones que evidencien la funcionalidad de la lengua escrita como herramienta cultural.",
+              "LL.3.1.2. Indagar sobre las influencias lingüísticas y culturales que explican los dialectos del castellano en el Ecuador."
+            ]
+          },
+          {
+            "titulo": "Aprender a escuchar con respeto a los demás",
+            "destrezas": [
+              "LL.3.2.1. Escuchar discursos orales y formular juicios de valor con respecto a su contenido y forma, y participar de manera respetuosa frente a las intervenciones de los demás."
+            ]
+          },
+          {
+            "titulo": "Hablar en público como todo un profesional",
+            "destrezas": [
+              "LL.3.2.2. Proponer intervenciones orales con una intención comunicativa, organizar el discurso según las estructuras básicas de la lengua oral y utilizar un vocabulario adecuado a diversas situaciones comunicativas.",
+              "LL.3.2.3. Apoyar el discurso con recursos y producciones audiovisuales."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Detectives de la Lectura": {
+        "objetivos": [
+          "Aplicar estrategias de comprensión lectora para extraer ideas principales e implícitas.",
+          "Consultar, contrastar y organizar información en bibliotecas y recursos digitales."
+        ],
+        "temas": [
+          {
+            "titulo": "Descubriendo los secretos escondidos en los textos",
+            "destrezas": [
+              "LL.3.3.1. Establecer las relaciones explícitas entre los contenidos de dos o más textos, comparar y contrastar fuentes.",
+              "LL.3.3.2. Comprender los contenidos implícitos de un texto mediante la realización de inferencias fundamentales y proyectivo-valorativas a partir del contenido de un texto."
+            ]
+          },
+          {
+            "titulo": "Cazadores de ideas principales",
+            "destrezas": [
+              "LL.3.3.3. Inferir y sintetizar el contenido esencial de un texto al diferenciar el tema de las ideas principales."
+            ]
+          },
+          {
+            "titulo": "Nuestras mejores estrategias para ser súper lectores",
+            "destrezas": [
+              "LL.3.3.4. Autorregular la comprensión de textos mediante el uso de estrategias cognitivas de comprensión: parafrasear, releer, formular preguntas, leer selectivamente, consultar fuentes adicionales.",
+              "LL.3.3.11. Aplicar los conocimientos lingüísticos (léxicos, semánticos, sintácticos y fonológicos) en la decodificación y comprensión de textos."
+            ]
+          },
+          {
+            "titulo": "Investigando como expertos en internet y bibliotecas",
+            "destrezas": [
+              "LL.3.3.6. Acceder a bibliotecas y recursos digitales en la web, identificando las fuentes consultadas.",
+              "LL.3.3.7. Registrar la información consultada con el uso de esquemas de diverso tipo."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Mi taller creativo de escritura": {
+        "objetivos": [
+          "Producir textos escritos (relatos, descripciones, párrafos) con coherencia y cohesión.",
+          "Aplicar reglas ortográficas y utilizar correctamente los elementos gramaticales."
+        ],
+        "temas": [
+          {
+            "titulo": "Escribiendo cuentos y descripciones fantásticas",
+            "destrezas": [
+              "LL.3.4.1. Relatar textos con secuencia lógica, manejo de conectores y coherencia en el uso de la persona y tiempo verbal, e integrarlos en diversas situaciones comunicativas.",
+              "LL.3.4.2. Escribir descripciones organizadas y con vocabulario específico relativo al ser, objeto, lugar o hecho que se describe e integrarlas en producciones escritas."
+            ]
+          },
+          {
+            "titulo": "Construyendo párrafos con sentido perfecto",
+            "destrezas": [
+              "LL.3.4.9. Organizar las ideas con unidad de sentido a partir de la construcción de párrafos.",
+              "LL.3.4.11. Mejorar la cohesión interna del párrafo y la organización del texto mediante el uso de conectores lógicos."
+            ]
+          },
+          {
+            "titulo": "Las piezas clave: verbos, sustantivos y adjetivos",
+            "destrezas": [
+              "LL.3.4.10. Expresar sus ideas con precisión e integrar en las producciones escritas los diferentes tipos de sustantivo, pronombre, adjetivo, verbo, adverbio y sus modificadores."
+            ]
+          },
+          {
+            "titulo": "Las reglas de oro de la ortografía y la tilde",
+            "destrezas": [
+              "LL.3.4.12. Comunicar ideas con eficiencia a partir de la aplicación de las reglas de uso de las letras y de la tilde."
+            ]
+          },
+          {
+            "titulo": "Los pasos mágicos del buen escritor",
+            "destrezas": [
+              "LL.3.4.7. Usar estrategias y procesos de pensamiento que apoyen la escritura."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Disfrutando la Literatura": {
+        "objetivos": [
+          "Reconocer elementos característicos de la literatura y desarrollar hábitos lectores autónomos."
+        ],
+        "temas": [
+          {
+            "titulo": "Sintiendo la magia de los textos literarios",
+            "destrezas": [
+              "LL.3.5.1. Reconocer en un texto literario los elementos característicos que le dan sentido."
+            ]
+          },
+          {
+            "titulo": "Eligiendo mis libros y aventuras favoritas",
+            "destrezas": [
+              "LL.3.5.3. Elegir lecturas basándose en preferencias personales de autor, género o temas y el manejo de diversos soportes para formarse como lector autónomo."
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

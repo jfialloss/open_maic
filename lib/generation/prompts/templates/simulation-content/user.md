@@ -39,11 +39,12 @@ Generate a complete, interactive HTML simulation with these MANDATORY features:
 
 ### Button Logic (CRITICAL)
 1. **Main button MUST handle all states correctly:**
-   - "启动" → Starts simulation
-   - "暂停" → Pauses running simulation
-   - "重新开始" → Resets to initial state, then starts fresh
+   - "Start" / "Play" → Starts simulation
+   - "Pause" → Pauses running simulation
+   - "Restart" / "Reset" → Resets to initial state, then starts fresh
 2. **Reset function MUST reset ALL state variables** (position, velocity, time, etc.)
 3. Use clear state tracking: `{ running: boolean, ended: boolean, paused: boolean }`
+4. **ALL UI TEXT AND BUTTONS MUST BE TRANSLATED to the language specified in the Language section above.**
 
 ### Canvas
 1. Auto-resize on window resize

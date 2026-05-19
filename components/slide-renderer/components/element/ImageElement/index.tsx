@@ -138,7 +138,7 @@ export function ImageElement({ elementInfo, selectElement }: ImageElementProps) 
                   width: imgPosition.width,
                   height: imgPosition.height,
                   filter,
-                  objectFit: 'contain',
+                  objectFit: 'cover',
                 }}
                 alt=""
                 onDragStart={(e) => e.preventDefault()}

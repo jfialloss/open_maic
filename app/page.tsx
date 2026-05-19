@@ -86,7 +86,7 @@ const RECENT_OPEN_STORAGE_KEY = 'recentClassroomsOpen';
 interface FormState {
   pdfFile: File | null;
   requirement: string;
-  language: 'en-US' | 'es-ES';
+  language: 'en-US' | 'es-419';
   webSearch: boolean;
   deepInteraction: boolean;
   subject: string;
@@ -96,31 +96,40 @@ interface FormState {
 const initialFormState: FormState = {
   pdfFile: null,
   requirement: '',
-  language: 'es-ES',
+  language: 'es-419',
   webSearch: true,
   deepInteraction: false,
   subject: 'none',
   topic: undefined,
 };
 
+function getMappedLevel(grade: string): string | null {
+  const gradeMap: Record<string, string> = {
+    '5º Grado de EGB': '5to de EGB',
+    '6º Grado de EGB': '6to de EGB',
+    '7º Grado de EGB': '7mo de EGB',
+    '8º Grado de EGB': '8vo de EGB',
+    '9º Grado de EGB': '9no de EGB',
+    '10º Grado de EGB': '10mo de EGB',
+    '1º de Bachillerato': '1ro de BGU',
+    '2º de Bachillerato': '2do de BGU',
+    '3º de Bachillerato': '3ro de BGU',
+    '1º Curso de Bachillerato': '1ro de BGU',
+    '2º Curso de Bachillerato': '2do de BGU',
+    '3º Curso de Bachillerato': '3ro de BGU',
+  };
+  return gradeMap[grade] || null;
+}
+
 function getSublevelFromGrade(grade: string): string | null {
-  if (['Inicial 1', 'Inicial 2'].includes(grade)) return 'Educación Inicial';
-  if (['1º Grado de EGB'].includes(grade)) return 'Preparatoria';
-  if (['2º Grado de EGB', '3º Grado de EGB', '4º Grado de EGB'].includes(grade)) return 'Básica Elemental';
   if (['5º Grado de EGB', '6º Grado de EGB', '7º Grado de EGB'].includes(grade)) return 'Básica Media';
   if (['8º Grado de EGB', '9º Grado de EGB', '10º Grado de EGB'].includes(grade)) return 'Básica Superior';
-  if (['1º de Bachillerato', '2º de Bachillerato', '3º de Bachillerato'].includes(grade)) return 'Bachillerato';
+  if (['1º de Bachillerato', '2º de Bachillerato', '3º de Bachillerato', '1º Curso de Bachillerato', '2º Curso de Bachillerato', '3º Curso de Bachillerato'].includes(grade)) return 'Bachillerato';
   return null;
 }
 
 function getAgeFromGrade(grade: string): string {
   const ageMap: Record<string, string> = {
-    'Inicial 1': '3 años',
-    'Inicial 2': '4 años',
-    '1º Grado de EGB': '5 años',
-    '2º Grado de EGB': '6 años',
-    '3º Grado de EGB': '7 años',
-    '4º Grado de EGB': '8 años',
     '5º Grado de EGB': '9 años',
     '6º Grado de EGB': '10 años',
     '7º Grado de EGB': '11 años',
@@ -130,24 +139,38 @@ function getAgeFromGrade(grade: string): string {
     '1º de Bachillerato': '15 años',
     '2º de Bachillerato': '16 años',
     '3º de Bachillerato': '17 años',
+    '1º Curso de Bachillerato': '15 años',
+    '2º Curso de Bachillerato': '16 años',
+    '3º Curso de Bachillerato': '17 años',
   };
   return ageMap[grade] || 'edad promedio para este nivel';
 }
 
 function getSyllabusContext(subject?: string, grade?: string, topic?: string, englishLevel?: string) {
   if (!subject || subject === 'none' || !topic || topic === 'LIBRE') return null;
-  const mappedSubject = subject === 'matematicas' ? 'Matemática' : subject === 'ciencias' ? 'Ciencias Naturales' : subject === 'lengua' ? 'Lengua y Literatura' : subject === 'ingles' ? 'Inglés' : 'Ciencias Sociales';
+  const mappedSubject = subject === 'matematicas' ? 'Matemática' : subject === 'ciencias' ? 'Ciencias Naturales' : subject === 'lengua' ? 'Lengua y Literatura' : subject === 'ingles' ? 'Inglés' : 'Estudios Sociales';
   
-  let mappedSublevel = null;
+  let mappedLevel = null;
   if (mappedSubject === 'Inglés') {
-    mappedSublevel = englishLevel || null;
+    mappedLevel = englishLevel || null;
   } else {
-    mappedSublevel = grade ? getSublevelFromGrade(grade) : null;
+    const gradeMap: Record<string, string> = {
+      '5º Grado de EGB': '5to de EGB',
+      '6º Grado de EGB': '6to de EGB',
+      '7º Grado de EGB': '7mo de EGB',
+      '8º Grado de EGB': '8vo de EGB',
+      '9º Grado de EGB': '9no de EGB',
+      '10º Grado de EGB': '10mo de EGB',
+      '1º de Bachillerato': '1ro de BGU',
+      '2º de Bachillerato': '2do de BGU',
+      '3º de Bachillerato': '3ro de BGU',
+    };
+    mappedLevel = grade ? gradeMap[grade] : null;
   }
   
-  if (!mappedSublevel) return null;
+  if (!mappedLevel) return null;
   
-  const subjectData = syllabusData[mappedSubject]?.[mappedSublevel];
+  const subjectData = syllabusData[mappedSubject]?.[mappedLevel];
   if (!subjectData) return null;
   
   let unitIndex = 0;
@@ -160,11 +183,20 @@ function getSyllabusContext(subject?: string, grade?: string, topic?: string, en
         : uData.temas.includes(topic);
         
       if (topicExists) {
-        let dcd = isNewFormat ? uData.temas.find((t: any) => t.titulo === topic)?.dcd : null;
+        let dcd = null;
+        if (isNewFormat) {
+           const topicObj = uData.temas.find((t: any) => t.titulo === topic);
+           if (topicObj?.destrezas) {
+             dcd = topicObj.destrezas.join('\n');
+           } else if (topicObj?.dcd) {
+             dcd = topicObj.dcd;
+           }
+        }
+        
         if (dcd && typeof dcd === 'string' && /no se encuentr|no se encontr|no detallad|no especificad|not found/i.test(dcd)) {
           dcd = null;
         }
-        const officialObjectives = subjectData["objetivos_oficiales"] || [];
+        const officialObjectives = uData.objetivos || subjectData["objetivos_oficiales"] || [];
         return { unitName, block: unitIndex + 1, dcd, officialObjectives };
       }
     }
@@ -200,7 +232,7 @@ function HomePage() {
   const globalEnglishLevel = useUserProfileStore((s) => s.englishLevel);
   const xpByCourse = useUserProfileStore((s) => s.xpByCourse) || {};
   const totalXP = Object.values(xpByCourse).reduce((sum, xp) => sum + xp, 0);
-  const mappedSublevel = form.subject === 'ingles' ? globalEnglishLevel : getSublevelFromGrade(globalGrade);
+  const mappedSublevel = form.subject === 'ingles' ? globalEnglishLevel : getMappedLevel(globalGrade);
   const [storeHydrated, setStoreHydrated] = useState(false);
   const [recentOpen, setRecentOpen] = useState(true);
 
@@ -222,7 +254,7 @@ function HomePage() {
       }
       
       // Siempre forzamos a español al inicio o al regresar a esta ventana
-      updates.language = 'es-ES';
+      updates.language = 'es-419';
       
       if (Object.keys(updates).length > 0) {
         setForm((prev) => ({ ...prev, ...updates }));
@@ -543,10 +575,12 @@ function HomePage() {
       
       let personaHint = '';
       if (settings.ttsVoice) {
-        personaHint = `\n\n[System Note: The TTS voice selected for the AI teacher is "${settings.ttsVoice}". Analyze this voice ID to determine the appropriate gender/persona, and ensure all generated scripts, introductions, and pronouns align with it (e.g., do not present as female if using a male voice).]`;
+        // Enmascaramos el prefijo 'es-ES-' para no contaminar a Gemini con el dialecto de España
+        const maskedVoice = settings.ttsVoice.replace(/^es-ES-/i, 'es-US-');
+        personaHint = `\n\n[System Note: The TTS voice selected for the AI teacher is "${maskedVoice}". Analyze this voice ID ONLY to determine the appropriate gender (male/female).]`;
       }
 
-      const syllabusContext = getSyllabusContext(form.subject, globalGrade, form.topic);
+      const syllabusContext = getSyllabusContext(form.subject, globalGrade, form.topic, globalEnglishLevel);
       let curriculumContext = '';
 
       if (syllabusContext) {
@@ -1105,7 +1139,7 @@ INSTRUCCIÓN CRÍTICA: Debes garantizar que la clase enseñe EXACTAMENTE la Dest
             
             {/* ── Syllabus Topics ── */}
             <AnimatePresence>
-              {form.subject !== 'none' && syllabusData[form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : form.subject === 'ingles' ? 'Inglés' : 'Ciencias Sociales'] && (
+              {form.subject !== 'none' && syllabusData[form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : form.subject === 'ingles' ? 'Inglés' : 'Estudios Sociales'] && (
                 <motion.div 
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: "auto", opacity: 1 }}
@@ -1116,11 +1150,11 @@ INSTRUCCIÓN CRÍTICA: Debes garantizar que la clase enseñe EXACTAMENTE la Dest
                   <div className="px-3 pb-3 pt-2 border-t border-border/40 mt-1 bg-muted/20 rounded-b-2xl flex flex-col gap-2">
                 <div className="flex items-center justify-between">
                   <p className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
-                    <FileText className="size-3.5" /> Temario Oficial ({form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : form.subject === 'ingles' ? 'Inglés' : 'Ciencias Sociales'} - {form.subject === 'ingles' ? globalEnglishLevel : globalGrade})
+                    <FileText className="size-3.5" /> Temario Oficial ({form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : form.subject === 'ingles' ? 'Inglés' : 'Estudios Sociales'} - {form.subject === 'ingles' ? globalEnglishLevel : globalGrade})
                   </p>
                 </div>
-                {mappedSublevel && syllabusData[form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : form.subject === 'ingles' ? 'Inglés' : 'Ciencias Sociales']?.[mappedSublevel] && (() => {
-                  const subData = syllabusData[form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : form.subject === 'ingles' ? 'Inglés' : 'Ciencias Sociales'][mappedSublevel];
+                {mappedSublevel && syllabusData[form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : form.subject === 'ingles' ? 'Inglés' : 'Estudios Sociales']?.[mappedSublevel] && (() => {
+                  const subData = syllabusData[form.subject === 'matematicas' ? 'Matemática' : form.subject === 'ciencias' ? 'Ciencias Naturales' : form.subject === 'lengua' ? 'Lengua y Literatura' : form.subject === 'ingles' ? 'Inglés' : 'Estudios Sociales'][mappedSublevel];
                   const lockedTopics = new Set<string>();
                   let firstUnmasteredFound = false;
                   Object.entries(subData).forEach(([uName, uData]: [string, any]) => {
@@ -1167,7 +1201,7 @@ INSTRUCCIÓN CRÍTICA: Debes garantizar que la clase enseñe EXACTAMENTE la Dest
                                 const topic = temaObj.titulo;
                                 const rawDCD = temaObj.dcd;
                                 const isMastered = masteredTopics?.includes(topic) || false;
-                                const isLocked = lockedTopics.has(topic);
+                                const isLocked = false; // Bloqueo de temas eliminado por petición del usuario
                                 const prefix = `${unitIndex + 1}.${i + 1}`;
                                 const inProgressClassroom = !isMastered && !isLocked ? classrooms.find((c) => (c.topic === topic || c.name === topic) && !passedCourses.includes(c.id)) : null;
                                 return (
@@ -1432,8 +1466,8 @@ INSTRUCCIÓN CRÍTICA: Debes garantizar que la clase enseñe EXACTAMENTE la Dest
                         </div>
                       </div>
 
-                      {mappedSublevel && ['Matemática', 'Ciencias Naturales', 'Lengua y Literatura', 'Ciencias Sociales', 'Inglés'].map(subject => {
-                        const levelToUse = subject === 'Inglés' ? globalEnglishLevel : getSublevelFromGrade(globalGrade) || '';
+                      {mappedSublevel && ['Matemática', 'Ciencias Naturales', 'Lengua y Literatura', 'Estudios Sociales', 'Inglés'].map(subject => {
+                        const levelToUse = subject === 'Inglés' ? globalEnglishLevel : getMappedLevel(globalGrade) || '';
                         const subjectData = syllabusData[subject]?.[levelToUse];
                         if (!subjectData) return null;
                         
@@ -1488,7 +1522,7 @@ INSTRUCCIÓN CRÍTICA: Debes garantizar que la clase enseñe EXACTAMENTE la Dest
                                   <div className="flex flex-col gap-1.5">
                                     {topicArray.map((t: string, tIdx: number) => {
                                       const isMastered = masteredTopics?.includes(t);
-                                      const isLocked = lockedTopics.has(t);
+                                      const isLocked = false;
                                       const inProgressClassroom = !isMastered && !isLocked ? classrooms.find((c) => (c.topic === t || c.name === t) && (c.sceneCount && c.sceneCount > 0) && !passedCourses.includes(c.id)) : null;
                                       return (
                                         <div 
@@ -2144,18 +2178,7 @@ function GreetingBar() {
                       onChange={(e) => setGrade(e.target.value)}
                       disabled={role === 'student' && gradeConfirmed}
                     >
-                      <optgroup label="Educación Inicial">
-                        <option value="Inicial 1">Inicial 1</option>
-                        <option value="Inicial 2">Inicial 2</option>
-                      </optgroup>
-                      <optgroup label="Preparatoria">
-                        <option value="1º Grado de EGB">1º Grado de EGB</option>
-                      </optgroup>
-                      <optgroup label="Básica Elemental">
-                        <option value="2º Grado de EGB">2º Grado de EGB</option>
-                        <option value="3º Grado de EGB">3º Grado de EGB</option>
-                        <option value="4º Grado de EGB">4º Grado de EGB</option>
-                      </optgroup>
+
                       <optgroup label="Básica Media">
                         <option value="5º Grado de EGB">5º Grado de EGB</option>
                         <option value="6º Grado de EGB">6º Grado de EGB</option>

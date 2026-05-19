@@ -1,0 +1,519 @@
+{
+  "Ciencias Naturales": {
+    "10mo de EGB": {
+      "Unidad 1: La historia de la vida grabada en piedra": {
+        "objetivos": [
+          "Comprender los procesos evolutivos y geológicos que han dado forma a la biodiversidad actual.",
+          "Analizar las cinco extinciones masivas y su relación con el registro fósil."
+        ],
+        "temas": [
+          {
+            "titulo": "El motor de la vida: mutaciones y evolución",
+            "destrezas": [
+              "CN.4.1.14. Indagar y formular hipótesis sobre los procesos y cambios evolutivos en los seres vivos, y deducir las modificaciones que se presentan en la descendencia como un proceso generador de la diversidad biológica."
+            ]
+          },
+          {
+            "titulo": "Secretos en la roca: fósiles y la deriva continental",
+            "destrezas": [
+              "CN.4.1.16. Analizar e identificar situaciones problémicas sobre el proceso evolutivo de la vida con relación a los eventos geológicos e interpretar los modelos teóricos del registro fósil, la deriva continental y la extinción masiva de especies."
+            ]
+          },
+          {
+            "titulo": "El apocalipsis en la Tierra: las extinciones masivas",
+            "destrezas": [
+              "CN.4.4.15. Formular hipótesis e investigar en forma documental los procesos geológicos y los efectos de las cinco extinciones masivas ocurridas en la Tierra, relacionarlas con el registro de los restos fósiles y diseñar una escala de tiempo sobre el registro paleontológico de la Tierra."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: La química secreta de nuestro planeta": {
+        "objetivos": [
+          "Diferenciar la materia orgánica de la inorgánica.",
+          "Reconocer al carbono como el elemento base de la vida."
+        ],
+        "temas": [
+          {
+            "titulo": "Materia viva vs. Materia inerte: el origen de la química",
+            "destrezas": [
+              "CN.4.3.16. Diseñar una investigación experimental para analizar las características de la materia orgánica e inorgánica en diferentes compuestos, diferenciar los dos tipos de materia según sus propiedades e inferir la importancia de la química."
+            ]
+          },
+          {
+            "titulo": "El Carbono: el superhéroe de las moléculas biológicas",
+            "destrezas": [
+              "CN.4.3.18. Explicar el papel del carbono como elemento base de la química de la vida e identificarlo en las biomoléculas."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Un mundo en constante movimiento": {
+        "objetivos": [
+          "Analizar el impacto de las placas tectónicas en el clima y la vida.",
+          "Clasificar las rocas según sus procesos de formación."
+        ],
+        "temas": [
+          {
+            "titulo": "El rompecabezas tectónico y sus efectos en el clima",
+            "destrezas": [
+              "CN.4.4.16. Investigar en forma documental y procesar evidencias sobre los movimientos de las placas tectónicas, e inferir sus efectos en los cambios en el clima y en la distribución de los organismos."
+            ]
+          },
+          {
+            "titulo": "El ciclo de las rocas: la Tierra se recicla",
+            "destrezas": [
+              "CN.4.4.17. Indagar sobre la formación y el ciclo de las rocas, clasificarlas y describirlas de acuerdo a los procesos de formación y su composición."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Guardianes de la biósfera ecuatoriana": {
+        "objetivos": [
+          "Investigar los ecosistemas del Ecuador y sus áreas protegidas.",
+          "Discutir el impacto ambiental de las actividades humanas."
+        ],
+        "temas": [
+          {
+            "titulo": "Expedición a los megadiversos ecosistemas del Ecuador",
+            "destrezas": [
+              "CN.4.4.13. Elaborar y ejecutar un plan de investigación documental sobre los ecosistemas de Ecuador, diferenciarlos por su ubicación geográfica, clima y biodiversidad, destacar su importancia y comunicar sus hallazgos por diferentes medios."
+            ]
+          },
+          {
+            "titulo": "Santuarios de vida: nuestras áreas protegidas",
+            "destrezas": [
+              "CN.4.1.17. Indagar sobre las áreas protegidas del país, ubicarlas e interpretarlas como espacios de conservación de la vida silvestre, de investigación y educación."
+            ]
+          },
+          {
+            "titulo": "La huella humana: analizando nuestro impacto ecológico",
+            "destrezas": [
+              "CN.4.5.5. Indagar, con uso de las TIC y otros recursos, y analizar las causas de los impactos de las actividades humanas en los hábitats, inferir sus consecuencias y discutir los resultados."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Estudios Sociales": {
+    "10mo de EGB": {
+      "Unidad 1: Guerras, dictaduras y el despertar del siglo XX": {
+        "objetivos": [
+          "Analizar el impacto de las guerras mundiales, la Guerra Fría y las revoluciones en América Latina.",
+          "Comprender la transición desde las dictaduras hacia las democracias latinoamericanas."
+        ],
+        "temas": [
+          {
+            "titulo": "Imperialismo, la Primera Guerra Mundial y la Revolución Rusa",
+            "destrezas": [
+              "CS.4.1.45. Interpretar las características de la expansión de la industria, el comercio internacional y el colonialismo a inicios del siglo XX.",
+              "CS.4.1.46. Resumir la influencia y el impacto de la Revolución bolchevique y de la Primera Guerra Mundial en la economía y la sociedad latinoamericana."
+            ]
+          },
+          {
+            "titulo": "La Gran Depresión, el fascismo y la Segunda Guerra Mundial",
+            "destrezas": [
+              "CS.4.1.47. Examinar el impacto de la Gran Depresión y de los regímenes fascistas en la política y la sociedad latinoamericana.",
+              "CS.4.1.48. Analizar el nivel de involucramiento de América Latina en la Segunda Guerra Mundial y su participación en la fundación y acciones de la Organización de las Naciones Unidas."
+            ]
+          },
+          {
+            "titulo": "Guerra Fría, descolonización y la era del desarrollismo",
+            "destrezas": [
+              "CS.4.1.49. Explicar la trayectoria de Latinoamérica en la primera mitad del siglo XX, con sus cambios socioeconómicos e inicios del desarrollismo.",
+              "CS.4.1.50. Identificar cambios en la realidad latinoamericana a partir de la fundación de la República Popular China, el ascenso de los países árabes y el predominio de la “Guerra Fría”.",
+              "CS.4.1.51. Comparar el contenido de las luchas anticoloniales de los países en vías de desarrollo y la fundación de nuevos países."
+            ]
+          },
+          {
+            "titulo": "Revoluciones, dictaduras y represión en América Latina",
+            "destrezas": [
+              "CS.4.1.55. Evaluar la movilización social e insurgencia en la América Latina de los sesenta, la Revolución cubana y los inicios de la integración.",
+              "CS.4.1.56. Analizar las características de las dictaduras latinoamericanas y sus gobiernos, con énfasis en el desarrollismo y la represión."
+            ]
+          },
+          {
+            "titulo": "El retorno a la democracia y los retos de la información",
+            "destrezas": [
+              "CS.4.1.52. Discutir el alcance de las innovaciones científicas y tecnológicas, especialmente en la comunicación, en el contexto latinoamericano del siglo XX.",
+              "CS.4.1.53. Reconocer los movimientos de lucha por los derechos civiles en el marco de los procesos de integración y cooperación internacional.",
+              "CS.4.1.57. Apreciar el tránsito a los sistemas constitucionales latinoamericanos, destacando el valor de vivir en democracia.",
+              "CS.4.1.58. Explicar el proceso de implantación del neoliberalismo en América Latina.",
+              "CS.4.1.60. Resumir los desafíos de América Latina frente al manejo de la información y los medios de comunicación en el marco de la situación económica, política y social actual."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Un mosaico global: población, riqueza y migración": {
+        "objetivos": [
+          "Describir la distribución, diversidad y retos de la población mundial y latinoamericana.",
+          "Discutir las causas de la pobreza, las guerras y los movimientos migratorios."
+        ],
+        "temas": [
+          {
+            "titulo": "Diversidad cultural: el fin de las barreras",
+            "destrezas": [
+              "CS.4.2.26. Describir y apreciar la diversidad cultural de la población mundial y el respeto que se merece frente a cualquier forma de discriminación.",
+              "CS.4.2.27. Definir los rasgos, antecedentes y valores esenciales de la diversidad humana que posibilitan la convivencia armónica y solidaria."
+            ]
+          },
+          {
+            "titulo": "Radiografía del mundo: ¿Cuántos somos y dónde vivimos?",
+            "destrezas": [
+              "CS.4.2.28. Establecer el número de habitantes y su distribución en los continentes, con el detalle de sus características económicas, sociales y laborales esenciales.",
+              "CS.4.2.29. Identificar los componentes etarios de la población mundial: niños, niñas, jóvenes y adultos, cotejándolos con datos sobre salud y educación.",
+              "CS.4.2.31. Relacionar la población de hombres y mujeres en el mundo, considerando su distribución en los continentes y su promedio y niveles de calidad de vida."
+            ]
+          },
+          {
+            "titulo": "El poder de la juventud para cambiar el mundo",
+            "destrezas": [
+              "CS.4.2.30. Discutir el papel que cumplen los jóvenes en la vida nacional e internacional a través de ejemplos de diversos países."
+            ]
+          },
+          {
+            "titulo": "Un planeta en constante movimiento: las migraciones",
+            "destrezas": [
+              "CS.4.2.32. Describir el papel que han cumplido las migraciones en el pasado y presente de la humanidad.",
+              "CS.4.2.33. Explicar los principales flujos migratorios en América Latina, sus causas y consecuencias y sus dificultades y conflictos."
+            ]
+          },
+          {
+            "titulo": "La brecha de la desigualdad y la pobreza mundial",
+            "destrezas": [
+              "CS.4.2.35. Discutir las consecuencias que genera la concentración de la riqueza, proponiendo posibles opciones de solución.",
+              "CS.4.2.36. Identificar los rasgos más importantes de la pobreza en América Latina, con énfasis en aspectos comparativos entre países.",
+              "CS.4.2.37. Identificar las guerras como una de las principales causas de la pobreza en el mundo."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Ecuador frente al mundo: integración y conflictos": {
+        "objetivos": [
+          "Identificar la influencia de los conflictos mundiales en el Ecuador.",
+          "Comprender la importancia de la integración regional en la Comunidad Andina y Sudamérica."
+        ],
+        "temas": [
+          {
+            "titulo": "El Ecuador en medio de los conflictos globales",
+            "destrezas": [
+              "CS.4.2.38. Reconocer la influencia que han tenido en el Ecuador los conflictos mundiales recientes y el papel que ha tenido en ellos nuestro país."
+            ]
+          },
+          {
+            "titulo": "Uniendo fuerzas: la integración de Sudamérica",
+            "destrezas": [
+              "CS.4.2.40. Identificar el origen y principales avances de la integración en la Comunidad Andina y Sudamérica, con sus problemas y perspectivas."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Las reglas del juego democrático": {
+        "objetivos": [
+          "Valorar la Constitución, la democracia y la participación ciudadana.",
+          "Analizar el rol del Estado, sus funciones y los límites de la fuerza pública."
+        ],
+        "temas": [
+          {
+            "titulo": "Los pilares de la democracia: equidad, libertad y solidaridad",
+            "destrezas": [
+              "CS.4.3.16. Destacar los valores de la libertad, la equidad y la solidaridad como fundamentos sociales esenciales de una democracia real."
+            ]
+          },
+          {
+            "titulo": "Tu voz importa: participación ciudadana y Constitución",
+            "destrezas": [
+              "CS.4.3.17. Discutir el significado de participación ciudadana y los canales y formas en que se la ejerce en una sociedad democrática.",
+              "CS.4.3.18. Reconocer el papel de la Constitución de la República como norma fundamental del Estado y base legal de la democracia.",
+              "CS.4.3.20. Relacionar el ejercicio de la ciudadanía ecuatoriana con la participación en los procesos de integración regional e internacional."
+            ]
+          },
+          {
+            "titulo": "Cómo funciona el Estado Ecuatoriano",
+            "destrezas": [
+              "CS.4.3.21. Identificar y diferenciar los órganos del gobierno y los del Estado ecuatoriano, sus principales atribuciones y sus mecanismos de vinculación con la sociedad civil.",
+              "CS.4.3.23. Analizar el papel del Estado como garante de los derechos de las personas."
+            ]
+          },
+          {
+            "titulo": "Seguridad y control: ¿Qué hace la fuerza pública?",
+            "destrezas": [
+              "CS.4.3.22. Reconocer y discutir la razón de ser, las funciones, los límites y las características de la fuerza pública."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Lengua y Literatura": {
+    "10mo de EGB": {
+      "Unidad 1: El poder del discurso y la identidad cultural": {
+        "objetivos": [
+          "Analizar el impacto histórico de la escritura y la riqueza de las variaciones lingüísticas del país.",
+          "Producir discursos orales efectivos, libres de prejuicios y con uso de recursos variados."
+        ],
+        "temas": [
+          {
+            "titulo": "La escritura como motor de la civilización humana",
+            "destrezas": [
+              "LL.4.1.1. Indagar y explicar las aportaciones de la cultura escrita al desarrollo histórico, social y cultural de la humanidad."
+            ]
+          },
+          {
+            "titulo": "Dime cómo hablas: las variedades lingüísticas del Ecuador",
+            "destrezas": [
+              "LL.4.1.3. Indagar sobre las variaciones lingüísticas socioculturales del Ecuador y explicar su influencia en las relaciones sociales."
+            ]
+          },
+          {
+            "titulo": "Estructurando discursos y acuerdos para resolver problemas",
+            "destrezas": [
+              "LL.4.2.1. Utilizar recursos de la comunicación oral en contextos de intercambio social, construcción de acuerdos y resolución de problemas.",
+              "LL.4.2.2. Organizar el discurso mediante el uso de las estructuras básicas de la lengua oral, la selección y empleo de vocabulario específico, acorde con la intencionalidad, en diversos contextos comunicativos formales e informales."
+            ]
+          },
+          {
+            "titulo": "Comunicación inteligente: rompiendo estereotipos",
+            "destrezas": [
+              "LL.4.2.3. Producir discursos que integren una variedad de recursos, formatos y soportes.",
+              "LL.4.2.4. Reflexionar sobre los efectos del uso de estereotipos y prejuicios en la comunicación."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Hackeando textos: el pensamiento crítico": {
+        "objetivos": [
+          "Comparar información, inferir posturas de autores y emitir juicios de valor.",
+          "Autorregular la comprensión lectora aplicando estrategias cognitivas avanzadas."
+        ],
+        "temas": [
+          {
+            "titulo": "Detectives de la lectura: contrastando fuentes",
+            "destrezas": [
+              "LL.4.3.1. Comparar, bajo criterios preestablecidos, las relaciones explícitas entre los contenidos de dos o más textos y contrastar sus fuentes."
+            ]
+          },
+          {
+            "titulo": "Leer la mente del autor: significados implícitos",
+            "destrezas": [
+              "LL.4.3.2. Construir significados implícitos al inferir el tema, el punto de vista del autor, las motivaciones y argumentos de un texto."
+            ]
+          },
+          {
+            "titulo": "Debatiendo perspectivas en textos conflictivos",
+            "destrezas": [
+              "LL.4.3.3. Elaborar criterios crítico-valorativos al distinguir las diferentes perspectivas en conflicto sobre un mismo tema, en diferentes textos."
+            ]
+          },
+          {
+            "titulo": "Estrategias cognitivas para textos de alta complejidad",
+            "destrezas": [
+              "LL.4.3.4. Autorregular la comprensión de textos mediante el uso de estrategias cognitivas de comprensión autoseleccionadas, de acuerdo con el propósito de lectura y las dificultades identificadas."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Taller de periodismo y redacción académica": {
+        "objetivos": [
+          "Planificar, redactar y revisar textos académicos y periodísticos jerarquizando ideas.",
+          "Aplicar correctamente reglas ortográficas y estrategias de pensamiento en la escritura."
+        ],
+        "temas": [
+          {
+            "titulo": "El esqueleto de las noticias, reportajes y ensayos",
+            "destrezas": [
+              "LL.4.4.1. Escribir textos periodísticos y académicos con manejo de su estructura básica, y sustentar las ideas con razones y ejemplos organizados de manera jerárquica."
+            ]
+          },
+          {
+            "titulo": "Estrategias para pensar antes de escribir",
+            "destrezas": [
+              "LL.4.4.3. Usar estrategias y procesos de pensamiento que apoyen la escritura de diferentes tipos de textos periodísticos y académicos."
+            ]
+          },
+          {
+            "titulo": "El arte de pulir: planificar, redactar y revisar",
+            "destrezas": [
+              "LL.4.4.5. Usar el procedimiento de planificación, redacción y revisión en la escritura de diferentes tipos de textos periodísticos y académicos."
+            ]
+          },
+          {
+            "titulo": "Reglas de oro: ortografía, puntuación y tildes perfectas",
+            "destrezas": [
+              "LL.4.4.8. Comunicar ideas con eficiencia aplicando, de manera autónoma, las reglas de uso de las letras, de la puntuación y de la tilde."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Universos creativos y literarios": {
+        "objetivos": [
+          "Interpretar géneros literarios y componer textos creativos.",
+          "Utilizar herramientas digitales para recrear historias y poemas."
+        ],
+        "temas": [
+          {
+            "titulo": "Navegando por los géneros de la literatura",
+            "destrezas": [
+              "LL.4.5.1. Interpretar un texto literario desde las características del género al que pertenece."
+            ]
+          },
+          {
+            "titulo": "Frankenstein literario: mezclando recursos creativos",
+            "destrezas": [
+              "LL.4.5.4. Componer textos creativos que adapten o combinen diversas estructuras y recursos literarios."
+            ]
+          },
+          {
+            "titulo": "Literatura 2.0: recreando historias con las TIC",
+            "destrezas": [
+              "LL.4.5.6. Recrear textos literarios leídos o escuchados con el uso colaborativo de diversos medios y recursos de las TIC."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Matemática": {
+    "10mo de EGB": {
+      "Unidad 1: El infinito mundo de los reales y el álgebra avanzada": {
+        "objetivos": [
+          "Operar e identificar números irracionales y reales, usando notación científica e intervalos.",
+          "Resolver productos notables, factorizaciones y ecuaciones algebraicas avanzadas."
+        ],
+        "temas": [
+          {
+            "titulo": "Más allá de las fracciones: números irracionales y reales",
+            "destrezas": [
+              "M.4.1.26. Reconocer el conjunto de los números irracionales e identificar sus elementos.",
+              "M.4.1.28. Reconocer el conjunto de los números reales R e identificar sus elementos."
+            ]
+          },
+          {
+            "titulo": "Ordenando el caos: intervalos y la recta real",
+            "destrezas": [
+              "M.4.1.30. Establecer relaciones de orden en un conjunto de números reales utilizando la recta numérica y la simbología matemática (=, <, ≤, >, ≥).",
+              "M.4.1.39. Representar un intervalo en R de manera algebraica y gráfica, y reconocer el intervalo como la solución de una inecuación de primer grado con una incógnita en R."
+            ]
+          },
+          {
+            "titulo": "Micro y macro: el poder de la notación científica",
+            "destrezas": [
+              "M.4.1.34. Aplicar las potencias de números reales con exponentes enteros para la notación científica."
+            ]
+          },
+          {
+            "titulo": "Atajos algebraicos: productos notables y factorización",
+            "destrezas": [
+              "M.4.1.33. Reconocer y calcular productos notables e identificar factores de expresiones algebraicas (factorización)."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Ecuaciones, sistemas y el poder de las funciones": {
+        "objetivos": [
+          "Analizar gráficamente funciones lineales y cuadráticas.",
+          "Resolver sistemas de ecuaciones 2x2 y ecuaciones de segundo grado."
+        ],
+        "temas": [
+          {
+            "titulo": "Descifrando patrones: gráficas y características de las funciones",
+            "destrezas": [
+              "M.4.1.48. Reconocer funciones crecientes y decrecientes a partir de su representación gráfica o tabla de valores.",
+              "M.4.1.49. Definir y reconocer una función real identificando sus características: dominio, recorrido, monotonía, cortes con los ejes."
+            ]
+          },
+          {
+            "titulo": "La línea recta: modelos matemáticos lineales",
+            "destrezas": [
+              "M.4.1.47. Definir y reconocer funciones lineales en Z, con base en tablas de valores, de formulación algebraica y/o representación gráfica, con o sin el uso de la tecnología.",
+              "M.4.1.50. Definir y reconocer una función lineal de manera algebraica y gráfica (con o sin el empleo de la tecnología), e identificar su monotonía a partir de la gráfica o su pendiente.",
+              "M.4.1.52. Representar e interpretar modelos matemáticos con funciones lineales, y resolver problemas."
+            ]
+          },
+          {
+            "titulo": "Cruce de caminos: sistemas de ecuaciones 2x2",
+            "destrezas": [
+              "M.4.1.53. Reconocer la recta como la solución gráfica de una ecuación lineal con dos incógnitas en R.",
+              "M.4.1.54. Reconocer la intersección de dos rectas como la solución gráfica de un sistema de dos ecuaciones lineales con dos incógnitas.",
+              "M.4.1.55. Resolver un sistema de dos ecuaciones lineales con dos incógnitas de manera algebraica, utilizando los métodos de determinante (Cramer), de igualación, y de eliminación gaussiana.",
+              "M.4.1.56. Resolver y plantear problemas de texto con enunciados que involucren funciones lineales y sistemas de dos ecuaciones lineales con dos incógnitas; e interpretar y juzgar la validez de las soluciones obtenidas dentro del contexto del problema."
+            ]
+          },
+          {
+            "titulo": "La curva perfecta: funciones y ecuaciones cuadráticas",
+            "destrezas": [
+              "M.4.1.57. Definir y reconocer una función cuadrática de manera algebraica y gráfica, determinando sus características: dominio, recorrido, monotonía, máximos, mínimos y paridad.",
+              "M.4.1.59. Resolver ecuaciones de segundo grado con una incógnita de manera analítica (por factoreo, completación de cuadrados, fórmula binomial) en la solución de problemas."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Geometría plana, trigonometría y volumen 3D": {
+        "objetivos": [
+          "Aplicar el Teorema de Pitágoras y razones trigonométricas en problemas espaciales.",
+          "Construir y calcular volúmenes y áreas de figuras geométricas complejas."
+        ],
+        "temas": [
+          {
+            "titulo": "Triángulos mágicos: Pitágoras y trigonometría básica",
+            "destrezas": [
+              "M.4.2.15. Aplicar el teorema de Pitágoras en la resolución de triángulos rectángulos.",
+              "M.4.2.16. Definir las razones trigonométricas (seno, coseno y tangente para resolver numéricamente triángulos rectángulos."
+            ]
+          },
+          {
+            "titulo": "Rompecabezas geométricos: área por descomposición",
+            "destrezas": [
+              "M.4.2.18. Calcular el área de polígonos regulares por descomposición en triángulos.",
+              "M.4.2.19. Aplicar la descomposición en triángulos en el cálculo de áreas de figuras geométricas compuestas."
+            ]
+          },
+          {
+            "titulo": "Arquitectos 3D: armando pirámides, cilindros y conos",
+            "destrezas": [
+              "M.4.2.20. Construir pirámides, prismas, conos y cilindros a partir de patrones en dos dimensiones (redes), para calcular el área lateral y total de estos cuerpos geométricos."
+            ]
+          },
+          {
+            "titulo": "Llenando el espacio: cálculo de volúmenes",
+            "destrezas": [
+              "M.4.2.21. Calcular el volumen de pirámides, prismas, conos y cilindros aplicando las fórmulas respectivas."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Análisis de datos, azar y probabilidad": {
+        "objetivos": [
+          "Interpretar variables, medidas de tendencia central y de dispersión.",
+          "Comprender la probabilidad empírica y utilizar métodos de conteo."
+        ],
+        "temas": [
+          {
+            "titulo": "El lenguaje de los datos: variables estadísticas",
+            "destrezas": [
+              "M.4.3.5. Definir y utilizar variables cualitativas y cuantitativas."
+            ]
+          },
+          {
+            "titulo": "Buscando la verdad estadística: medidas y tendencias",
+            "destrezas": [
+              "M.4.3.7. Calcular e interpretar las medidas de tendencia central (media, mediana, moda) y medidas de dispersión (rango, varianza y desviación estándar) de un conjunto de datos en la solución de problemas."
+            ]
+          },
+          {
+            "titulo": "Juegos de azar: entendiendo la probabilidad empírica",
+            "destrezas": [
+              "M.4.3.9. Definir la probabilidad (empírica) y el azar de un evento o experimento estadístico para determinar eventos o experimentos independientes."
+            ]
+          },
+          {
+            "titulo": "¿De cuántas formas es posible?: Combinaciones y permutaciones",
+            "destrezas": [
+              "M.4.3.10. Aplicar métodos de conteo (combinaciones y permutaciones) en el cálculo de probabilidades."
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

@@ -27,6 +27,7 @@ import { createStageAPI } from '@/lib/api/stage-api';
 import { generatePBLContent } from '@/lib/pbl/generate-pbl';
 import { buildPrompt, PROMPT_IDS } from '@/lib/generation/prompts';
 import { DEFAULT_LANGUAGE_DIRECTIVE } from './outline-generator';
+import { sanitizeDialect } from '@/lib/utils/dialect-sanitizer';
 import { postProcessInteractiveHtml } from './interactive-post-processor';
 import { parseActionsFromStructuredOutput } from './action-parser';
 import { parseJsonResponse } from './json-repair';
@@ -1378,7 +1379,7 @@ function convertTeacherActionsToActions(teacherActions: TeacherAction[]): Action
         actions.push({
           ...base,
           type: 'speech',
-          text: ta.content || '',
+          text: sanitizeDialect(ta.content || ''),
         } as SpeechAction);
         break;
 
@@ -1395,7 +1396,7 @@ function convertTeacherActionsToActions(teacherActions: TeacherAction[]): Action
           actions.push({
             id: `${base.id}_speech`,
             type: 'speech',
-            text: ta.content,
+            text: sanitizeDialect(ta.content),
             title: base.title,
           } as SpeechAction);
         }
@@ -1414,7 +1415,7 @@ function convertTeacherActionsToActions(teacherActions: TeacherAction[]): Action
           actions.push({
             id: `${base.id}_speech`,
             type: 'speech',
-            text: ta.content,
+            text: sanitizeDialect(ta.content),
             title: base.title,
           } as SpeechAction);
         }
@@ -1431,7 +1432,7 @@ function convertTeacherActionsToActions(teacherActions: TeacherAction[]): Action
           actions.push({
             id: `${base.id}_speech`,
             type: 'speech',
-            text: ta.content,
+            text: sanitizeDialect(ta.content),
             title: base.title,
           } as SpeechAction);
         }
@@ -1448,7 +1449,7 @@ function convertTeacherActionsToActions(teacherActions: TeacherAction[]): Action
           actions.push({
             id: `${base.id}_speech`,
             type: 'speech',
-            text: ta.content,
+            text: sanitizeDialect(ta.content),
             title: base.title,
           } as SpeechAction);
         }
@@ -1459,7 +1460,7 @@ function convertTeacherActionsToActions(teacherActions: TeacherAction[]): Action
         actions.push({
           ...base,
           type: 'speech',
-          text: ta.content || '',
+          text: sanitizeDialect(ta.content || ''),
         } as SpeechAction);
     }
   }
@@ -1512,6 +1513,10 @@ function processActions(actions: Action[], elements: PPTElement[], agents?: Agen
           processedAction.agentId = picked.id;
         }
       }
+    }
+
+    if ('text' in processedAction && typeof processedAction.text === 'string') {
+      processedAction.text = sanitizeDialect(processedAction.text);
     }
 
     return processedAction;

@@ -1,0 +1,627 @@
+{
+  "Ciencias Naturales": {
+    "2do BGU": {
+      "Unidad 1: Genética y el Comportamiento de los Gases": {
+        "objetivos": [
+          "Comprender la herencia genética y sus bases moleculares.",
+          "Analizar las leyes y el comportamiento de los gases."
+        ],
+        "temas": [
+          {
+            "titulo": "El ADN y el ARN",
+            "destrezas": [
+              "CN.B.5.1.11. Usar modelos y describir la función del ADN como portador de la información genética.",
+              "CN.B.5.1.12. Analizar la transcripción y traducción del ARN."
+            ]
+          },
+          {
+            "titulo": "Mitosis y Meiosis",
+            "destrezas": [
+              "CN.B.5.1.13. Experimentar con los procesos de mitosis, meiosis y demostrar la transmisión genética."
+            ]
+          },
+          {
+            "titulo": "Leyes de Mendel",
+            "destrezas": [
+              "CN.B.5.1.14. Describir las leyes de Mendel, diseñar patrones de cruzamiento y deducir porcentajes."
+            ]
+          },
+          {
+            "titulo": "Mutaciones cromosómicas",
+            "destrezas": [
+              "CN.B.5.1.17. Investigar las causas de los cambios del ADN que producen alteraciones génicas y cromosómicas."
+            ]
+          },
+          {
+            "titulo": "Leyes de los gases",
+            "destrezas": [
+              "CN.Q.5.1.2. Examinar las leyes que rigen el comportamiento de los gases desde el análisis experimental."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Sistemas del Cuerpo Humano y Disoluciones": {
+        "objetivos": [
+          "Examinar la estructura y funcionamiento fisiológico de los seres vivos.",
+          "Resolver cálculos estequiométricos y de soluciones químicas."
+        ],
+        "temas": [
+          {
+            "titulo": "Tejidos en organismos multicelulares",
+            "destrezas": [
+              "CN.B.5.3.1. Observar la forma y función de células y tejidos en organismos multicelulares animales y vegetales."
+            ]
+          },
+          {
+            "titulo": "Sistema digestivo y excretor",
+            "destrezas": [
+              "CN.B.5.4.1. Analizar el funcionamiento de los sistemas digestivo y excretor en el ser humano."
+            ]
+          },
+          {
+            "titulo": "Sistemas circulatorio y respiratorio",
+            "destrezas": [
+              "CN.B.5.4.5. Usar modelos y describir los sistemas circulatorio y respiratorio en el ser humano."
+            ]
+          },
+          {
+            "titulo": "Masa molecular y el Mol",
+            "destrezas": [
+              "CN.Q.5.2.10. Calcular y establecer la masa molecular de compuestos simples y usar el mol.",
+              "CN.Q.5.2.11. Utilizar el número de Avogadro en la determinación de la masa molar."
+            ]
+          },
+          {
+            "titulo": "Sistemas dispersos y disoluciones",
+            "destrezas": [
+              "CN.Q.5.3.1. Examinar y clasificar las características de los distintos tipos de sistemas dispersos.",
+              "CN.Q.5.3.2. Comparar y analizar disoluciones de diferente concentración."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Movimientos en 2D y Leyes Universales": {
+        "objetivos": [
+          "Comprender el movimiento en trayectorias curvas y circulares.",
+          "Analizar la gravitación universal y las leyes planetarias."
+        ],
+        "temas": [
+          {
+            "titulo": "Movimiento en dos dimensiones",
+            "destrezas": [
+              "CN.F.5.1.5. Reconocer que la posición, trayectoria y desplazamiento en 2D requieren un sistema de referencia."
+            ]
+          },
+          {
+            "titulo": "Movimiento Circular Uniforme (MCU)",
+            "destrezas": [
+              "CN.F.5.1.12. Analizar gráficamente la aceleración normal (centrípeta) en trayectorias circulares."
+            ]
+          },
+          {
+            "titulo": "Leyes de Kepler",
+            "destrezas": [
+              "CN.F.5.4.1. Explicar las tres leyes de Kepler sobre el movimiento planetario."
+            ]
+          },
+          {
+            "titulo": "Ley de Gravitación Universal",
+            "destrezas": [
+              "CN.F.5.4.2. Establecer la ley de gravitación universal de Newton y su explicación del sistema Copernicano."
+            ]
+          },
+          {
+            "titulo": "Movimiento de proyectiles",
+            "destrezas": [
+              "CN.F.5.1.29. Describir el movimiento de proyectiles en la superficie de la Tierra y determinar el alcance horizontal."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Fuerzas Elásticas, Termodinámica y Reacciones": {
+        "objetivos": [
+          "Aplicar principios de energía térmica y elasticidad.",
+          "Analizar reacciones ácido-base y óxido-reducción."
+        ],
+        "temas": [
+          {
+            "titulo": "Elasticidad y Ley de Hooke",
+            "destrezas": [
+              "CN.F.5.1.31. Determinar que la fuerza que ejerce un resorte es proporcional a la deformación (ley de Hooke)."
+            ]
+          },
+          {
+            "titulo": "Temperatura y calor",
+            "destrezas": [
+              "CN.F.5.2.5. Determinar que la temperatura de un sistema es la medida de la energía cinética promedio.",
+              "CN.F.5.2.6. Describir el proceso de transferencia de calor por conducción, convección y radiación."
+            ]
+          },
+          {
+            "titulo": "Conservación de la energía mecánica",
+            "destrezas": [
+              "CN.F.5.1.37. Describir la conservación de la energía mecánica en masas sujetas a resortes."
+            ]
+          },
+          {
+            "titulo": "Reacciones de óxido-reducción",
+            "destrezas": [
+              "CN.Q.5.1.24. Interpretar y analizar las reacciones de oxidación y reducción como la transferencia de electrones."
+            ]
+          },
+          {
+            "titulo": "Reacciones ácido-base y pH",
+            "destrezas": [
+              "CN.Q.5.3.3. Determinar y examinar la importancia de las reacciones ácido-base en la vida cotidiana.",
+              "CN.Q.5.3.5. Deducir y comunicar la importancia del pH."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Matemática": {
+    "2do BGU": {
+      "Unidad 1: Sistemas de Ecuaciones y Matrices": {
+        "objetivos": [
+          "Resolver sistemas de ecuaciones lineales mediante múltiples métodos.",
+          "Operar con matrices y calcular sus determinantes."
+        ],
+        "temas": [
+          {
+            "titulo": "Sistemas de 2 ecuaciones lineales",
+            "destrezas": [
+              "M.5.1.6. Resolver analíticamente sistemas de dos ecuaciones lineales con dos incógnitas utilizando diferentes métodos."
+            ]
+          },
+          {
+            "titulo": "Sistemas de 3 ecuaciones lineales (Método de Gauss)",
+            "destrezas": [
+              "M.5.1.9. Resolver sistemas de tres ecuaciones lineales con dos incógnitas utilizando sustitución o eliminación gaussiana.",
+              "M.5.1.10. Resolver sistemas de ecuaciones lineales con tres incógnitas utilizando eliminación gaussiana."
+            ]
+          },
+          {
+            "titulo": "Matrices reales y operaciones",
+            "destrezas": [
+              "M.5.1.14. Reconocer el conjunto de matrices M2x2 y sus elementos.",
+              "M.5.1.15. Realizar operaciones de adición, producto y potencia de matrices."
+            ]
+          },
+          {
+            "titulo": "Determinantes de orden 2 y 3",
+            "destrezas": [
+              "M.5.1.18. Calcular determinantes de matrices reales cuadradas de orden 2 y 3 para resolver sistemas."
+            ]
+          },
+          {
+            "titulo": "La matriz inversa",
+            "destrezas": [
+              "M.5.1.19. Calcular la matriz inversa A-1 de una matriz cuadrada A por el método de Gauss."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Función Cuadrática y Racional": {
+        "objetivos": [
+          "Analizar la función cuadrática y resolver ecuaciones de segundo grado.",
+          "Interpretar funciones racionales y polinomiales."
+        ],
+        "temas": [
+          {
+            "titulo": "Ecuación de segundo grado",
+            "destrezas": [
+              "M.5.1.59. Resolver la ecuación de segundo grado con una incógnita de manera analítica (factoreo, fórmula general)."
+            ]
+          },
+          {
+            "titulo": "Características de la función cuadrática",
+            "destrezas": [
+              "M.5.1.57. Definir y reconocer una función cuadrática de manera algebraica y gráfica, determinando sus características."
+            ]
+          },
+          {
+            "titulo": "Sistemas cuadráticos-lineales",
+            "destrezas": [
+              "M.5.1.28. Identificar la intersección gráfica de una recta y una parábola como solución de un sistema."
+            ]
+          },
+          {
+            "titulo": "Funciones polinomiales",
+            "destrezas": [
+              "M.5.1.38. Reconocer funciones polinomiales de grado n con coeficientes reales."
+            ]
+          },
+          {
+            "titulo": "Funciones racionales y asíntotas",
+            "destrezas": [
+              "M.5.1.43. Graficar funciones racionales y determinar las ecuaciones de las asíntotas con ayuda de las TIC."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Geometría Analítica en el Plano": {
+        "objetivos": [
+          "Representar lugares geométricos y analizar las cónicas en el plano cartesiano."
+        ],
+        "temas": [
+          {
+            "titulo": "Ecuación vectorial y paramétrica de la recta",
+            "destrezas": [
+              "M.5.2.9. Escribir y reconocer la ecuación vectorial y paramétrica de una recta."
+            ]
+          },
+          {
+            "titulo": "Ecuación cartesiana y general de la recta",
+            "destrezas": [
+              "M.5.2.10. Identificar la pendiente de una recta para escribir la ecuación cartesiana y general."
+            ]
+          },
+          {
+            "titulo": "Posición relativa y distancia",
+            "destrezas": [
+              "M.5.2.11. Determinar la posición relativa de dos rectas en R2.",
+              "M.5.2.12. Calcular la distancia de un punto a una recta."
+            ]
+          },
+          {
+            "titulo": "Lugares geométricos: Circunferencia y Parábola",
+            "destrezas": [
+              "M.5.2.16. Describir la circunferencia y la parábola como lugares geométricos.",
+              "M.5.2.17. Escribir y reconocer sus ecuaciones cartesianas con centro en el origen o fuera de él."
+            ]
+          },
+          {
+            "titulo": "Lugares geométricos: Elipse e Hipérbola",
+            "destrezas": [
+              "M.5.2.16. Describir la elipse y la hipérbola como lugares geométricos.",
+              "M.5.2.17. Reconocer las ecuaciones cartesianas para resolver problemas físicos."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Probabilidad y Experimentos Aleatorios": {
+        "objetivos": [
+          "Calcular la probabilidad de eventos empíricos y aplicar técnicas de conteo."
+        ],
+        "temas": [
+          {
+            "titulo": "Probabilidad empírica y axiomas",
+            "destrezas": [
+              "M.5.3.7. Reconocer los experimentos y eventos... aplicar el concepto de probabilidad y axiomas."
+            ]
+          },
+          {
+            "titulo": "Operaciones con sucesos",
+            "destrezas": [
+              "M.5.3.9. Realizar operaciones con sucesos: unión, intersección, diferencia y complemento."
+            ]
+          },
+          {
+            "titulo": "Permutaciones y combinaciones",
+            "destrezas": [
+              "M.5.3.11. Aplicar los métodos de conteo para determinar la probabilidad de eventos simples y compuestos."
+            ]
+          },
+          {
+            "titulo": "Probabilidad condicionada",
+            "destrezas": [
+              "M.5.3.13. Reconocer experimentos con probabilidad condicionada y aplicar el teorema de Bayes."
+            ]
+          },
+          {
+            "titulo": "Variable aleatoria discreta",
+            "destrezas": [
+              "M.5.3.12. Identificar variables aleatorias y determinar la función de probabilidad.",
+              "M.5.3.15. Calcular la media, varianza y desviación estándar de una variable aleatoria discreta."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Lengua y Literatura": {
+    "2do BGU": {
+      "Unidad 1: Cultura en la Era Digital": {
+        "objetivos": [
+          "Analizar las transformaciones de la escritura en internet y la evolución de los medios."
+        ],
+        "temas": [
+          {
+            "titulo": "Evolución de la cultura escrita a lo digital",
+            "destrezas": [
+              "LL.5.1.1. Indagar sobre las transformaciones y las tendencias actuales y futuras de la evolución de la cultura escrita en la era digital."
+            ]
+          },
+          {
+            "titulo": "Nuevas plataformas de lectura y escritura",
+            "destrezas": [
+              "LL.5.1.1. Reflexionar sobre las implicaciones de las bibliotecas virtuales y plataformas en línea."
+            ]
+          },
+          {
+            "titulo": "El lenguaje de las redes sociales",
+            "destrezas": [
+              "LL.5.1.2. Identificar y evaluar el uso de códigos y expresiones lingüísticas en el entorno digital."
+            ]
+          },
+          {
+            "titulo": "Producción y consumo de contenido web",
+            "destrezas": [
+              "LL.5.1.2. Identificar las implicaciones socioculturales de la producción y el consumo de cultura digital."
+            ]
+          },
+          {
+            "titulo": "Brecha digital y acceso a la cultura",
+            "destrezas": [
+              "LL.5.1.1. Valorar cómo la era digital democratiza o limita el acceso al conocimiento."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Oralidad y Contexto Social": {
+        "objetivos": [
+          "Interpretar discursos connotativos y participar argumentativamente en debates."
+        ],
+        "temas": [
+          {
+            "titulo": "El mensaje implícito y el análisis connotativo",
+            "destrezas": [
+              "LL.5.2.2. Valorar el contenido implícito de un texto oral a partir del análisis connotativo del discurso."
+            ]
+          },
+          {
+            "titulo": "Intencionalidad del discurso político",
+            "destrezas": [
+              "LL.5.2.2. Evaluar discursos de actualidad identificando su punto de vista implícito."
+            ]
+          },
+          {
+            "titulo": "Debates y confrontación de ideas",
+            "destrezas": [
+              "LL.5.2.3. Participar en debates alternando registros lingüísticos para persuadir."
+            ]
+          },
+          {
+            "titulo": "El uso de la ironía y el humor",
+            "destrezas": [
+              "LL.5.2.2. Descodificar las intenciones comunicativas indirectas en la exposición oral."
+            ]
+          },
+          {
+            "titulo": "Elaboración de discursos persuasivos",
+            "destrezas": [
+              "LL.5.2.4. Producir discursos que integren argumentación crítica frente al público."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Redacción Académica y Revisión de Fuentes": {
+        "objetivos": [
+          "Producir textos de rigor investigativo y distinguir argumentos válidos."
+        ],
+        "temas": [
+          {
+            "titulo": "Lectura inferencial y contenido implícito",
+            "destrezas": [
+              "LL.5.3.2. Valorar el contenido implícito de un texto con argumentos propios, al contrastarlo con fuentes adicionales."
+            ]
+          },
+          {
+            "titulo": "Argumentos de autoridad, hecho y valor",
+            "destrezas": [
+              "LL.5.4.2. Defender una tesis mediante la formulación de diferentes tipos de argumento."
+            ]
+          },
+          {
+            "titulo": "El Ensayo Argumentativo",
+            "destrezas": [
+              "LL.5.4.1. Construir un texto argumentativo con precisión semántica y cohesión."
+            ]
+          },
+          {
+            "titulo": "Citación en normas APA/MLA",
+            "destrezas": [
+              "LL.5.4.3. Aplicar las normas de citación e identificación de fuentes con rigor y honestidad académica."
+            ]
+          },
+          {
+            "titulo": "El Artículo de Opinión",
+            "destrezas": [
+              "LL.5.4.2. Redactar editoriales o artículos periodísticos sustentando la tesis en el párrafo apropiado."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Literatura Latinoamericana": {
+        "objetivos": [
+          "Reconocer las grandes voces literarias y el valor identitario de Latinoamérica."
+        ],
+        "temas": [
+          {
+            "titulo": "Literatura hispanoamericana del siglo XIX",
+            "destrezas": [
+              "LL.5.5.2. Ubicar cronológicamente los textos más representativos de la literatura latinoamericana: siglos XIX."
+            ]
+          },
+          {
+            "titulo": "El Modernismo y Rubén Darío",
+            "destrezas": [
+              "LL.5.5.2. Establecer los aportes del Modernismo en los procesos de visibilización de la heterogeneidad cultural."
+            ]
+          },
+          {
+            "titulo": "El Boom Latinoamericano",
+            "destrezas": [
+              "LL.5.5.2. Analizar autores del siglo XX y su influencia en el reconocimiento de la cultura plural."
+            ]
+          },
+          {
+            "titulo": "El Realismo Mágico",
+            "destrezas": [
+              "LL.5.5.3. Relacionar la historia y la fantasía en textos de autores latinoamericanos contemporáneos."
+            ]
+          },
+          {
+            "titulo": "Adaptación de novelas a nuevos medios",
+            "destrezas": [
+              "LL.5.5.4. Recrear textos literarios leídos con medios y recursos (comics, cortos, podcast)."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Ciencias Sociales": {
+    "2do BGU": {
+      "Unidad 1: Del Renacimiento a la Independencia": {
+        "objetivos": [
+          "Examinar la modernidad europea, la colonización de América y sus revoluciones."
+        ],
+        "temas": [
+          {
+            "titulo": "El Renacimiento y el Humanismo",
+            "destrezas": [
+              "CS.H.5.2.19. Identificar las condiciones de surgimiento del Renacimiento y de la nueva visión del ser humano, el Humanismo."
+            ]
+          },
+          {
+            "titulo": "La Revolución Francesa",
+            "destrezas": [
+              "CS.H.5.2.25. Argumentar sobre las principales causas y consecuencias de la Revolución francesa y la vigencia de sus postulados principales hasta el presente."
+            ]
+          },
+          {
+            "titulo": "Las culturas aborígenes de América",
+            "destrezas": [
+              "CS.H.5.3.1. Identificar y valorar las producciones intelectuales más significativas de las culturas aborígenes de América Latina precolombina (mayas, aztecas e incas)."
+            ]
+          },
+          {
+            "titulo": "Impacto de la conquista española",
+            "destrezas": [
+              "CS.H.5.3.10. Examinar el impacto de la Conquista a través del estudio de la implementación de relaciones de explotación y sometimiento de la población aborigen."
+            ]
+          },
+          {
+            "titulo": "Revoluciones liberales y proyectos nacionales",
+            "destrezas": [
+              "CS.H.5.3.39. Comprender y evaluar las revoluciones liberales y los alcances y limitaciones de sus proyectos nacionales."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: El Estado y la Democracia Plurinacional": {
+        "objetivos": [
+          "Evaluar la historia institucional del Estado ecuatoriano y sus poderes."
+        ],
+        "temas": [
+          {
+            "titulo": "Representación política y su significado",
+            "destrezas": [
+              "CS.EC.5.2.9. Examinar el significado de la representación política, considerando las contribuciones de la democracia representativa."
+            ]
+          },
+          {
+            "titulo": "El desarrollo de la democracia en Ecuador",
+            "destrezas": [
+              "CS.EC.5.3.1. Explicar el desarrollo de la democracia en Ecuador desde un Estado excluyente en 1830, hasta llegar a la declaración de Estado plurinacional (Constitución del 2008)."
+            ]
+          },
+          {
+            "titulo": "Demandas de pueblos y nacionalidades",
+            "destrezas": [
+              "CS.EC.5.3.5. Determinar la evolución histórica de las demandas sociales de los pueblos y nacionalidades, en función de la construcción de un Estado incluyente."
+            ]
+          },
+          {
+            "titulo": "Surgimiento del Estado y control social",
+            "destrezas": [
+              "CS.EC.5.4.1. Reconocer el surgimiento y evolución del Estado como forma de control social."
+            ]
+          },
+          {
+            "titulo": "Funciones del Estado ecuatoriano",
+            "destrezas": [
+              "CS.EC.5.4.12. Explicar los roles que cumplen las funciones del Estado ecuatoriano a partir del análisis de los mecanismos de ordenamiento social."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Filosofía, Ciencia y Epistemología": {
+        "objetivos": [
+          "Contrastar paradigmas del pensamiento y la epistemología científica."
+        ],
+        "temas": [
+          {
+            "titulo": "Construcción de conceptos y teorías",
+            "destrezas": [
+              "CS.F.5.2.10. Explicar el proceso de formación del pensamiento y la construcción de conceptos y teorías, diferenciándolo de la realidad a que hacen referencia."
+            ]
+          },
+          {
+            "titulo": "Pensamiento filosófico y científico vs cotidiano",
+            "destrezas": [
+              "CS.F.5.2.12. Establecer semejanzas y diferencias entre las formas de pensamiento cotidiano y el ejercicio del pensamiento filosófico y científico."
+            ]
+          },
+          {
+            "titulo": "Tratado europeo frente al ensayo latinoamericano",
+            "destrezas": [
+              "CS.F.5.2.13. Distinguir las características del ensayo latinoamericano y del tratado europeo en textos representativos."
+            ]
+          },
+          {
+            "titulo": "Filosofía occidental vs latinoamericana",
+            "destrezas": [
+              "CS.F.5.3.1. Analizar las diferencias entre el pensamiento filosófico occidental y el pensamiento social latinoamericano, mediante la lectura comparada."
+            ]
+          },
+          {
+            "titulo": "El 'Yo' frente al 'Nosotros'",
+            "destrezas": [
+              "CS.F.5.3.4. Diferenciar el referente esencial de la reflexión filosófica europea (yo) y latinoamericana (nosotros) dentro de sus propias coordenadas históricas."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Diversidad e Inclusión en la Ciudadanía": {
+        "objetivos": [
+          "Comprender la diferencia entre Estado, Nación y Gobierno y fomentar el diálogo social."
+        ],
+        "temas": [
+          {
+            "titulo": "Estado, nación y gobierno",
+            "destrezas": [
+              "CS.EC.5.4.3. Diferenciar Estado, nación y gobierno a través de la identificación de sus funciones específicas y su rol histórico."
+            ]
+          },
+          {
+            "titulo": "El republicanismo y sus postulados",
+            "destrezas": [
+              "CS.EC.5.4.9. Señalar los postulados del republicanismo, tomando en cuenta las diferencias con otros modelos de organización política."
+            ]
+          },
+          {
+            "titulo": "El rol de las asambleas constituyentes",
+            "destrezas": [
+              "CS.EC.5.4.4. Determinar el significado de las Asambleas Nacionales Constituyentes desde las revoluciones del siglo XVIII."
+            ]
+          },
+          {
+            "titulo": "La identidad del 'Ser' latinoamericano",
+            "destrezas": [
+              "CS.F.5.2.17. Identificar características de la identidad del “ser” latinoamericano en diversas expresiones artísticas para repensar su “ethos”."
+            ]
+          },
+          {
+            "titulo": "Concepto de liberación vs libertad",
+            "destrezas": [
+              "CS.F.5.3.5. Identificar los métodos de comprensión de la realidad en la filosofía latinoamericana a partir de conceptos como libertad y liberación."
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

@@ -188,45 +188,44 @@ export function inferTeacherVoice(
   let targetCodes: string[] = [];
   let langPrefix = '';
   
-  // 1. Check AI's language directive first (most accurate for the actual generated content)
-  const directive = (languageDirective || '').toLowerCase();
-  
-  if (/\b(español|spanish)\b/.test(directive)) {
+  // 1. Check explicit language code from stage settings FIRST (User UI selection is authoritative)
+  const langLower = (language || '').toLowerCase();
+  if (langLower.startsWith('es')) {
     targetCodes = ['es-us', 'es-419', 'es-mx', 'es-es', 'es'];
     langPrefix = 'es';
-  } else if (/\b(inglés|ingles|english)\b/.test(directive)) {
+  } else if (langLower.startsWith('en')) {
     targetCodes = ['en-us', 'en-gb', 'en'];
     langPrefix = 'en';
-  } else if (/\b(portugués|portugues|portuguese)\b/.test(directive)) {
+  } else if (langLower.startsWith('pt')) {
     targetCodes = ['pt-br', 'pt-pt', 'pt'];
     langPrefix = 'pt';
-  } else if (/\b(chino|chinese|mandarin)\b/.test(directive)) {
+  } else if (langLower.startsWith('zh')) {
     targetCodes = ['zh-cn', 'zh-tw', 'zh-hk', 'zh'];
     langPrefix = 'zh';
-  } else if (/\b(francés|frances|french)\b/.test(directive)) {
+  } else if (langLower.startsWith('fr')) {
     targetCodes = ['fr-fr', 'fr-ca', 'fr'];
     langPrefix = 'fr';
+  } else if (langLower.length >= 2) {
+    langPrefix = langLower.slice(0, 2);
+    targetCodes = [langPrefix];
   } else {
-    // 2. Fallback to explicit language code from stage settings
-    const langLower = (language || '').toLowerCase();
-    if (langLower.startsWith('es')) {
+    const directive = (languageDirective || '').toLowerCase();
+    
+    if (/\b(español|spanish)\b/.test(directive)) {
       targetCodes = ['es-us', 'es-419', 'es-mx', 'es-es', 'es'];
       langPrefix = 'es';
-    } else if (langLower.startsWith('en')) {
+    } else if (/\b(inglés|ingles|english)\b/.test(directive)) {
       targetCodes = ['en-us', 'en-gb', 'en'];
       langPrefix = 'en';
-    } else if (langLower.startsWith('pt')) {
+    } else if (/\b(portugués|portugues|portuguese)\b/.test(directive)) {
       targetCodes = ['pt-br', 'pt-pt', 'pt'];
       langPrefix = 'pt';
-    } else if (langLower.startsWith('zh')) {
+    } else if (/\b(chino|chinese|mandarin)\b/.test(directive)) {
       targetCodes = ['zh-cn', 'zh-tw', 'zh-hk', 'zh'];
       langPrefix = 'zh';
-    } else if (langLower.startsWith('fr')) {
+    } else if (/\b(francés|frances|french)\b/.test(directive)) {
       targetCodes = ['fr-fr', 'fr-ca', 'fr'];
       langPrefix = 'fr';
-    } else if (langLower.length >= 2) {
-      langPrefix = langLower.slice(0, 2);
-      targetCodes = [langPrefix];
     }
   }
 

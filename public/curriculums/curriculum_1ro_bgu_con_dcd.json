@@ -1,0 +1,622 @@
+{
+  "Ciencias Naturales": {
+    "1ro BGU": {
+      "Unidad 1: Origen de la Vida y la Materia": {
+        "objetivos": [
+          "Comprender el origen de la vida desde una perspectiva científica.",
+          "Analizar la estructura atómica y las propiedades de los elementos."
+        ],
+        "temas": [
+          {
+            "titulo": "Teoría de la abiogénesis y origen de la vida",
+            "destrezas": [
+              "CN.B.5.1.1. Indagar y analizar la teoría de la abiogénesis que explica el origen de la vida, e interpretar las distintas evidencias científicas."
+            ]
+          },
+          {
+            "titulo": "Atmósfera primitiva y moléculas orgánicas",
+            "destrezas": [
+              "CN.B.5.1.2. Identificar los elementos y compuestos químicos de la atmósfera de la Tierra primitiva, y relacionarlos con la formación abiogénica."
+            ]
+          },
+          {
+            "titulo": "Teorías atómicas a lo largo de la historia",
+            "destrezas": [
+              "CN.Q.5.1.3. Observar y comparar la teoría de Bohr con las teorías atómicas de Demócrito, Dalton, Thompson y Rutherford."
+            ]
+          },
+          {
+            "titulo": "Modelo mecánico-cuántico",
+            "destrezas": [
+              "CN.Q.5.1.5. Observar y aplicar el modelo mecánico-cuántico de la materia en la estructuración de la configuración electrónica."
+            ]
+          },
+          {
+            "titulo": "La tabla periódica y propiedades",
+            "destrezas": [
+              "CN.Q.5.1.6. Relacionar la estructura electrónica de los átomos con la posición en la tabla periódica."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Organización Celular y Enlaces": {
+        "objetivos": [
+          "Diferenciar las estructuras celulares y sus funciones.",
+          "Comprender la configuración de los enlaces químicos."
+        ],
+        "temas": [
+          {
+            "titulo": "Evolución celular y endosimbiosis",
+            "destrezas": [
+              "CN.B.5.2.1. Analizar las hipótesis sobre la evolución de las células procariotas y eucariotas basadas en la teoría de la endosimbiosis."
+            ]
+          },
+          {
+            "titulo": "Estructura celular animal y vegetal",
+            "destrezas": [
+              "CN.B.5.2.2. Describir los tipos de organización en las células animales y vegetales, y comparar sus organelos."
+            ]
+          },
+          {
+            "titulo": "Formación de enlaces químicos",
+            "destrezas": [
+              "CN.Q.5.1.8. Deducir y explicar la unión de átomos por su tendencia a donar, recibir o compartir electrones."
+            ]
+          },
+          {
+            "titulo": "Compuestos iónicos y covalentes",
+            "destrezas": [
+              "CN.Q.5.1.10. Deducir y explicar las propiedades físicas de compuestos iónicos y covalentes desde el análisis de su estructura."
+            ]
+          },
+          {
+            "titulo": "Fuerzas intermoleculares",
+            "destrezas": [
+              "CN.Q.5.1.11. Establecer y diferenciar las fuerzas intermoleculares (puente de hidrógeno, London, Van der Walls, dipolo-dipolo)."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Cinemática y Reacciones Químicas": {
+        "objetivos": [
+          "Interpretar los fundamentos del movimiento rectilíneo.",
+          "Analizar las reacciones químicas y su conservación."
+        ],
+        "temas": [
+          {
+            "titulo": "Posición, desplazamiento y trayectoria",
+            "destrezas": [
+              "CN.F.5.1.1. Determinar la posición y el desplazamiento de un objeto que se mueve a lo largo de una trayectoria rectilínea."
+            ]
+          },
+          {
+            "titulo": "Movimiento Rectilíneo Uniforme (MRU)",
+            "destrezas": [
+              "CN.F.5.1.2. Explicar, por medio de la experimentación, que el movimiento rectilíneo uniforme implica una velocidad constante."
+            ]
+          },
+          {
+            "titulo": "Aceleración media e instantánea",
+            "destrezas": [
+              "CN.F.5.1.3. Obtener la velocidad instantánea empleando gráficos y conceptualizar la aceleración."
+            ]
+          },
+          {
+            "titulo": "Tipos de reacciones químicas",
+            "destrezas": [
+              "CN.Q.5.1.14. Comparar los tipos de reacciones químicas: combinación, descomposición, desplazamiento, exotérmicas y endotérmicas."
+            ]
+          },
+          {
+            "titulo": "Leyes de transformación de la materia",
+            "destrezas": [
+              "CN.Q.5.2.9. Experimentar y deducir el cumplimiento de las leyes de transformación de la materia (ponderales y conservación)."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Dinámica, Trabajo y Biomoléculas": {
+        "objetivos": [
+          "Comprender las Leyes de Newton.",
+          "Identificar las biomoléculas esenciales para la vida."
+        ],
+        "temas": [
+          {
+            "titulo": "Las Leyes de Newton",
+            "destrezas": [
+              "CN.F.5.1.16. Indagar los estudios de Newton y conceptualizar la primera ley (inercia).",
+              "CN.F.5.1.17. Explicar la segunda ley de Newton mediante la relación fuerza, masa y aceleración.",
+              "CN.F.5.1.18. Explicar la tercera ley de Newton en aplicaciones reales."
+            ]
+          },
+          {
+            "titulo": "Trabajo mecánico",
+            "destrezas": [
+              "CN.F.5.2.1. Definir el trabajo mecánico a partir del análisis de la acción de una fuerza constante."
+            ]
+          },
+          {
+            "titulo": "Potencia y energía",
+            "destrezas": [
+              "CN.F.5.2.4. Determinar el concepto de potencia mediante la comprensión del ritmo temporal con que ingresa o se retira energía."
+            ]
+          },
+          {
+            "titulo": "Biomoléculas estructurales",
+            "destrezas": [
+              "CN.B.5.1.4. Describir y comparar las características básicas de las biomoléculas a partir de sus procesos de síntesis."
+            ]
+          },
+          {
+            "titulo": "Funciones de los polímeros biológicos",
+            "destrezas": [
+              "CN.B.5.1.5. Usar modelos y describir la estructura, diversidad y función de las biomoléculas que constituyen la materia viva."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Matemática": {
+    "1ro BGU": {
+      "Unidad 1: Números Reales y Ecuaciones": {
+        "objetivos": [
+          "Aplicar propiedades algebraicas en la simplificación y resolución de problemas.",
+          "Modelar situaciones reales mediante ecuaciones e inecuaciones."
+        ],
+        "temas": [
+          {
+            "titulo": "Propiedades de los números reales",
+            "destrezas": [
+              "M.5.1.1. Aplicar las propiedades algebraicas de los números reales en la resolución de productos notables y en la factorización."
+            ]
+          },
+          {
+            "titulo": "Potenciación y radicación",
+            "destrezas": [
+              "M.5.1.2. Deducir propiedades algebraicas de la potenciación de números reales con exponentes enteros.",
+              "M.5.1.3. Transformar raíces n-ésimas de un número real en potencias con exponentes racionales."
+            ]
+          },
+          {
+            "titulo": "Intervalos y valor absoluto",
+            "destrezas": [
+              "M.5.1.7. Aplicar las propiedades de orden de los números reales para realizar operaciones con intervalos."
+            ]
+          },
+          {
+            "titulo": "Ecuaciones e inecuaciones de primer grado",
+            "destrezas": [
+              "M.5.1.8. Aplicar las propiedades de orden de los números reales para resolver ecuaciones e inecuaciones de primer grado."
+            ]
+          },
+          {
+            "titulo": "Resolución de fórmulas",
+            "destrezas": [
+              "M.5.1.4. Aplicar las propiedades algebraicas de los números reales para resolver fórmulas de diversas ciencias."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Funciones Básicas y Gráficas": {
+        "objetivos": [
+          "Comprender y representar gráficamente diferentes tipos de funciones reales.",
+          "Analizar características como dominio, recorrido y monotonía."
+        ],
+        "temas": [
+          {
+            "titulo": "Concepto de función, dominio y recorrido",
+            "destrezas": [
+              "M.5.1.20. Graficar y analizar el dominio, el recorrido, la monotonía, ceros, extremos y paridad de funciones reales."
+            ]
+          },
+          {
+            "titulo": "Función inyectiva, sobreyectiva y biyectiva",
+            "destrezas": [
+              "M.5.1.23. Reconocer funciones inyectivas, sobreyectivas y biyectivas para calcular la función inversa."
+            ]
+          },
+          {
+            "titulo": "Operaciones con funciones",
+            "destrezas": [
+              "M.5.1.25. Realizar las operaciones de adición y producto entre funciones reales aplicando propiedades."
+            ]
+          },
+          {
+            "titulo": "Composición de funciones",
+            "destrezas": [
+              "M.5.1.21. Realizar la composición de funciones reales analizando las características de la función resultante."
+            ]
+          },
+          {
+            "titulo": "Modelización con funciones reales",
+            "destrezas": [
+              "M.5.1.22. Resolver problemas o situaciones reales o hipotéticas con el empleo de la modelización con funciones reales."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Vectores en el Plano Bidimensional": {
+        "objetivos": [
+          "Analizar la naturaleza geométrica de los vectores en R2.",
+          "Aplicar operaciones con vectores en la resolución de problemas."
+        ],
+        "temas": [
+          {
+            "titulo": "El plano R2 y características de los vectores",
+            "destrezas": [
+              "M.5.2.1. Graficar vectores en el plano (coordenadas) identificando sus características: dirección, sentido y longitud o norma."
+            ]
+          },
+          {
+            "titulo": "Módulo o norma de un vector",
+            "destrezas": [
+              "M.5.2.2. Calcular la longitud o norma aplicando el teorema de Pitágoras."
+            ]
+          },
+          {
+            "titulo": "Suma, resta y multiplicación por un escalar",
+            "destrezas": [
+              "M.5.2.3. Sumar, restar vectores y multiplicar un escalar por un vector de forma geométrica y analítica."
+            ]
+          },
+          {
+            "titulo": "Producto escalar y ortogonalidad",
+            "destrezas": [
+              "M.5.2.7. Calcular el producto escalar entre dos vectores.",
+              "M.5.2.8. Reconocer que dos vectores son ortogonales cuando su producto escalar es cero."
+            ]
+          },
+          {
+            "titulo": "Aplicaciones geométricas y físicas",
+            "destrezas": [
+              "M.5.2.4. Resolver y plantear problemas de aplicaciones geométricas y físicas (posición, velocidad, fuerza) de vectores."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Estadística Descriptiva Básica": {
+        "objetivos": [
+          "Organizar y analizar datos mediante herramientas estadísticas.",
+          "Calcular medidas de tendencia central y de dispersión."
+        ],
+        "temas": [
+          {
+            "titulo": "Medidas de tendencia central: media, mediana y moda",
+            "destrezas": [
+              "M.5.3.1. Calcular e interpretar la media, mediana, moda para datos no agrupados y agrupados."
+            ]
+          },
+          {
+            "titulo": "Medidas de dispersión: rango y varianza",
+            "destrezas": [
+              "M.5.3.1. Calcular e interpretar rango, varianza y desviación estándar para datos agrupados."
+            ]
+          },
+          {
+            "titulo": "Coeficiente de variación",
+            "destrezas": [
+              "M.5.3.4. Calcular e interpretar el coeficiente de variación de un conjunto de datos."
+            ]
+          },
+          {
+            "titulo": "Medidas de posición: cuartiles, deciles y percentiles",
+            "destrezas": [
+              "M.5.3.5. Determinar los cuantiles para datos no agrupados y agrupados."
+            ]
+          },
+          {
+            "titulo": "Diagramas de caja",
+            "destrezas": [
+              "M.5.3.6. Representar en diagramas de caja los cuartiles, mediana, valor máximo y mínimo."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Lengua y Literatura": {
+    "1ro BGU": {
+      "Unidad 1: Cultura Escrita e Interculturalidad": {
+        "objetivos": [
+          "Reconocer el impacto histórico de la cultura escrita y la situación de las lenguas originarias."
+        ],
+        "temas": [
+          {
+            "titulo": "Aportes de la cultura escrita a la humanidad",
+            "destrezas": [
+              "LL.5.1.1. Indagar y explicar los aportes de la cultura escrita al desarrollo histórico, social y cultural."
+            ]
+          },
+          {
+            "titulo": "Variaciones lingüísticas del Ecuador",
+            "destrezas": [
+              "LL.5.1.3. Indagar sobre las variaciones lingüísticas socioculturales del Ecuador y explicar su influencia."
+            ]
+          },
+          {
+            "titulo": "La diglosia en el país",
+            "destrezas": [
+              "LL.5.1.3. Analizar las causas de la diglosia en relación con las lenguas originarias y sus consecuencias."
+            ]
+          },
+          {
+            "titulo": "Identidad y derechos lingüísticos",
+            "destrezas": [
+              "LL.5.1.4. Analizar el impacto de la diglosia en el ámbito educativo y la identidad colectiva."
+            ]
+          },
+          {
+            "titulo": "El multilingüismo ecuatoriano",
+            "destrezas": [
+              "LL.5.1.2. Valorar la diversidad lingüística a partir del conocimiento de su aporte a la construcción de la sociedad intercultural."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Expresión Oral y Argumentación": {
+        "objetivos": [
+          "Participar con fluidez en debates y reconocer errores en la argumentación de los demás."
+        ],
+        "temas": [
+          {
+            "titulo": "Contenidos implícitos y explícitos en el discurso",
+            "destrezas": [
+              "LL.5.2.1. Valorar el contenido explícito de dos o más textos orales e identificar desviaciones en el discurso."
+            ]
+          },
+          {
+            "titulo": "Falacias y ambigüedades lógicas",
+            "destrezas": [
+              "LL.5.2.1. Identificar contradicciones, ambigüedades, falacias y distorsiones en textos orales."
+            ]
+          },
+          {
+            "titulo": "Foros y mesas redondas",
+            "destrezas": [
+              "LL.5.2.3. Utilizar diferentes formatos de participación oral alternando la claridad del discurso y registros lingüísticos."
+            ]
+          },
+          {
+            "titulo": "Persuasión y contraargumentación",
+            "destrezas": [
+              "LL.5.2.3. Utilizar el ritmo, volumen y entonación adecuados para persuadir mediante la argumentación y contraargumentación."
+            ]
+          },
+          {
+            "titulo": "Estereotipos en la comunicación",
+            "destrezas": [
+              "LL.5.2.4. Evaluar con sentido crítico los discursos orales para evitar estereotipos y prejuicios."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Comprensión Lectora y Escritura Académica": {
+        "objetivos": [
+          "Leer críticamente usando estrategias cognitivas y estructurar textos jerarquizados."
+        ],
+        "temas": [
+          {
+            "titulo": "Estrategias metacognitivas de lectura",
+            "destrezas": [
+              "LL.5.3.3. Autorregular la comprensión de un texto mediante la aplicación de estrategias cognitivas y metacognitivas."
+            ]
+          },
+          {
+            "titulo": "Recolección y análisis de fuentes",
+            "destrezas": [
+              "LL.5.3.1. Valorar el contenido explícito de dos o más textos al contrastar fuentes y recolectar información."
+            ]
+          },
+          {
+            "titulo": "El texto argumentativo: la Tesis",
+            "destrezas": [
+              "LL.5.4.1. Construir un texto argumentativo, seleccionando el tema y formulando la tesis."
+            ]
+          },
+          {
+            "titulo": "Organización de párrafos y conectores",
+            "destrezas": [
+              "LL.5.4.2. Defender una tesis mediante la formulación de diferentes tipos de argumentos organizados en párrafos apropiados."
+            ]
+          },
+          {
+            "titulo": "Normas básicas de citación académica",
+            "destrezas": [
+              "LL.5.4.3. Aplicar las normas de citación e identificación de fuentes con rigor y honestidad académica."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Literatura Grecorromana y Clásica": {
+        "objetivos": [
+          "Valorar las bases de la literatura occidental en su contexto histórico."
+        ],
+        "temas": [
+          {
+            "titulo": "Orígenes de la literatura de Grecia",
+            "destrezas": [
+              "LL.5.5.1. Ubicar cronológicamente los textos más representativos de la literatura de Grecia y examinar sus bases."
+            ]
+          },
+          {
+            "titulo": "La literatura Romana",
+            "destrezas": [
+              "LL.5.5.1. Ubicar cronológicamente la literatura de Roma y examinar críticamente las bases de la cultura occidental."
+            ]
+          },
+          {
+            "titulo": "La Épica Clásica",
+            "destrezas": [
+              "LL.5.5.1. Analizar el contenido sociocultural de la épica (La Ilíada, La Odisea) en su contexto histórico."
+            ]
+          },
+          {
+            "titulo": "El Teatro y la Tragedia",
+            "destrezas": [
+              "LL.5.5.2. Examinar el aporte de los textos literarios en el contexto de reconocimiento de las culturas antiguas."
+            ]
+          },
+          {
+            "titulo": "Recreación de mitos clásicos",
+            "destrezas": [
+              "LL.5.5.4. Recrear los textos literarios leídos o escuchados usando diversos medios y recursos (TIC)."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Ciencias Sociales": {
+    "1ro BGU": {
+      "Unidad 1: Orígenes de la Humanidad y el Pensamiento": {
+        "objetivos": [
+          "Comprender la evolución histórica humana y el inicio de la filosofía crítica."
+        ],
+        "temas": [
+          {
+            "titulo": "Historia e Historiografía: realidad vs construcción",
+            "destrezas": [
+              "CS.H.5.1.1. Contrastar los conceptos de historia e historiografía con el fin de diferenciar la realidad de la construcción intelectual."
+            ]
+          },
+          {
+            "titulo": "El trabajo en la evolución humana",
+            "destrezas": [
+              "CS.H.5.1.7. Explicar y valorar la función del trabajo humano en la construcción de la historia y la cultura."
+            ]
+          },
+          {
+            "titulo": "Grandes culturas de Mesopotamia",
+            "destrezas": [
+              "CS.H.5.1.16. Describir y valorar los grandes aportes de las culturas de Mesopotamia al desarrollo tecnológico, económico y científico."
+            ]
+          },
+          {
+            "titulo": "Mito y logos: origen de la racionalidad",
+            "destrezas": [
+              "CS.F.5.1.1. Comprender el origen del pensamiento filosófico a partir de la crítica al pensamiento mítico mediante la reflexión en torno a problemas concretos."
+            ]
+          },
+          {
+            "titulo": "La comunidad y las formas políticas",
+            "destrezas": [
+              "CS.F.5.1.7. Analizar los conceptos fundamentales sobre la comunidad, el quehacer y las formas políticas, desde el enfoque de igualdad."
+            ]
+          }
+        ]
+      },
+      "Unidad 2: Grecia, Roma y la Lógica Clásica": {
+        "objetivos": [
+          "Analizar el legado occidental de Grecia y Roma en los sistemas vigentes."
+        ],
+        "temas": [
+          {
+            "titulo": "La influencia y legado del Imperio griego",
+            "destrezas": [
+              "CS.H.5.1.24. Reconocer la influencia de los griegos, sobre todo en el Imperio romano, en el Imperio bizantino y en la Europa del Renacimiento."
+            ]
+          },
+          {
+            "titulo": "Caída del Imperio Romano",
+            "destrezas": [
+              "CS.H.5.2.1. Determinar las causas y consecuencias de la decadencia y caída del Imperio romano."
+            ]
+          },
+          {
+            "titulo": "Ciudadanía en Grecia y Roma",
+            "destrezas": [
+              "CS.EC.5.1.1. Determinar el origen y evolución histórica del concepto 'ciudadanía' en la Grecia y la Roma antigua."
+            ]
+          },
+          {
+            "titulo": "Verdad versus Validez",
+            "destrezas": [
+              "CS.F.5.2.1. Diferenciar la verdad de la validez, mediante el uso de ejemplos en la discusión de un tema generador y la aplicación de los conocimientos."
+            ]
+          },
+          {
+            "titulo": "Silogismos y lógica aristotélica",
+            "destrezas": [
+              "CS.F.5.2.3. Analizar las estructuras y los principios generales de la argumentación lógica (lógica aristotélica, silogismos) para cultivar un pensamiento coherente."
+            ]
+          }
+        ]
+      },
+      "Unidad 3: Nacimiento de los Derechos y la Democracia": {
+        "objetivos": [
+          "Reflexionar sobre los derechos inalienables y el principio de igualdad natural."
+        ],
+        "temas": [
+          {
+            "titulo": "La democracia moderna",
+            "destrezas": [
+              "CS.EC.5.2.1. Contextualizar el nacimiento de la democracia moderna, considerando los procesos históricos que la alumbraron."
+            ]
+          },
+          {
+            "titulo": "Igualdad natural del ser humano",
+            "destrezas": [
+              "CS.EC.5.1.6. Reconocer la igualdad natural de los seres humanos y la protección de la vida frente a la arbitrariedad del poder desde el análisis político."
+            ]
+          },
+          {
+            "titulo": "Evolución de los Derechos Humanos",
+            "destrezas": [
+              "CS.EC.5.1.5. Determinar la trascendencia de la Declaración Universal de los Derechos Humanos, desde la comprensión de su significado político."
+            ]
+          },
+          {
+            "titulo": "Falacias lógicas y paradojas",
+            "destrezas": [
+              "CS.F.5.2.4. Diferenciar las falacias de las paradojas, en función de un ejercicio válido de razonamiento."
+            ]
+          },
+          {
+            "titulo": "El diálogo racional y método socrático",
+            "destrezas": [
+              "CS.F.5.1.11. Aplicar el método socrático y el diálogo estructurado en función de la construcción de un pensamiento creativo."
+            ]
+          }
+        ]
+      },
+      "Unidad 4: Las Grandes Religiones y la Tolerancia": {
+        "objetivos": [
+          "Analizar la influencia religiosa en la conformación sociopolítica antigua y medieval."
+        ],
+        "temas": [
+          {
+            "titulo": "Surgimiento del Cristianismo e Islam",
+            "destrezas": [
+              "CS.H.5.2.4. Examinar y relacionar los procesos de expansión del cristianismo y del islamismo y los conflictos motivados por ellos."
+            ]
+          },
+          {
+            "titulo": "Judaísmo, Cristianismo e Islamismo: principios",
+            "destrezas": [
+              "CS.H.5.2.18. Argumentar los esenciales principios comunes del judaísmo, el cristianismo y el islamismo y sus diferencias fundamentales."
+            ]
+          },
+          {
+            "titulo": "Hipatia de Alejandría: mujer y filosofía",
+            "destrezas": [
+              "CS.F.5.1.5. Analizar y valorar el pensamiento de Hipatia dentro de la escuela neoplatónica en la Grecia del siglo V."
+            ]
+          },
+          {
+            "titulo": "Rol de la mujer en las sociedades clásicas",
+            "destrezas": [
+              "CS.H.5.1.31. Analizar y comparar los roles de la mujer de los diferentes estratos sociales en la Roma antigua."
+            ]
+          },
+          {
+            "titulo": "Generaciones de derechos civiles",
+            "destrezas": [
+              "CS.EC.5.1.7. Identificar y analizar cada una de las diferentes generaciones de derechos y el contexto histórico de su surgimiento."
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

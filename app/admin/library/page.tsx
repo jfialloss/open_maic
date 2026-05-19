@@ -275,6 +275,7 @@ export default function AdminLibraryPage() {
                   <th className="px-6 py-4 font-medium">{t('adminLibrary.author')}</th>
                   <th className="px-6 py-4 font-medium">{t('adminLibrary.course')}</th>
                   <th className="px-6 py-4 font-medium">{t('adminLibrary.subject')}</th>
+                  <th className="px-6 py-4 font-medium">Tipo</th>
                   <th className="px-6 py-4 font-medium text-right">{t('adminLibrary.actions')}</th>
                 </tr>
               </thead>
@@ -299,6 +300,17 @@ export default function AdminLibraryPage() {
                       <span className="inline-flex items-center rounded-sm bg-indigo-100 dark:bg-indigo-900/40 px-2 py-0.5 text-xs font-semibold text-indigo-700 dark:text-indigo-400">
                         {gc.subject === 'none' || !gc.subject ? t('adminLibrary.free') : gc.subject}
                       </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {gc.stage?.interactiveMode ? (
+                        <span className="inline-flex items-center rounded-sm bg-fuchsia-100 dark:bg-fuchsia-900/40 px-2 py-0.5 text-[10px] font-bold text-fuchsia-700 dark:text-fuchsia-400 tracking-wider">
+                          INTERACTIVO
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center rounded-sm bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[10px] font-bold text-slate-500 dark:text-slate-400 tracking-wider">
+                          NORMAL
+                        </span>
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right">
                       <div className="flex justify-end gap-2">

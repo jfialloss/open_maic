@@ -11,6 +11,7 @@ import { useSettingsStore } from '@/lib/store/settings';
 import { auth } from '@/lib/firebase';
 import { toast } from 'sonner';
 import confetti from 'canvas-confetti';
+import { useI18n } from '@/lib/hooks/use-i18n';
 
 interface PracticeModalProps {
   onClose: () => void;
@@ -22,16 +23,9 @@ type Question = {
   correctIndex: number;
 };
 
-function getSublevel(grade: string) {
-  if (grade.includes('Bachillerato') || grade.includes('BGU')) return 'Bachillerato';
-  if (grade.includes('8º') || grade.includes('9º') || grade.includes('10º')) return 'Básica Superior';
-  if (grade.includes('5º') || grade.includes('6º') || grade.includes('7º')) return 'Básica Media';
-  return 'Básica Elemental';
-}
-
 export function PracticeModal({ onClose }: PracticeModalProps) {
   const { grade, awardXP, englishLevel } = useUserProfileStore();
-  const sublevel = getSublevel(grade || '4º Grado de EGB');
+  const { locale } = useI18n();
 
   // Step 0: Setup, 1: Loading, 2: Playing, 3: Result
   const [step, setStep] = useState<0 | 1 | 2 | 3>(0);
@@ -55,14 +49,32 @@ export function PracticeModal({ onClose }: PracticeModalProps) {
 
   const availableTopics = useMemo(() => {
     if (!selectedSubject) return [];
-    const levelKey = selectedSubject === 'Inglés' ? (englishLevel || 'A1') : sublevel;
+    let levelKey = englishLevel || 'A1';
+    if (selectedSubject !== 'Inglés') {
+      const gradeMap: Record<string, string> = {
+        '5º Grado de EGB': '5to de EGB',
+        '6º Grado de EGB': '6to de EGB',
+        '7º Grado de EGB': '7mo de EGB',
+        '8º Grado de EGB': '8vo de EGB',
+        '9º Grado de EGB': '9no de EGB',
+        '10º Grado de EGB': '10mo de EGB',
+        '1º de Bachillerato': '1ro de BGU',
+        '2º de Bachillerato': '2do de BGU',
+        '3º de Bachillerato': '3ro de BGU',
+        '1º Curso de Bachillerato': '1ro de BGU',
+        '2º Curso de Bachillerato': '2do de BGU',
+        '3º Curso de Bachillerato': '3ro de BGU',
+      };
+      levelKey = gradeMap[grade || '5º Grado de EGB'] || '5to de EGB';
+    }
+
     const units = syllabus[selectedSubject]?.[levelKey];
     if (!units) return [];
     
     // Flatten all topics from all units
     let topics: string[] = [];
     Object.entries(units).forEach(([unitName, u]: [string, any]) => {
-      if (unitName === 'objetivos_oficiales') return;
+      if (unitName === 'objetivos_oficiales' || unitName === 'objetivos') return;
       const isNewFormat = u.temas && typeof u.temas[0] === 'object';
       const extractedTopics = isNewFormat ? u.temas.map((t: any) => t.titulo) : u.temas;
       if (extractedTopics) {
@@ -70,7 +82,7 @@ export function PracticeModal({ onClose }: PracticeModalProps) {
       }
     });
     return topics;
-  }, [selectedSubject, sublevel, englishLevel, syllabus]);
+  }, [selectedSubject, grade, englishLevel, syllabus]);
 
   const handleGenerate = async () => {
     if (!selectedSubject || !selectedTopic) return;
@@ -100,6 +112,7 @@ export function PracticeModal({ onClose }: PracticeModalProps) {
           modelId: settings.modelId,
           apiKey,
           baseUrl,
+          language: locale,
         })
       });
 
@@ -261,7 +274,7 @@ export function PracticeModal({ onClose }: PracticeModalProps) {
                 {selectedSubject && (
                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                     <label className="text-sm font-semibold text-foreground mb-3 block">
-                      2. Selecciona un Tema ({selectedSubject === 'Inglés' ? `Nivel ${englishLevel || 'A1'}` : sublevel})
+                      2. Selecciona un Tema ({selectedSubject === 'Inglés' ? `Nivel ${englishLevel || 'A1'}` : grade})
                     </label>
                     <div className="max-h-[200px] overflow-y-auto space-y-2 pr-2 custom-scrollbar">
                       {availableTopics.length === 0 ? (
