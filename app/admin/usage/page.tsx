@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { collection, query, orderBy, getDocs, where, Timestamp } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs, where, Timestamp, doc, getDoc } from 'firebase/firestore';
 import { db as firestoreDb } from '@/lib/firebase';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Activity, Coins, Loader2, ArrowLeft, RefreshCw, BarChart3, Database, Calendar, User, Cpu } from 'lucide-react';
+import { Activity, Coins, Loader2, ArrowLeft, RefreshCw, BarChart3, Database, Calendar, User, Cpu, BookOpen, Layers, Image, Volume2, Key } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import {
   BarChart,
@@ -33,6 +33,7 @@ interface UsageLog {
   cost: number;
   source: string;
   createdAt: number;
+  stageId?: string | null;
 }
 
 type DateRange = '7d' | '30d' | 'this_month' | 'last_month';
@@ -48,6 +49,10 @@ export default function UsageDashboard() {
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState<DateRange>('7d');
   const [visibleCount, setVisibleCount] = useState(50);
+  const [courseNames, setCourseNames] = useState<Record<string, string>>({});
+  const [loadingNames, setLoadingNames] = useState(false);
+  const [filterGlobalLibrary, setFilterGlobalLibrary] = useState(true);
+  const [globalStageIds, setGlobalStageIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!authLoading && role !== 'admin') {
@@ -123,6 +128,7 @@ export default function UsageDashboard() {
           cost: cost,
           source: source,
           createdAt: d.createdAt?.toMillis() || 0,
+          stageId: d.stageId || null,
         } as UsageLog;
       });
       
@@ -143,6 +149,112 @@ export default function UsageDashboard() {
   const handleLoadMore = () => {
     setVisibleCount(prev => prev + 50);
   };
+
+  useEffect(() => {
+    if (logs.length === 0) return;
+
+    const fetchCourseNames = async () => {
+      setLoadingNames(true);
+      const uniqueStageIds = Array.from(new Set(logs.map(log => log.stageId).filter(Boolean))) as string[];
+      
+      const namesMap: Record<string, string> = {};
+      const globalIds = new Set<string>();
+      await Promise.all(
+        uniqueStageIds.map(async (stageId) => {
+          try {
+            const docRef = doc(firestoreDb, 'global_classrooms', stageId);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+              const stageData = docSnap.data();
+              namesMap[stageId] = stageData.stage?.name || stageData.stage?.topic || 'Curso Sin Nombre';
+              globalIds.add(stageId);
+            } else {
+              namesMap[stageId] = `ID: ${stageId}`;
+            }
+          } catch (err) {
+            namesMap[stageId] = `ID: ${stageId}`;
+          }
+        })
+      );
+      setCourseNames(namesMap);
+      setGlobalStageIds(globalIds);
+      setLoadingNames(false);
+    };
+
+    fetchCourseNames();
+  }, [logs]);
+
+  interface CourseAggregatedCost {
+    stageId: string;
+    courseName: string;
+    email: string;
+    outline: number;
+    content: number;
+    actions: number;
+    image: number;
+    tts: number;
+    other: number;
+    totalCost: number;
+    totalTokens: number;
+    requestCount: number;
+    createdAt: number;
+  }
+
+  const courseAggregatedCosts = useMemo(() => {
+    const groups: Record<string, CourseAggregatedCost> = {};
+    
+    logs.forEach(log => {
+      if (!log.stageId) return;
+      
+      // Filter: if filterGlobalLibrary is active, only include if stageId exists in global_classrooms
+      if (filterGlobalLibrary && !loadingNames && !globalStageIds.has(log.stageId)) {
+        return;
+      }
+      
+      if (!groups[log.stageId]) {
+        groups[log.stageId] = {
+          stageId: log.stageId,
+          courseName: courseNames[log.stageId] || `ID: ${log.stageId}`,
+          email: log.email || 'unknown',
+          outline: 0,
+          content: 0,
+          actions: 0,
+          image: 0,
+          tts: 0,
+          other: 0,
+          totalCost: 0,
+          totalTokens: 0,
+          requestCount: 0,
+          createdAt: log.createdAt,
+        };
+      }
+      
+      const group = groups[log.stageId];
+      group.totalTokens += log.totalTokens;
+      group.requestCount += 1;
+      group.totalCost += log.cost;
+      
+      if (log.createdAt && log.createdAt < group.createdAt) {
+        group.createdAt = log.createdAt;
+      }
+      
+      if (log.source === 'outline') {
+        group.outline += log.cost;
+      } else if (log.source === 'content') {
+        group.content += log.cost;
+      } else if (log.source === 'actions') {
+        group.actions += log.cost;
+      } else if (log.source === 'image') {
+        group.image += log.cost;
+      } else if (log.source === 'tts') {
+        group.tts += log.cost;
+      } else {
+        group.other += log.cost;
+      }
+    });
+    
+    return Object.values(groups).sort((a, b) => b.createdAt - a.createdAt);
+  }, [logs, courseNames, globalStageIds, filterGlobalLibrary, loadingNames]);
 
   if (authLoading || role !== 'admin') {
     return (
@@ -482,6 +594,139 @@ export default function UsageDashboard() {
               ) : (
                 <div className="py-8 text-center text-slate-500 dark:text-slate-400 text-sm">
                   No hay datos
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Unit Economics Section */}
+          <Card className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+            <CardHeader className="flex flex-col md:flex-row items-start md:items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-700/50 gap-4">
+              <div>
+                <CardTitle className="text-base font-semibold flex items-center gap-2 text-slate-900 dark:text-slate-100">
+                  <BookOpen className="size-4 text-rose-500" />
+                  Unit Economics: Costo de Generación por Curso
+                </CardTitle>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  Costo total acumulado por sesión de generación (agrupado por curso). Útil para fijar precios de venta y analizar rentabilidad.
+                </p>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                {/* Premium Tab Toggle */}
+                <div className="bg-slate-100 dark:bg-slate-900 p-0.5 rounded-lg flex items-center shrink-0 border border-slate-200 dark:border-slate-800">
+                  <button
+                    onClick={() => setFilterGlobalLibrary(true)}
+                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                      filterGlobalLibrary
+                        ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-sm'
+                        : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
+                    }`}
+                  >
+                    Solo Biblioteca Global
+                  </button>
+                  <button
+                    onClick={() => setFilterGlobalLibrary(false)}
+                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                      !filterGlobalLibrary
+                        ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-sm'
+                        : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
+                    }`}
+                  >
+                    Todos
+                  </button>
+                </div>
+
+                {courseAggregatedCosts.length > 0 && (
+                  <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
+                    <div className="bg-slate-50 dark:bg-slate-900/50 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-800 flex items-center gap-2">
+                      <span className="text-slate-400">{filterGlobalLibrary ? 'Cursos Guardados:' : 'Cursos Generados:'}</span>
+                      <span className="text-slate-800 dark:text-slate-200 font-bold font-mono">{courseAggregatedCosts.length}</span>
+                    </div>
+                    <div className="bg-slate-50 dark:bg-slate-900/50 px-3 py-1.5 rounded-lg border border-slate-100 dark:border-slate-800 flex items-center gap-2">
+                      <span className="text-slate-400">Costo Promedio:</span>
+                      <span className="text-emerald-600 dark:text-emerald-400 font-bold font-mono">
+                        ${(courseAggregatedCosts.reduce((acc, c) => acc + c.totalCost, 0) / courseAggregatedCosts.length).toFixed(4)}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              {loading || loadingNames ? (
+                <div className="py-12 flex justify-center items-center flex-col gap-2">
+                  <Loader2 className="size-8 text-sky-500 animate-spin" />
+                  <span className="text-xs text-slate-400">Verificando Biblioteca Global y calculando unit economics...</span>
+                </div>
+              ) : courseAggregatedCosts.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm text-left">
+                    <thead className="text-xs text-slate-500 bg-slate-50/50 dark:bg-slate-900/50 dark:text-slate-400 uppercase border-b border-slate-100 dark:border-slate-700/50">
+                      <tr>
+                        <th className="px-6 py-4 font-medium">Curso / Sesión</th>
+                        <th className="px-4 py-4 font-medium text-right">Estructura</th>
+                        <th className="px-4 py-4 font-medium text-right">Contenido</th>
+                        <th className="px-4 py-4 font-medium text-right">Acciones</th>
+                        <th className="px-4 py-4 font-medium text-right">Imágenes</th>
+                        <th className="px-4 py-4 font-medium text-right">Voces (TTS)</th>
+                        <th className="px-6 py-4 font-medium text-right">Tokens Totales</th>
+                        <th className="px-6 py-4 font-medium text-right">Costo Acumulado</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
+                      {courseAggregatedCosts.map((course) => (
+                        <tr key={course.stageId} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                          <td className="px-6 py-4">
+                            <div className="flex items-start gap-2.5 max-w-[240px]">
+                              <div className="size-8 rounded-lg bg-rose-50 dark:bg-rose-950/30 flex items-center justify-center shrink-0 mt-0.5 border border-rose-100/50 dark:border-rose-900/20">
+                                <BookOpen className="size-4 text-rose-500" />
+                              </div>
+                              <div className="truncate">
+                                <div className="font-semibold text-slate-800 dark:text-slate-200 truncate" title={course.courseName}>
+                                  {course.courseName}
+                                </div>
+                                <div className="text-[10px] font-mono text-slate-400 dark:text-slate-500 flex items-center gap-1 mt-0.5">
+                                  <Key className="size-3 shrink-0" />
+                                  <span>{course.stageId}</span>
+                                </div>
+                                <div className="text-[10px] font-mono text-slate-400 dark:text-slate-500 flex items-center gap-1 mt-0.5">
+                                  <User className="size-3 shrink-0" />
+                                  <span className="truncate" title={course.email}>{course.email}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-4 py-4 text-right font-mono text-xs text-slate-500 dark:text-slate-400">
+                            {course.outline > 0 ? `$${course.outline.toFixed(4)}` : '—'}
+                          </td>
+                          <td className="px-4 py-4 text-right font-mono text-xs text-slate-500 dark:text-slate-400">
+                            {course.content > 0 ? `$${course.content.toFixed(4)}` : '—'}
+                          </td>
+                          <td className="px-4 py-4 text-right font-mono text-xs text-slate-500 dark:text-slate-400">
+                            {course.actions > 0 ? `$${course.actions.toFixed(4)}` : '—'}
+                          </td>
+                          <td className="px-4 py-4 text-right font-mono text-xs text-slate-500 dark:text-slate-400">
+                            {course.image > 0 ? `$${course.image.toFixed(4)}` : '—'}
+                          </td>
+                          <td className="px-4 py-4 text-right font-mono text-xs text-slate-500 dark:text-slate-400">
+                            {course.tts > 0 ? `$${course.tts.toFixed(4)}` : '—'}
+                          </td>
+                          <td className="px-6 py-4 text-right font-mono text-xs text-sky-600 dark:text-sky-400">
+                            {course.totalTokens.toLocaleString(locale)}
+                          </td>
+                          <td className="px-6 py-4 text-right font-mono text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                            ${course.totalCost.toFixed(4)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="py-12 text-center text-slate-500 dark:text-slate-400 text-sm flex flex-col items-center justify-center gap-2">
+                  <Database className="size-8 text-slate-300 dark:text-slate-600" />
+                  <span>No se encontraron sesiones de generación de cursos para el período seleccionado.</span>
                 </div>
               )}
             </CardContent>

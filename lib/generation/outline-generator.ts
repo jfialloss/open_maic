@@ -194,6 +194,56 @@ export async function generateSceneOutlinesFromRequirements(
       }
     }
 
+    // 3. Guarantee that the final quiz has specific course-specific topics in its description and keyPoints (matching what was explained)
+    if (processedOutlines.length > 1) {
+      const lastSceneIndex = processedOutlines.length - 1;
+      const lastScene = processedOutlines[lastSceneIndex];
+      if (lastScene.type === 'quiz') {
+        const precedingScenes = processedOutlines.slice(0, lastSceneIndex);
+        
+        // Build dynamic syllabus for the quiz description
+        const syllabus = precedingScenes
+          .map((s, idx) => `${idx + 1}. ${s.title}: ${s.description || ''}`)
+          .join('\n');
+          
+        let pureUserPrompt = requirements.requirement.split('\n\n[System Note:')[0];
+        pureUserPrompt = pureUserPrompt.split('\n\n[CONTEXTO NORMATIVO')[0];
+        pureUserPrompt = pureUserPrompt.trim();
+
+        const rawTheme = (requirements.topic && requirements.topic !== 'LIBRE')
+          ? requirements.topic
+          : pureUserPrompt;
+        const courseTheme = rawTheme.length > 150 
+          ? rawTheme.substring(0, 147) + '...' 
+          : rawTheme;
+
+        const isEnglish = requirements.language === 'en-US' || requirements.language === 'en';
+        const coursePrefix = isEnglish ? `Course: ${courseTheme}\n` : `Curso: ${courseTheme}\n`;
+        
+        log.info(`Enriching final quiz with syllabus from ${precedingScenes.length} preceding scenes.`);
+        
+        lastScene.description = isEnglish
+          ? `${coursePrefix}Final assessment evaluating the student's mastery of the following course syllabus:\n${syllabus}`
+          : `${coursePrefix}Evaluación final para calificar el dominio del estudiante sobre el siguiente temario del curso:\n${syllabus}`;
+          
+        // Inherit the exact keyPoints explained by the teacher in preceding scenes
+        const allKeyPoints = precedingScenes
+          .flatMap((s) => s.keyPoints || [])
+          .filter(Boolean)
+          .map((kp) => kp.trim());
+          
+        if (allKeyPoints.length > 0) {
+          // Limit to a maximum of 8 keyPoints to prevent LLM call context saturation while maintaining high specificity
+          lastScene.keyPoints = allKeyPoints.slice(0, 8);
+        } else {
+          lastScene.keyPoints = precedingScenes.map((s) => 
+            isEnglish ? `Comprehension of: ${s.title}` : `Comprensión de: ${s.title}`
+          );
+        }
+      }
+    }
+
+
     // Ensure IDs, order, and pass down languageDirective
     const enriched = processedOutlines.map((outline, index) => {
       // Bulletproof fix for title duplication: programmatically strip the title from keyPoints

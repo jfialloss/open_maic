@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
   try {
     const authUser = await authenticateRequest(req);
     const body = await req.json();
-    const { text, audioId, ttsProviderId, ttsVoice, ttsSpeed, ttsApiKey, ttsBaseUrl } = body as {
+    const { text, audioId, ttsProviderId, ttsVoice, ttsSpeed, ttsApiKey, ttsBaseUrl, stageId } = body as {
       text: string;
       audioId: string;
       ttsProviderId: TTSProviderId;
@@ -33,6 +33,7 @@ export async function POST(req: NextRequest) {
       ttsSpeed?: number;
       ttsApiKey?: string;
       ttsBaseUrl?: string;
+      stageId?: string;
     };
 
     // Validate required fields
@@ -90,6 +91,7 @@ export async function POST(req: NextRequest) {
         modelString: ttsProviderId,
         promptTokens: text.length, // use chars for TTS cost
         completionTokens: 0,
+        stageId,
         source: 'tts',
       });
     } catch (e) {

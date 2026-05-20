@@ -116,7 +116,7 @@ async function generateSingleMedia(
     let mimeType: string;
 
     if (req.type === 'image') {
-      const result = await callImageApi(req, abortSignal);
+      const result = await callImageApi(req, stageId, abortSignal);
       resultUrl = result.url;
       mimeType = 'image/png';
     } else {
@@ -186,6 +186,7 @@ async function generateSingleMedia(
 
 async function callImageApi(
   req: MediaGenerationRequest,
+  stageId: string,
   abortSignal?: AbortSignal,
 ): Promise<{ url: string }> {
   const settings = useSettingsStore.getState();
@@ -201,6 +202,7 @@ async function callImageApi(
       'x-image-model': settings.imageModelId || '',
       'x-api-key': providerConfig?.apiKey || '',
       'x-base-url': providerConfig?.baseUrl || '',
+      'x-stage-id': stageId,
     },
     body: JSON.stringify({
       prompt: req.prompt,

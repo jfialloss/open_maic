@@ -45,13 +45,14 @@ const MODEL_PRICING: Record<string, { input: number; output: number }> = {
   'dall-e-3': { input: 0.040, output: 0.040 },
   'recraft': { input: 0.04, output: 0.04 },
   'seedream': { input: 0.03, output: 0.03 },
-  // TTS Models (cost per 1M characters, input=output=half the cost to fit the calculation)
-  'google-tts': { input: 8.00, output: 8.00 }, // $16 per 1M chars
-  'azure-tts': { input: 8.00, output: 8.00 },  // $16 per 1M chars
-  'elevenlabs': { input: 150.00, output: 150.00 }, // ~$300 per 1M chars
+  'nano-banana': { input: 0.03, output: 0.03 }, // Imagen 3 native image generation
+  // TTS Models (cost per 1M characters, input is the full cost because completionTokens is 0)
+  'google-tts': { input: 16.00, output: 16.00 }, // $16 per 1M chars
+  'azure-tts': { input: 16.00, output: 16.00 },  // $16 per 1M chars
+  'elevenlabs': { input: 300.00, output: 300.00 }, // ~$300 per 1M chars
 };
 
-function calculateCost(modelString: string, promptTokens: number, completionTokens: number): number {
+export function calculateCost(modelString: string, promptTokens: number, completionTokens: number): number {
   let inputCost = 0.075; // Default to Flash pricing
   let outputCost = 0.30;
   
@@ -71,9 +72,16 @@ export async function logTokenUsage(params: TokenLogParams): Promise<void> {
   try {
     let promptTokens = params.promptTokens || 0;
     let completionTokens = params.completionTokens || 0;
+    let isEstimated = false;
     
     // Fallback estimation if AI SDK failed to return usage
     if (promptTokens === 0 && completionTokens === 0) {
+      if (params.source === 'image' || params.source === 'tts') {
+        isEstimated = false; // These are flat-rate or char-based calculations, not LLM fallbacks
+      } else {
+        isEstimated = true;
+      }
+
       if (params.source === 'outline') {
         promptTokens = 1500;
         completionTokens = 600;
@@ -108,10 +116,11 @@ export async function logTokenUsage(params: TokenLogParams): Promise<void> {
       cost: cost,
       stageId: params.stageId || null,
       source: params.source,
+      isEstimated: isEstimated,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
     
-    log.info(`Token usage logged for ${params.email || params.uid}: ${promptTokens + completionTokens} tokens, $${cost.toFixed(6)}`);
+    log.info(`Token usage logged for ${params.email || params.uid}: ${promptTokens + completionTokens} tokens, $${cost.toFixed(6)} (estimated: ${isEstimated})`);
   } catch (error) {
     log.error('Failed to log token usage to Firestore', error);
   }

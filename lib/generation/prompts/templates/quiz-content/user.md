@@ -1,4 +1,5 @@
-Title: {{title}}
+Course Theme / Overarching Subject: {{courseTitle}}
+Quiz Title: {{title}}
 Description: {{description}}
 Test Points: {{keyPoints}}
 Question Count: {{questionCount}}, Difficulty: {{difficulty}}, Question Types: {{questionTypes}}

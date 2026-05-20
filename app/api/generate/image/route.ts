@@ -42,6 +42,7 @@ export async function POST(request: NextRequest) {
     const clientApiKey = request.headers.get('x-api-key') || undefined;
     const clientBaseUrl = request.headers.get('x-base-url') || undefined;
     const clientModel = request.headers.get('x-image-model') || undefined;
+    const stageId = request.headers.get('x-stage-id') || undefined;
 
     if (clientBaseUrl && process.env.NODE_ENV === 'production') {
       const ssrfError = validateUrlForSSRF(clientBaseUrl);
@@ -84,6 +85,7 @@ export async function POST(request: NextRequest) {
         modelString: clientModel || providerId,
         promptTokens: 0,
         completionTokens: 0,
+        stageId,
         source: 'image',
       });
     } catch (e) {

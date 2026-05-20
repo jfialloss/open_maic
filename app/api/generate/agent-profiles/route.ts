@@ -137,8 +137,8 @@ Return a JSON object with this exact structure:
         uid: authUser.uid,
         email: authUser.email || undefined,
         modelString,
-        promptTokens: (result.usage as any)?.promptTokens || 0,
-        completionTokens: (result.usage as any)?.completionTokens || 0,
+        promptTokens: result.usage?.inputTokens ?? (result.usage as any)?.promptTokens ?? 0,
+        completionTokens: result.usage?.outputTokens ?? (result.usage as any)?.completionTokens ?? 0,
         source: 'agent-profiles',
       });
     } catch (e) {

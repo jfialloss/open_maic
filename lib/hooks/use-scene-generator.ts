@@ -366,6 +366,7 @@ export async function generateAndStoreTTS(
   text: string,
   signal?: AbortSignal,
   overrideVoice?: string,
+  stageId?: string,
 ): Promise<void> {
   const settings = useSettingsStore.getState();
   if (settings.ttsProviderId === 'browser-native-tts') return;
@@ -386,6 +387,7 @@ export async function generateAndStoreTTS(
       ttsSpeed: settings.ttsSpeed,
       ttsApiKey: ttsProviderConfig?.apiKey || undefined,
       ttsBaseUrl: ttsProviderConfig?.baseUrl || undefined,
+      stageId,
     }),
     signal,
   });
@@ -420,6 +422,7 @@ async function generateTTSForScene(
   agents: AgentInfo[] | undefined,
   language: string | undefined,
   languageDirective: string | undefined,
+  stageId?: string,
   signal?: AbortSignal,
 ): Promise<{ success: boolean; failedCount: number; error?: string }> {
   const providerId = useSettingsStore.getState().ttsProviderId;
@@ -440,7 +443,7 @@ async function generateTTSForScene(
     const audioId = `tts_${action.id}`;
     action.audioId = audioId;
     try {
-      await generateAndStoreTTS(audioId, action.text, signal, dynamicVoice);
+      await generateAndStoreTTS(audioId, action.text, signal, dynamicVoice, stageId);
     } catch (error) {
       failedCount++;
       lastError = error instanceof Error ? error.message : `TTS failed for action ${action.id}`;
@@ -615,7 +618,7 @@ export function useSceneGenerator(options: UseSceneGeneratorOptions = {}) {
             // TTS generation — failure means the whole scene fails
             if (settings.ttsEnabled && settings.ttsProviderId !== 'browser-native-tts') {
               const language = params.stageInfo.language;
-              const ttsResult = await generateTTSForScene(scene, params.agents, language, outline.languageDirective, signal);
+              const ttsResult = await generateTTSForScene(scene, params.agents, language, outline.languageDirective, stage.id, signal);
               if (!ttsResult.success) {
                 if (abortRef.current || store.getState().generationEpoch !== startEpoch) {
                   pausedByFailureOrAbort = true;
@@ -761,7 +764,7 @@ export function useSceneGenerator(options: UseSceneGeneratorOptions = {}) {
         const settings = useSettingsStore.getState();
         if (settings.ttsEnabled && settings.ttsProviderId !== 'browser-native-tts') {
           const language = params.stageInfo.language;
-          const ttsResult = await generateTTSForScene(actionsResult.scene, params.agents, language, outline.languageDirective, signal);
+          const ttsResult = await generateTTSForScene(actionsResult.scene, params.agents, language, outline.languageDirective, state.stage.id, signal);
           if (!ttsResult.success) {
             store.getState().addFailedOutline(outline);
             return;

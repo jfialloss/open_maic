@@ -80,6 +80,7 @@ Open-ended question requiring a written response. No options or predefined answe
 - Clear and concise, avoid ambiguity
 - Focus on key knowledge points
 - Appropriate difficulty based on specified level
+- **CRITICAL - SUBJECT MATTER FOCUS**: Every question MUST test the actual academic/subject matter of the course (e.g. physics, math, history, cooking) as defined by the **Course Theme / Overarching Subject**, Quiz Title, Description, and Test Points. Under no circumstances should you generate generic questions on unrelated subjects (such as general knowledge, trivia, astronomy if the course is biology, etc.), nor should you ask generic questions about the process of taking quizzes, study strategies, or pedagogical theory (e.g. "What is the purpose of an evaluation?"). Focus entirely and deeply on assessing the learner's comprehension of the specific course topics and theme.
 
 ### Option Design
 

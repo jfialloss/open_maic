@@ -360,8 +360,8 @@ export async function POST(req: NextRequest) {
                     uid: authUser.uid,
                     email: authUser.email || undefined,
                     modelString,
-                    promptTokens: (usage as any).promptTokens,
-                    completionTokens: (usage as any).completionTokens,
+                    promptTokens: usage?.inputTokens ?? (usage as any)?.promptTokens ?? 0,
+                    completionTokens: usage?.outputTokens ?? (usage as any)?.completionTokens ?? 0,
                     stageId,
                     source: 'outline',
                   });
@@ -420,12 +420,49 @@ export async function POST(req: NextRequest) {
             // Append the programmatic final quiz at the very end
             log.info('Programmatically injecting final quiz at the end of the course.');
             const langDir = parsedOutlines[0].languageDirective || 'Teach in the language that matches the user requirement.';
+            
+            // Build dynamic syllabus and key points for the final quiz
+            const precedingScenes = parsedOutlines;
+            const syllabus = precedingScenes
+              .map((s, idx) => `${idx + 1}. ${s.title}: ${s.description || ''}`)
+              .join('\n');
+            
+            const isEnglish = requirements.language === 'en-US' || requirements.language === 'en';
+            
+            const rawTheme = (requirements.topic && requirements.topic !== 'LIBRE')
+              ? requirements.topic
+              : pureUserPrompt;
+            const courseTheme = rawTheme.length > 150 
+              ? rawTheme.substring(0, 147) + '...' 
+              : rawTheme;
+
+            const coursePrefix = isEnglish ? `Course: ${courseTheme}\n` : `Curso: ${courseTheme}\n`;
+            
+            const quizTitle = isEnglish ? 'Final Evaluation' : 'Evaluación Final';
+            const quizDescription = isEnglish
+              ? `${coursePrefix}Final assessment evaluating the student's mastery of the following course syllabus:\n${syllabus}`
+              : `${coursePrefix}Evaluación final para calificar el dominio del estudiante sobre el siguiente temario del curso:\n${syllabus}`;
+              
+            const allKeyPoints = precedingScenes
+              .flatMap((s) => s.keyPoints || [])
+              .filter(Boolean)
+              .map((kp) => kp.trim());
+              
+            let quizKeyPoints: string[] = [];
+            if (allKeyPoints.length > 0) {
+              quizKeyPoints = allKeyPoints.slice(0, 8);
+            } else {
+              quizKeyPoints = precedingScenes.map((s) => 
+                isEnglish ? `Comprehension of: ${s.title}` : `Comprensión de: ${s.title}`
+              );
+            }
+
             parsedOutlines.push({
               id: `scene_${nanoid()}`,
               type: 'quiz',
-              title: 'Evaluación Final / Final Evaluation',
-              description: 'Evaluación final para comprobar los conocimientos adquiridos. / Final evaluation to check acquired knowledge.',
-              keyPoints: ['Verificar comprensión / Verify understanding', 'Reforzar conceptos clave / Reinforce key concepts'],
+              title: quizTitle,
+              description: quizDescription,
+              keyPoints: quizKeyPoints,
               order: parsedOutlines.length + 1,
               languageDirective: langDir,
               quizConfig: {

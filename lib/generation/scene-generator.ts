@@ -70,6 +70,7 @@ export interface SceneContentOptions {
   agents?: AgentInfo[];
   languageDirective?: string;
   thinkingConfig?: import('@/lib/types/provider').ThinkingConfig;
+  courseTitle?: string;
 }
 
 export interface SceneActionsOptions {
@@ -291,6 +292,7 @@ export async function generateSceneContent(
     generatedMediaMapping,
     agents,
     languageDirective,
+    courseTitle,
   } = options;
 
   // Unified path for interactive scenes (both normal and ultra mode)
@@ -330,7 +332,7 @@ export async function generateSceneContent(
         languageDirective,
       );
     case 'quiz':
-      return generateQuizContent(outline, aiCall, languageDirective);
+      return generateQuizContent(outline, aiCall, languageDirective, courseTitle);
     case 'pbl':
       return generatePBLSceneContent(outline, languageModel, languageDirective);
     default:
@@ -786,6 +788,7 @@ async function generateQuizContent(
   outline: SceneOutline,
   aiCall: AICallFn,
   languageDirective?: string,
+  courseTitle?: string,
 ): Promise<GeneratedQuizContent | null> {
   const quizConfig = outline.quizConfig || {
     questionCount: 3,
@@ -801,6 +804,7 @@ async function generateQuizContent(
     difficulty: quizConfig.difficulty,
     questionTypes: quizConfig.questionTypes.join(', '),
     languageDirective: languageDirective || '',
+    courseTitle: courseTitle || '',
   });
 
   if (!prompts) {

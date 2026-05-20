@@ -65,8 +65,8 @@ ${commentPrompt ? `Grading guidance: ${commentPrompt}\n` : ''}Student answer: ${
         uid: authUser.uid,
         email: authUser.email || undefined,
         modelString: modelString,
-        promptTokens: (result.usage as any)?.promptTokens || 0,
-        completionTokens: (result.usage as any)?.completionTokens || 0,
+        promptTokens: result.usage?.inputTokens ?? (result.usage as any)?.promptTokens ?? 0,
+        completionTokens: result.usage?.outputTokens ?? (result.usage as any)?.completionTokens ?? 0,
         source: 'quiz-grade',
       });
     } catch (e) {
